@@ -1,0 +1,55 @@
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Build files
+build/
+doxygenoutput/
+
+# Cache
+.cache/
+.leetcode-cache/
+__pycache__/
+
+# Online Judge Test
+oj.out
+intput.txt
+output.txt
+
+# Dependency directories
+node_modules/
+
+# LeetCode API Result
+leetcode.json
+
+# Manim ouput media files
+media/

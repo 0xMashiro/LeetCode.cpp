@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master, develop]
+  pull_request:
+    branches: [main, master, develop]
+
+jobs:
+  build-and-test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            cmake \
+            build-essential \
+            ccache \
+            ninja-build \
+            just \
+            python3 \
+            gcc \
+            g++
+
+      - name: Setup ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: ${{ runner.os }}-gcc-${{ hashFiles('CMakeLists.txt', '**/*.cpp', '**/*.h') }}
+          restore-keys: |
+            ${{ runner.os }}-gcc-
+
+      - name: Build project
+        run: |
+          mkdir -p build
+          cd build && \
+          cmake .. -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release && \
+          cmake --build . -j
+
+      - name: Run all tests
+        working-directory: build
+        run: ctest --output-on-failure

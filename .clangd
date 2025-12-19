@@ -1,0 +1,7 @@
+Diagnostics:
+  # 忽略 core.h 的未使用头文件警告
+  # core.h 是一个便利头文件，用于模拟 LeetCode 环境，即使看起来未直接使用也应该保留
+  Suppress:
+    - unused-includes
+  UnusedIncludes: None
+
