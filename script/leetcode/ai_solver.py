@@ -12,18 +12,8 @@ import json
 import subprocess
 from pathlib import Path
 from typing import Dict, Any, Optional, List
-
-try:
-    from openai import OpenAI
-except ImportError:
-    print("错误: 请先安装 openai 库: pip install openai")
-    exit(1)
-
-try:
-    from dotenv import load_dotenv
-except ImportError:
-    print("错误: 请先安装 python-dotenv 库: pip install python-dotenv")
-    exit(1)
+from openai import OpenAI
+from dotenv import load_dotenv
 
 from graphql_client import get_client
 from core import LeetCodeDB, LeetCodeHelper, ProblemInfo, SignatureParser
@@ -74,6 +64,13 @@ class AISolver:
         self.messages: List[Dict[str, Any]] = []
         self.use_reasoner = os.getenv("DEEPSEEK_USE_REASONER", "false").lower() == "true"
         
+        # 用于收集思考过程和解题报告
+        self.reasoning_log: List[str] = []  # 存储所有思考过程
+        self.solution_summary: List[str] = []  # 存储解题摘要
+        self.problem_id: Optional[int] = None
+        self.problem_title: Optional[str] = None
+        self.problem_slug: Optional[str] = None
+        
         # 定义工具函数
         self.tools = [
             {
@@ -101,7 +98,9 @@ class AISolver:
                     "description": """生成题目的完整三个文件（头文件、源文件、测试文件）。
 
 根据题目信息和参考示例，生成完整的、可直接编译和测试的代码文件。
-这是推荐的方式，比单独生成代码更可靠。""",
+这是推荐的方式，比单独生成代码更可靠。
+
+如果文件已存在，默认会拒绝生成。如果编译或测试失败需要重新生成，可以设置 force_regenerate=true 来自动删除旧文件并重新生成。""",
                     "parameters": {
                         "type": "object",
                         "properties": {
@@ -120,6 +119,11 @@ class AISolver:
                             "test_content": {
                                 "type": "string",
                                 "description": "完整的测试文件内容（test/*.cpp 文件）"
+                            },
+                            "force_regenerate": {
+                                "type": "boolean",
+                                "description": "如果为 true，当文件已存在时会自动删除旧文件并重新生成。用于编译或测试失败后重新生成代码。默认为 false。",
+                                "default": False
                             }
                         },
                         "required": ["problem_id", "header_content", "source_content", "test_content"],
@@ -157,7 +161,7 @@ class AISolver:
                         "additionalProperties": False
                     }
                 }
-            }
+            },
         ]
     
     def get_problem_info(self, problem_id: int) -> Dict[str, Any]:
@@ -179,6 +183,12 @@ class AISolver:
             
             # 读取参考示例文件和核心头文件
             is_design = self.db.is_design_problem(problem_id)
+            
+            # 生成正确的类名（使用 LeetCodeHelper 的逻辑）
+            helper = LeetCodeHelper(problem_info=problem_info, is_design=is_design)
+            solution_class_base = helper.solution_class_name  # 例如：DeleteColumnsToMakeSorted
+            solution_class_name = f"{solution_class_base}Solution"  # 例如：DeleteColumnsToMakeSortedSolution
+            test_class_name = f"{solution_class_base}Test"  # 例如：DeleteColumnsToMakeSortedTest
             
             # 读取 core.h（项目核心头文件，包含所有 STL 和工具类）
             try:
@@ -209,10 +219,13 @@ class AISolver:
                 "url": f"https://leetcode.com/problems/{problem_data['titleSlug']}/",
                 "function_signature": signature,
                 "code_template": code_template,
-                "content": content[:2000] if content else None,
+                "content": content if content else None,
                 "is_design": is_design,
+                "solution_class_name": solution_class_name,
+                "solution_class_base": solution_class_base,
+                "test_class_name": test_class_name,      
+                "namespace": f"problem_{problem_id}",
                 "core_header": core_header,
-                "core_header_description": "项目核心头文件 leetcode/core.h，已包含所有 STL 头文件和 using namespace std，生成代码时只需 #include \"leetcode/core.h\"，不需要包含其他 STL 头文件",
                 "example_ordinary": {
                     "header": two_sum_header,
                     "source": two_sum_source,
@@ -232,7 +245,7 @@ class AISolver:
                 "error": str(e)
             }
     
-    def generate_all_files(self, problem_id: int, header_content: str, source_content: str, test_content: str) -> Dict[str, Any]:
+    def generate_all_files(self, problem_id: int, header_content: str, source_content: str, test_content: str, force_regenerate: bool = False) -> Dict[str, Any]:
         """生成完整的三个文件（工具函数）"""
         try:
             problem_info = self.db.get_by_id(problem_id)
@@ -241,6 +254,34 @@ class AISolver:
             header_path = Path(f"include/leetcode/problems/{problem_info.slug}.h")
             source_path = Path(f"src/leetcode/problems/{problem_info.slug}.cpp")
             test_path = Path(f"test/leetcode/problems/{problem_info.slug}.cpp")
+            
+            # 检查文件是否已存在
+            files_exist = header_path.exists() and source_path.exists() and test_path.exists()
+            
+            if files_exist and not force_regenerate:
+                return {
+                    "success": False,
+                    "error": f"文件已存在，跳过生成。如果编译或测试失败需要重新生成，请设置 force_regenerate=true 来自动删除旧文件并重新生成。",
+                    "files": {
+                        "header": str(header_path),
+                        "source": str(source_path),
+                        "test": str(test_path)
+                    },
+                    "suggestion": "设置 force_regenerate=true 来重新生成文件"
+                }
+            
+            # 如果需要重新生成，先删除旧文件
+            deleted_files = []
+            if force_regenerate and files_exist:
+                if header_path.exists():
+                    header_path.unlink()
+                    deleted_files.append(str(header_path))
+                if source_path.exists():
+                    source_path.unlink()
+                    deleted_files.append(str(source_path))
+                if test_path.exists():
+                    test_path.unlink()
+                    deleted_files.append(str(test_path))
             
             # 确保目录存在
             header_path.parent.mkdir(parents=True, exist_ok=True)
@@ -257,14 +298,19 @@ class AISolver:
             with open(test_path, 'w', encoding='utf-8') as f:
                 f.write(test_content)
             
+            message = "三个文件已生成"
+            if force_regenerate and deleted_files:
+                message += f"（已删除并重新生成 {len(deleted_files)} 个旧文件）"
+            
             return {
                 "success": True,
-                "message": "三个文件已生成",
+                "message": message,
                 "files": {
                     "header": str(header_path),
                     "source": str(source_path),
                     "test": str(test_path)
-                }
+                },
+                "deleted_files": deleted_files if force_regenerate else []
             }
         except Exception as e:
             import traceback
@@ -272,7 +318,7 @@ class AISolver:
                 "success": False,
                 "error": f"{str(e)}\n{traceback.format_exc()}"
             }
-            
+    
     def build_project(self) -> Dict[str, Any]:
         """编译项目（工具函数）"""
         try:
@@ -385,9 +431,50 @@ class AISolver:
             question = daily["question"]
             problem_id = int(question["questionFrontendId"])
             
+            self.problem_id = problem_id
+            self.problem_title = question['title']
+            self.problem_slug = question['titleSlug']
+            
             print(color_text(f"📋 今日题目: [{problem_id}] {question['title']}", ColorCode.BLUE.value))
             print(color_text(f"🔗 URL: https://leetcode.com/problems/{question['titleSlug']}/", ColorCode.BLUE.value))
             print()
+            
+            # 记录题目信息到解题报告
+            self.reasoning_log.append(f"# LeetCode 每日一题：{problem_id}. {question['title']}\n")
+            self.reasoning_log.append(f"**题目链接**: https://leetcode.com/problems/{question['titleSlug']}/\n")
+            self.reasoning_log.append(f"**难度**: {question.get('difficulty', 'Unknown')}\n\n")
+            
+            # 检查文件是否已存在
+            problem_info = self.db.get_by_id(problem_id)
+            header_path = Path(f"include/leetcode/problems/{problem_info.slug}.h")
+            source_path = Path(f"src/leetcode/problems/{problem_info.slug}.cpp")
+            test_path = Path(f"test/leetcode/problems/{problem_info.slug}.cpp")
+            
+            files_exist = header_path.exists() and source_path.exists() and test_path.exists()
+            
+            if files_exist:
+                print(color_text("✅ 题目已解决，文件已存在", ColorCode.GREEN.value))
+                print(color_text(f"   头文件: {header_path}", ColorCode.CYAN.value))
+                print(color_text(f"   源文件: {source_path}", ColorCode.CYAN.value))
+                print(color_text(f"   测试文件: {test_path}", ColorCode.CYAN.value))
+                print()
+                
+                # 记录到报告
+                self.reasoning_log.append("## 状态\n\n")
+                self.reasoning_log.append("✅ **题目已解决**，文件已存在，跳过自动解题。\n\n")
+                self.reasoning_log.append("**已存在的文件**:\n")
+                self.reasoning_log.append(f"- 头文件: `{header_path}`\n")
+                self.reasoning_log.append(f"- 源文件: `{source_path}`\n")
+                self.reasoning_log.append(f"- 测试文件: `{test_path}`\n\n")
+                
+                # 生成报告并退出
+                self._generate_solution_report()
+                # 创建标记文件，告知 CI 跳过 PR 创建
+                skip_pr_file = Path("SKIP_PR")
+                skip_pr_file.write_text(f"题目 {problem_id} 已解决，文件已存在，跳过 PR 创建。\n", encoding='utf-8')
+                return
+            else:
+                self.reasoning_log.append("## 解题过程\n\n")
             
             # 初始化对话
             self.messages = [{
@@ -409,25 +496,41 @@ class AISolver:
 - 设计类题目直接实现类方法，参考 LRUCache 示例
 - 代码必须完整、可编译、可测试
 
+重要：解题策略选择：
+- 对于简单的问题，不需要强行追求一题多解（思路相同只是写法不同只能算一种解法）
+- 只有当问题有多种不同的算法思路时（如暴力、动态规划、贪心等），才考虑实现多个策略
+- 避免为了多解而多解，保持代码简洁和可读性，优先给出最优雅、最简洁的实现方案
+
 重要：头文件包含规则：
-- 所有文件只需包含 #include "leetcode/core.h"
-- 不要包含任何 STL 头文件（如 <vector>, <string>, <algorithm> 等）
-- core.h 已经包含了所有常用的 STL 头文件和 using namespace std
-- 参考 get_problem_info 返回的 core_header 内容了解详情
+- "leetcode/core.h" 已经包含了所有常用的 STL 头文件和 using namespace std
+- 因此不要再包含任何 STL 头文件（如 <vector>, <string>, <algorithm> 等）
+
+重要：测试用例规则：
+- 题目自带的测试用例是必须通过的
+- 你在自己构造测试用例时需确保你构造的测试用例是正确的，并且能够覆盖所有可能的情况
+- 测试用例不在于数量，而在于质量
 
 工作流程：
-1. 调用 get_problem_info 获取题目信息和参考示例
+1. 调用 get_problem_info 获取题目信息、参考示例和**正确的类名、测试类名、命名空间**
 2. 根据题目类型（普通/设计类）选择合适的示例
 3. 分析题目要求，设计算法
-4. 调用 generate_all_files 生成完整的三个文件（严格按照示例格式）
+4. 调用 generate_all_files 生成完整的三个文件（严格按照示例格式和提供的类名）
 5. 调用 build_project 编译验证
 6. 调用 run_tests 运行测试
-7. 如果失败，根据错误信息修复文件并重试
+7. 如果编译或测试失败，根据错误信息修复后，调用 generate_all_files 时设置 force_regenerate=true 来重新生成文件
 
-请严格按照参考示例的格式生成代码，确保能够直接编译和测试。"""
+重要提示：你的思考过程和解题步骤会被记录并作为 GitHub Pull Request 的解题报告。请在思考过程中：
+- 详细说明算法思路和设计决策
+- 解释时间复杂度和空间复杂度
+- 说明遇到的困难和解决方案
+- 总结解题的关键点
+
+你最后需要总结你的解题思路，写一份专业的解题报告。
+
+请严格按照参考示例的格式和提供的类名生成代码，确保能够直接编译和测试。"""
             }, {
                 "role": "user",
-                "content": f"请帮我解决 LeetCode 每日一题：题目 ID {problem_id}。\n\n请按照以下步骤：\n1. 调用 get_problem_info 获取题目详细信息和参考示例（TwoSum 和 LRUCache）\n2. 根据题目类型选择合适的示例（普通题目参考 TwoSum，设计类参考 LRUCache）\n3. 分析题目要求，设计算法\n4. 调用 generate_all_files 生成完整的三个文件（头文件、源文件、测试文件），严格按照示例格式\n5. 调用 build_project 编译验证\n6. 调用 run_tests 运行测试\n7. 如果失败，根据错误信息修复文件并重试\n\n请开始解决。"
+                "content": f"请帮我解决 LeetCode 每日一题：题目 ID {problem_id}。\n\n请按照以下步骤：\n1. 调用 get_problem_info 获取题目详细信息和参考示例（TwoSum 和 LRUCache）\n2. **重要**：从 get_problem_info 的返回中获取 solution_class_name、test_class_name 和 namespace，这些是必须使用的类名和命名空间，不要自己推断\n3. 根据题目类型选择合适的示例（普通题目参考 TwoSum，设计类参考 LRUCache）\n4. 分析题目要求，设计算法\n5. 调用 generate_all_files 生成完整的三个文件（头文件、源文件、测试文件），**必须使用 get_problem_info 返回的类名和命名空间**，严格按照示例格式\n6. 调用 build_project 编译验证\n7. 调用 run_tests 运行测试\n8. 如果编译或测试失败，根据错误信息修复后，再次调用 generate_all_files 时设置 force_regenerate=true 来删除旧文件并重新生成\n\n请开始解决。"
             }]
             
             # 清除历史消息中的 reasoning_content（节省带宽）
@@ -473,6 +576,8 @@ class AISolver:
                 else:
                     # 没有工具调用，说明 AI 已经完成
                     self._print_completion(message)
+                    # 生成解题报告
+                    self._generate_solution_report()
                     break
             else:
                 print(color_text("⚠️ 达到最大迭代次数，停止处理", ColorCode.YELLOW.value))
@@ -594,6 +699,30 @@ class AISolver:
         if message.content:
             print(message.content)
     
+    def _generate_solution_report(self) -> None:
+        """生成解题报告（用于 PR）"""
+        if not self.problem_id:
+            return
+        
+        report_path = Path(f"SOLUTION_REPORT_{self.problem_id}.md")
+        
+        # 构建报告内容
+        report_content = "".join(self.reasoning_log)
+        
+        # 添加总结
+        report_content += "\n## 总结\n\n"
+        report_content += "✅ 解题完成！代码已通过编译和测试。\n\n"
+        report_content += "---\n\n"
+        report_content += "*本报告由 AI 自动生成，包含完整的思考过程和解题步骤。*\n"
+        
+        # 写入文件
+        with open(report_path, 'w', encoding='utf-8') as f:
+            f.write(report_content)
+        
+        print()
+        print(color_text(f"📝 解题报告已保存: {report_path}", ColorCode.CYAN.value))
+        print(color_text(f"   报告将作为 PR 的解题说明", ColorCode.CYAN.value))
+    
     def _handle_stream_response(self, request_params: Dict[str, Any]) -> Any:
         """处理流式响应，实时输出 thinking 和 content"""
         import sys
@@ -611,7 +740,7 @@ class AISolver:
         if self.use_reasoner:
             print(color_text("🧠 思考过程:", ColorCode.CYAN.value), end="", flush=True)
         
-        # 处理流式数据块
+            # 处理流式数据块
         for chunk in stream:
             if not chunk.choices:
                 continue
@@ -622,6 +751,10 @@ class AISolver:
             if hasattr(delta, 'reasoning_content') and delta.reasoning_content:
                 reasoning_chunk = delta.reasoning_content
                 full_reasoning_content += reasoning_chunk
+                # 记录到思考日志（用于 PR 报告）
+                if not hasattr(self, '_current_reasoning'):
+                    self._current_reasoning = ""
+                self._current_reasoning += reasoning_chunk
                 # 实时输出（不换行，流式显示）
                 print(reasoning_chunk, end="", flush=True)
             
@@ -667,6 +800,15 @@ class AISolver:
         
         # 流式输出结束，换行
         print()
+        
+        # 保存思考过程到日志（如果有）
+        if hasattr(self, '_current_reasoning') and self._current_reasoning:
+            self.reasoning_log.append(f"### 思考过程\n\n{self._current_reasoning}\n\n")
+            self._current_reasoning = ""
+        
+        # 保存回复内容到日志（如果有）
+        if full_content:
+            self.reasoning_log.append(f"### AI 回复\n\n{full_content}\n\n")
         
         # 构建完整的 message 对象（使用简单的类来模拟 response.choices[0].message）
         class Message:

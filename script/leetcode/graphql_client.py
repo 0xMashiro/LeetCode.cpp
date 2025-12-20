@@ -120,6 +120,7 @@ class GraphQLClient:
                 titleSlug
                 difficulty
                 isPaidOnly
+                content
                 topicTags {{
                   name
                   slug

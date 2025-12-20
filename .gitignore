@@ -59,5 +59,11 @@ node_modules/
 # LeetCode API Result
 leetcode.json
 
+# AI Solver reports (temporary, only used for PR description, not committed)
+SOLUTION_REPORT_*.md
+
+# AI Solver skip marker (temporary, not committed)
+SKIP_PR
+
 # Manim ouput media files
 media/
