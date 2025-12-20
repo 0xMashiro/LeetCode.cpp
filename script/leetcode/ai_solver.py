@@ -495,6 +495,7 @@ class AISolver:
 - 普通题目使用 SolutionBase 模式，参考 TwoSum 示例
 - 设计类题目直接实现类方法，参考 LRUCache 示例
 - 代码必须完整、可编译、可测试
+- 好的代码命名和逻辑就是最好的注释，不要写太多注释！
 
 重要：解题策略选择：
 - 对于简单的问题，不需要强行追求一题多解（思路相同只是写法不同只能算一种解法）
@@ -520,17 +521,19 @@ class AISolver:
 7. 如果编译或测试失败，根据错误信息修复后，调用 generate_all_files 时设置 force_regenerate=true 来重新生成文件
 
 重要提示：你的思考过程和解题步骤会被记录并作为 GitHub Pull Request 的解题报告。请在思考过程中：
-- 详细说明算法思路和设计决策
+- 描述你对题目和参考示例的理解
+- 详细说明算法思路和设计决策（如果有多种算法，先从最容易想到的算法开始，再逐步优化）
 - 解释时间复杂度和空间复杂度
 - 说明遇到的困难和解决方案
 - 总结解题的关键点
 
-你最后需要总结你的解题思路，写一份专业的解题报告。
+你的思考过程也应当以 Markdown 格式输出，以及注意代码和数学公式格式，方便后续生成解题报告。
+在最终的解题报告中不需要提到工作流程中的 function calling, 仅描述你的思考过程和解题步骤。
 
 请严格按照参考示例的格式和提供的类名生成代码，确保能够直接编译和测试。"""
             }, {
                 "role": "user",
-                "content": f"请帮我解决 LeetCode 每日一题：题目 ID {problem_id}。\n\n请按照以下步骤：\n1. 调用 get_problem_info 获取题目详细信息和参考示例（TwoSum 和 LRUCache）\n2. **重要**：从 get_problem_info 的返回中获取 solution_class_name、test_class_name 和 namespace，这些是必须使用的类名和命名空间，不要自己推断\n3. 根据题目类型选择合适的示例（普通题目参考 TwoSum，设计类参考 LRUCache）\n4. 分析题目要求，设计算法\n5. 调用 generate_all_files 生成完整的三个文件（头文件、源文件、测试文件），**必须使用 get_problem_info 返回的类名和命名空间**，严格按照示例格式\n6. 调用 build_project 编译验证\n7. 调用 run_tests 运行测试\n8. 如果编译或测试失败，根据错误信息修复后，再次调用 generate_all_files 时设置 force_regenerate=true 来删除旧文件并重新生成\n\n请开始解决。"
+                "content": f"请帮我解决 LeetCode 每日一题：题目 ID {problem_id}"
             }]
             
             # 清除历史消息中的 reasoning_content（节省带宽）
@@ -700,7 +703,7 @@ class AISolver:
             print(message.content)
     
     def _generate_solution_report(self) -> None:
-        """生成解题报告（用于 PR）"""
+        """生成解题报告（用于 PR 正文描述）"""
         if not self.problem_id:
             return
         
@@ -708,9 +711,6 @@ class AISolver:
         
         # 构建报告内容
         report_content = "".join(self.reasoning_log)
-        
-        # 添加总结
-        report_content += "\n## 总结\n\n"
         report_content += "✅ 解题完成！代码已通过编译和测试。\n\n"
         report_content += "---\n\n"
         report_content += "*本报告由 AI 自动生成，包含完整的思考过程和解题步骤。*\n"
