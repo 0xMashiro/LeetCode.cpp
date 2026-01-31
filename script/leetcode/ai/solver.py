@@ -574,10 +574,14 @@ def main():
         epilog="""
 示例:
   # 解决每日一题
-  python script/leetcode/ai_solver.py
+  python -m script.leetcode.ai.solver
   
   # 解决指定题目
-  python script/leetcode/ai_solver.py 1
+  python -m script.leetcode.ai.solver 1
+  
+  # 随机挑选未解决的题目（用于测试增量编译）
+  python -m script.leetcode.ai.solver --random
+  python -m script.leetcode.ai.solver --random --difficulty Easy
         """
     )
     parser.add_argument(
@@ -585,6 +589,16 @@ def main():
         nargs="?",
         type=int,
         help="指定要解决的题目 ID"
+    )
+    parser.add_argument(
+        "--random",
+        action="store_true",
+        help="随机挑选未解决的题目"
+    )
+    parser.add_argument(
+        "--difficulty",
+        choices=["Easy", "Medium", "Hard"],
+        help="配合 --random 使用，指定难度"
     )
     parser.add_argument(
         "--api-key",
@@ -605,6 +619,17 @@ def main():
         
         if args.id:
             solver.solve_problem(args.id)
+        elif args.random:
+            # 随机模式
+            from script.leetcode.problem_pool import ProblemPool
+            pool = ProblemPool()
+            problem_id = pool.get_random(args.difficulty)
+            if problem_id:
+                print(color_text(f"🎲 Randomly selected problem: {problem_id}", ColorCode.CYAN.value))
+                print()
+                solver.solve_problem(problem_id)
+            else:
+                print(color_text("No unsolved problems found", ColorCode.YELLOW.value))
         else:
             solver.solve_daily_challenge()
     except KeyboardInterrupt:
