@@ -15,14 +15,16 @@ default:
     @echo "LeetCode.cpp 项目命令："
     @echo ""
     @echo "构建："
-    @echo "  just build          - 构建项目（Debug）"
-    @echo "  just build-release  - 构建项目（Release）"
+    @echo "  just build          - 构建项目（Debug，全量）"
+    @echo "  just build-release  - 构建项目（Release，全量）"
+    @echo "  just single <ID>    - 只构建单个题目（快速）"
+    @echo "  just multi <IDs...> - 构建多个题目（CI 优化）"
     @echo "  just clean          - 清理构建文件"
     @echo "  just rebuild        - 清理并重新构建"
     @echo ""
     @echo "测试："
     @echo "  just test           - 运行所有测试"
-    @echo "  just test <ID>      - 运行指定题目测试"
+    @echo "  just test <ID>      - 运行指定题目测试（需先全量构建）"
     @echo "  just test-filter <FILTER> - 运行过滤后的测试"
     @echo ""
     @echo "题目管理："
@@ -59,11 +61,11 @@ doc:
 # 构建项目
 build:
     @mkdir -p build
-    cd build && cmake .. -G Ninja -DCMAKE_BUILD_TYPE=Debug && cmake --build . -j
+    cd build && cmake .. -G Ninja -DCMAKE_BUILD_TYPE=Debug -DLEETCODE_SINGLE_PROBLEM="" && cmake --build . -j
 
 build-release:
     @mkdir -p build
-    cd build && cmake .. -G Ninja -DCMAKE_BUILD_TYPE=Release && cmake --build . -j
+    cd build && cmake .. -G Ninja -DCMAKE_BUILD_TYPE=Release -DLEETCODE_SINGLE_PROBLEM="" && cmake --build . -j
 
 clean:
     rm -rf build
@@ -71,6 +73,48 @@ clean:
 rebuild:
     just clean
     just build
+
+# 单题编译运行（快速，只编译指定题目）
+single ID:
+    just multi {{ID}}
+
+# 多题编译运行（编译指定题目列表，适合 CI）
+# 示例: just multi 1 2 146 lru-cache
+multi *IDS:
+    #!/usr/bin/env bash
+    set -e
+    unset LD_LIBRARY_PATH
+    
+    IDS="{{IDS}}"
+    if [ -z "$IDS" ]; then
+        echo "用法: just multi <ID1> [ID2] [ID3] ..."
+        echo "示例: just multi 1 2 146"
+        exit 1
+    fi
+    
+    echo "正在解析题目列表..."
+    SLUGS=""
+    COUNT=0
+    for ID in $IDS; do
+        SLUG=$({{python_venv}} script/leetcode/get_slug.py "$ID")
+        if [ -n "$SLUGS" ]; then
+            SLUGS="$SLUGS;$SLUG"
+        else
+            SLUGS="$SLUG"
+        fi
+        echo "  $ID -> $SLUG"
+        COUNT=$((COUNT + 1))
+    done
+    
+    echo ""
+    echo "共 $COUNT 个题目，开始编译..."
+    mkdir -p build
+    cd build
+    cmake .. -G Ninja -DCMAKE_BUILD_TYPE=Debug -DLEETCODE_MULTI_PROBLEMS="$SLUGS"
+    cmake --build . -j
+    echo ""
+    echo "运行测试..."
+    ./bin/multi_problem_test
 
 # 运行测试
 test ID="":

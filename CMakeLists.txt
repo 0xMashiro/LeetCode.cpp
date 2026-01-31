@@ -1,25 +1,25 @@
 cmake_minimum_required(VERSION 3.16)
 
 ########################################
-# 平台检查 - 仅支持 Ubuntu/Linux
+# Platform Check - Ubuntu/Linux only
 ########################################
 if(WIN32)
     message(FATAL_ERROR 
-        "此项目仅支持在 Ubuntu/Linux 环境下构建。\n"
-        "Windows 用户请考虑使用 WSL (Windows Subsystem for Linux)。\n"
-        "安装 WSL: https://learn.microsoft.com/zh-cn/windows/wsl/install"
+        "This project only supports Ubuntu/Linux environment.\n"
+        "Windows users please use WSL (Windows Subsystem for Linux).\n"
+        "Install WSL: https://learn.microsoft.com/en-us/windows/wsl/install"
     )
 endif()
 
 if(NOT UNIX)
     message(WARNING 
-        "此项目主要针对 Ubuntu/Linux 环境开发和测试。\n"
-        "其他 Unix 系统可能可以工作，但未经过充分测试。"
+        "This project is primarily developed and tested on Ubuntu/Linux.\n"
+        "Other Unix systems may work but are not fully tested."
     )
 endif()
 
 ########################################
-# 项目设置
+# Project Settings
 ########################################
 project(LeetCode
     VERSION 1.0.0
@@ -27,34 +27,34 @@ project(LeetCode
     LANGUAGES CXX
 )
 
-# 设置输出目录
+# Set output directories
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
 
 ########################################
-# 模块和通用路径设置
+# Module and Common Paths
 ########################################
 set(COMMON_INCLUDES ${PROJECT_SOURCE_DIR}/include)
 set(COMMON_SOURCE ${PROJECT_SOURCE_DIR}/src)
 set(COMMON_TEST ${PROJECT_SOURCE_DIR}/test)
 
 ########################################
-# C++ 标准和编译选项
+# C++ Standard and Compile Options
 ########################################
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# 编译器选项（使用生成器表达式，支持多配置生成器）
+# Compiler options (using generator expressions for multi-config generators)
 add_compile_options(
     "$<$<CONFIG:Debug>:-g3;-gdwarf-2;-O0;-pipe>"
     "$<$<CONFIG:Release>:-g0;-Ofast;-march=native;-mtune=native;-DNDEBUG>"
 )
 
 ########################################
-# 优先使用 Ninja 生成器（如果可用）
+# Prefer Ninja Generator (if available)
 ########################################
 find_program(NINJA_EXECUTABLE ninja)
 
@@ -67,7 +67,7 @@ else()
 endif()
 
 ########################################
-# 检查 ccache 是否可用
+# Check if ccache is available
 ########################################
 find_program(CCACHE_PROGRAM ccache)
 if(CCACHE_PROGRAM)
@@ -78,12 +78,12 @@ else()
 endif()
 
 ########################################
-# Google Test 配置
+# Google Test Configuration
 ########################################
 set(CTEST_OUTPUT_ON_FAILURE TRUE)
 enable_testing()
 
-# 使用 FetchContent 下载 GoogleTest
+# Download GoogleTest using FetchContent
 include(FetchContent)
 FetchContent_Declare(
   googletest
@@ -94,39 +94,100 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(googletest)
 
 ########################################
-# LeetCode 库
+# Options: Single/Multi Problem Mode
 ########################################
-file(GLOB_RECURSE leetcode_SRC_FILES CONFIGURE_DEPENDS ${COMMON_SOURCE}/leetcode/*.cpp)
+option(LEETCODE_SINGLE_PROBLEM "Compile single problem (slug, e.g., 'two-sum')" "")
+set(LEETCODE_MULTI_PROBLEMS "" CACHE STRING "Compile multiple problems (semicolon-separated slugs, e.g., 'two-sum;lru-cache')")
+
+########################################
+# LeetCode Library
+########################################
+# Utility files (required for all modes)
+file(GLOB leetcode_UTILS_FILES CONFIGURE_DEPENDS ${COMMON_SOURCE}/leetcode/utils/*.cpp)
+
+if(LEETCODE_SINGLE_PROBLEM)
+    # Single problem mode (convert to list for unified processing)
+    set(LEETCODE_MULTI_PROBLEMS ${LEETCODE_SINGLE_PROBLEM})
+endif()
+
+if(LEETCODE_MULTI_PROBLEMS)
+    # Multi-problem compilation mode
+    set(leetcode_SRC_FILES ${leetcode_UTILS_FILES})
+    set(leetcode_TEST_FILES "")
+    
+    foreach(PROBLEM_SLUG ${LEETCODE_MULTI_PROBLEMS})
+        set(PROBLEM_HDR ${COMMON_INCLUDES}/leetcode/problems/${PROBLEM_SLUG}.h)
+        set(PROBLEM_SRC ${COMMON_SOURCE}/leetcode/problems/${PROBLEM_SLUG}.cpp)
+        set(PROBLEM_TEST ${COMMON_TEST}/leetcode/problems/${PROBLEM_SLUG}.cpp)
+        
+        if(NOT EXISTS ${PROBLEM_HDR})
+            message(FATAL_ERROR "Problem header not found: ${PROBLEM_HDR}")
+        endif()
+        
+        if(NOT EXISTS ${PROBLEM_SRC})
+            message(FATAL_ERROR "Problem source not found: ${PROBLEM_SRC}")
+        endif()
+        
+        if(NOT EXISTS ${PROBLEM_TEST})
+            message(FATAL_ERROR "Problem test not found: ${PROBLEM_TEST}")
+        endif()
+        
+        list(APPEND leetcode_SRC_FILES ${PROBLEM_SRC} ${PROBLEM_HDR})
+        list(APPEND leetcode_TEST_FILES ${PROBLEM_TEST})
+        
+        message(STATUS "Compiling problem: ${PROBLEM_SLUG}")
+    endforeach()
+    
+    # Multi-problem mode uses a different executable name
+    set(MULTI_TEST_TARGET "multi_problem_test")
+    message(STATUS "Multi-problem mode: ${LEETCODE_MULTI_PROBLEMS}")
+else()
+    # Full build mode
+    file(GLOB_RECURSE leetcode_SRC_FILES CONFIGURE_DEPENDS ${COMMON_SOURCE}/leetcode/*.cpp)
+    file(GLOB_RECURSE leetcode_TEST_FILES CONFIGURE_DEPENDS ${COMMON_TEST}/leetcode/*.cpp)
+    set(MULTI_TEST_TARGET "")
+endif()
+
 add_library(leetcode STATIC ${leetcode_SRC_FILES})
 
-# 设置包含目录（使用 target_include_directories 替代全局 include_directories）
+# Set include directories (using target_include_directories instead of global)
 target_include_directories(leetcode
     PUBLIC
         ${COMMON_INCLUDES}
 )
 
-# 预编译头文件以减少编译时间
-target_precompile_headers(leetcode PUBLIC ${COMMON_INCLUDES}/leetcode/core.h)
+# Precompiled headers to reduce compile time (full build only)
+if(NOT LEETCODE_MULTI_PROBLEMS)
+    target_precompile_headers(leetcode PUBLIC ${COMMON_INCLUDES}/leetcode/core.h)
+endif()
 
 ########################################
-# Problem Set 集成测试
+# Problem Set Integration Tests
 ########################################
-file(GLOB_RECURSE leetcode_TEST_FILES CONFIGURE_DEPENDS ${COMMON_TEST}/leetcode/*.cpp)
-add_executable(problem_set_tests ${leetcode_TEST_FILES})
-
-# 链接库（使用 PRIVATE，因为测试不需要暴露依赖）
-target_link_libraries(problem_set_tests
-    PRIVATE
-        leetcode
-        GTest::gtest
-        GTest::gtest_main
-)
-
-# 可以使用 `ctest` 运行所有集成测试
-add_test(NAME problem_set_tests COMMAND problem_set_tests)
+if(LEETCODE_MULTI_PROBLEMS)
+    # Multi-problem test executable (single problem is a special case)
+    add_executable(${MULTI_TEST_TARGET} ${leetcode_TEST_FILES})
+    target_link_libraries(${MULTI_TEST_TARGET}
+        PRIVATE
+            leetcode
+            GTest::gtest
+            GTest::gtest_main
+    )
+    add_test(NAME ${MULTI_TEST_TARGET} COMMAND ${MULTI_TEST_TARGET})
+else()
+    # Full test executable
+    add_executable(problem_set_tests ${leetcode_TEST_FILES})
+    target_link_libraries(problem_set_tests
+        PRIVATE
+            leetcode
+            GTest::gtest
+            GTest::gtest_main
+    )
+    add_test(NAME problem_set_tests COMMAND problem_set_tests)
+endif()
 
 ########################################
-# 生成 compile_commands.json 用于 IntelliSense
+# Generate compile_commands.json for IntelliSense
 ########################################
-# CMAKE_EXPORT_COMPILE_COMMANDS 会生成 compile_commands.json 以提供更好的 IntelliSense 支持
-# 这适用于 Ninja 和 Unix Makefiles 生成器
+# CMAKE_EXPORT_COMPILE_COMMANDS generates compile_commands.json for better IntelliSense support
+# This works with Ninja and Unix Makefiles generators

@@ -2,14 +2,92 @@ name: CI
 
 on:
   push:
-    branches: [main, master, develop]
+    branches: [main, master]
+    paths:
+      - 'src/**/*.cpp'
+      - 'include/**/*.h'
+      - 'test/**/*.cpp'
+      - 'CMakeLists.txt'
   pull_request:
     branches: [main, master, develop]
+    paths:
+      - 'src/**/*.cpp'
+      - 'include/**/*.h'
+      - 'test/**/*.cpp'
+      - 'CMakeLists.txt'
+
+# Cancel redundant workflows
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  build-and-test:
-    name: Build and Test
+  detect-changes:
+    name: Detect Changes
     runs-on: ubuntu-latest
+    outputs:
+      problems: ${{ steps.detect.outputs.problems }}
+      problem_count: ${{ steps.detect.outputs.problem_count }}
+      is_full_build: ${{ steps.strategy.outputs.is_full_build }}
+      build_type: ${{ steps.strategy.outputs.build_type }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect changed problems
+        id: detect
+        run: |
+          CHANGED_PROBLEMS=$(python3 script/ci/detect_changed_problems.py origin/main)
+          PROBLEM_COUNT=$(echo "$CHANGED_PROBLEMS" | tr ';' '\n' | grep -c '^' || true)
+          
+          echo "problems=$CHANGED_PROBLEMS" >> $GITHUB_OUTPUT
+          echo "problem_count=$PROBLEM_COUNT" >> $GITHUB_OUTPUT
+          echo "Detected $PROBLEM_COUNT changed problem(s)"
+
+      - name: Determine build strategy
+        id: strategy
+        run: |
+          IS_PR="${{ github.event_name == 'pull_request' }}"
+          PROBLEM_COUNT="${{ steps.detect.outputs.problem_count }}"
+          
+          if [ "$IS_PR" == "true" ]; then
+            # PR: Use incremental build if <= 10 problems
+            if [ "$PROBLEM_COUNT" -gt 10 ]; then
+              echo "is_full_build=true" >> $GITHUB_OUTPUT
+              echo "build_type=full" >> $GITHUB_OUTPUT
+              echo "PR with many changes ($PROBLEM_COUNT), using full build"
+            elif [ "$PROBLEM_COUNT" -eq 0 ]; then
+              # Check if core files changed
+              CORE_CHANGES=$(git diff --name-only origin/main HEAD | grep -E "(CMakeLists\.txt|include/leetcode/(core|solution)\.h|src/leetcode/utils/)" || true)
+              if [ -n "$CORE_CHANGES" ]; then
+                echo "is_full_build=true" >> $GITHUB_OUTPUT
+                echo "build_type=full" >> $GITHUB_OUTPUT
+                echo "Core files changed, using full build"
+              else
+                echo "is_full_build=false" >> $GITHUB_OUTPUT
+                echo "build_type=skip" >> $GITHUB_OUTPUT
+                echo "No relevant changes, skipping build"
+              fi
+            else
+              echo "is_full_build=false" >> $GITHUB_OUTPUT
+              echo "build_type=incremental" >> $GITHUB_OUTPUT
+              echo "PR with $PROBLEM_COUNT problem(s), using incremental build"
+            fi
+          else
+            # Push to main: Always full build
+            echo "is_full_build=true" >> $GITHUB_OUTPUT
+            echo "build_type=full" >> $GITHUB_OUTPUT
+            echo "Push to main, using full build"
+          fi
+
+  build-incremental:
+    name: Incremental Build
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.build_type == 'incremental' }}
 
     steps:
       - name: Checkout code
@@ -18,29 +96,61 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y \
-            cmake \
-            build-essential \
-            ccache \
-            ninja-build \
-            just \
-            python3 \
-            gcc \
-            g++
+          sudo apt-get install -y cmake build-essential ccache ninja-build python3 gcc g++
 
       - name: Setup ccache
         uses: hendrikmuhs/ccache-action@v1.2
         with:
-          key: ${{ runner.os }}-gcc-${{ hashFiles('CMakeLists.txt', '**/*.cpp', '**/*.h') }}
+          key: ${{ runner.os }}-gcc-incremental-${{ needs.detect-changes.outputs.problems }}
           restore-keys: |
+            ${{ runner.os }}-gcc-incremental-
+            ${{ runner.os }}-gcc-
+
+      - name: Build changed problems
+        run: |
+          PROBLEMS="${{ needs.detect-changes.outputs.problems }}"
+          echo "Building problems: $PROBLEMS"
+          
+          mkdir -p build && cd build
+          cmake .. -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
+            -DLEETCODE_MULTI_PROBLEMS="$PROBLEMS"
+          cmake --build . -j
+
+      - name: Run tests
+        working-directory: build
+        run: ./bin/multi_problem_test
+
+  build-full:
+    name: Full Build
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.build_type == 'full' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake build-essential ccache ninja-build python3 gcc g++
+
+      - name: Setup ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: ${{ runner.os }}-gcc-full-${{ hashFiles('CMakeLists.txt', '**/*.cpp', '**/*.h') }}
+          restore-keys: |
+            ${{ runner.os }}-gcc-full-
             ${{ runner.os }}-gcc-
 
       - name: Build project
         run: |
-          mkdir -p build
-          cd build && \
+          mkdir -p build && cd build
           cmake .. -G Ninja \
-            -DCMAKE_BUILD_TYPE=Release && \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
           cmake --build . -j
 
       - name: Run all tests
