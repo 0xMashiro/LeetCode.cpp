@@ -36,7 +36,7 @@ default:
     @echo ""
     @echo "AI 自动解题："
     @echo "  just ai-solve            - 使用 AI 解决每日一题"
-    @echo "  just ai-solve --id <ID>  - 使用 AI 解决指定题目"
+    @echo "  just ai-solve <ID>       - 使用 AI 解决指定题目"
     @echo ""
     @echo "Python 环境："
     @echo "  just venv-setup          - 创建并设置虚拟环境"

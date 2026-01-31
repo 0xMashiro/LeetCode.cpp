@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 AI 自动解题器
-使用 DeepSeek API 的 Function Calling 功能自动解决 LeetCode 题目
+使用 Kimi (Moonshot AI) API 的 Function Calling 功能自动解决 LeetCode 题目
 
 依赖安装: pip install openai
 """
@@ -59,14 +59,14 @@ class AISolver:
     MAX_ITERATIONS = 20
     BUILD_TIMEOUT = 120
     TEST_TIMEOUT = 60
-    DEFAULT_BASE_URL = "https://api.deepseek.com"
+    DEFAULT_BASE_URL = "https://api.moonshot.cn/v1"
     
     def __init__(self, api_key: Optional[str] = None, base_url: Optional[str] = None):
         """初始化 AI 解题器
         
         Args:
-            api_key: DeepSeek API Key，优先级：参数 > 环境变量 > .env 文件
-            base_url: API 基础 URL，优先级：参数 > 环境变量 DEEPSEEK_BASE_URL > .env 文件 > 默认值
+            api_key: Moonshot API Key，优先级：参数 > 环境变量 > .env 文件
+            base_url: API 基础 URL，优先级：参数 > 环境变量 MOONSHOT_BASE_URL > .env 文件 > 默认值
         """
         self._load_env()
         self.api_key = self._get_api_key(api_key)
@@ -98,26 +98,32 @@ class AISolver:
     def _get_api_key(self, api_key: Optional[str] = None) -> str:
         """获取 API Key"""
         import os
-        api_key = api_key or os.getenv("DEEPSEEK_API_KEY")
+        api_key = api_key or os.getenv("MOONSHOT_API_KEY")
         if not api_key:
             raise ValueError(
-                "请设置 DEEPSEEK_API_KEY：\n"
-                "  1. 创建 .env 文件并添加 DEEPSEEK_API_KEY=your_key\n"
-                "  2. 或设置环境变量: export DEEPSEEK_API_KEY=your_key\n"
+                "请设置 MOONSHOT_API_KEY：\n"
+                "  1. 创建 .env 文件并添加 MOONSHOT_API_KEY=your_key\n"
+                "  2. 或设置环境变量: export MOONSHOT_API_KEY=your_key\n"
                 "  3. 或通过命令行参数: --api-key your_key\n"
-                "  参考 env.example 文件"
+                "  参考 .env.example 文件"
             )
         return api_key
     
     def _get_base_url(self) -> str:
         """获取 base URL"""
         import os
-        return os.getenv("DEEPSEEK_BASE_URL", self.DEFAULT_BASE_URL)
+        return os.getenv("MOONSHOT_BASE_URL", self.DEFAULT_BASE_URL)
     
     def _get_use_reasoner(self) -> bool:
-        """获取是否使用 reasoner 模型"""
+        """获取是否启用深度思考模式"""
         import os
-        return os.getenv("DEEPSEEK_USE_REASONER", "false").lower() == "true"
+        # kimi-k2.5 默认启用思考能力，不需要特殊设置
+        # 其他模型可以通过 MOONSHOT_ENABLE_THINKING 控制
+        model = os.getenv("MOONSHOT_MODEL", "kimi-k2.5")
+        # kimi-k2.5 和 kimi-k2-thinking 系列默认启用思考
+        if "kimi-k2.5" in model or "thinking" in model:
+            return True
+        return os.getenv("MOONSHOT_ENABLE_THINKING", "false").lower() == "true"
     
     @classmethod
     def _get_tools(cls) -> List[Dict[str, Any]]:
@@ -740,7 +746,8 @@ class AISolver:
     
     def _run_conversation_loop(self) -> None:
         """运行对话循环"""
-        model_name = "deepseek-reasoner" if self.use_reasoner else "deepseek-chat"
+        import os
+        model_name = os.getenv("MOONSHOT_MODEL", "kimi-k2.5")
         self._print_model_info()
         
         for iteration in range(self.MAX_ITERATIONS):
@@ -780,7 +787,9 @@ class AISolver:
             "stream": True
         }
         
-        if self.use_reasoner:
+        # kimi-k2.5 默认启用思考能力，不需要额外设置
+        # 对于非 k2.5 的其他模型，可以通过 MOONSHOT_ENABLE_THINKING 控制
+        if self.use_reasoner and "kimi-k2.5" not in model_name:
             request_params["extra_body"] = {"thinking": {"type": "enabled"}}
         
         return request_params
@@ -794,10 +803,12 @@ class AISolver:
     
     def _print_model_info(self) -> None:
         """打印模型信息"""
+        import os
+        model_name = os.getenv("MOONSHOT_MODEL", "kimi-k2.5")
         if self.use_reasoner:
-            print(color_text("🧠 使用 deepseek-reasoner 模型（思考模式）", ColorCode.CYAN.value))
+            print(color_text(f"🧠 使用 {model_name} 模型（思考模式）", ColorCode.CYAN.value))
         else:
-            print(color_text("💬 使用 deepseek-chat 模型", ColorCode.CYAN.value))
+            print(color_text(f"💬 使用 {model_name} 模型", ColorCode.CYAN.value))
         print()
     
     def _build_message_to_save(self, message: Message) -> Dict[str, Any]:
@@ -1034,26 +1045,37 @@ def main():
   python script/leetcode/ai_solver.py
   
   # 解决指定题目
+  python script/leetcode/ai_solver.py 1
   python script/leetcode/ai_solver.py --id 1
-  python script/leetcode/ai_solver.py --id 146
+  python script/leetcode/ai_solver.py 146
         """
     )
     parser.add_argument(
-        "--id",
+        "id",
+        nargs="?",
         type=int,
         help="指定要解决的题目 ID（如果不指定，则解决每日一题）"
     )
     parser.add_argument(
+        "--id",
+        dest="id_flag",
+        type=int,
+        help="指定要解决的题目 ID（与位置参数等效）"
+    )
+    parser.add_argument(
         "--api-key",
-        help="DeepSeek API Key（优先级：参数 > 环境变量 > .env 文件）"
+        help="Moonshot API Key（优先级：参数 > 环境变量 > .env 文件）"
     )
     parser.add_argument(
         "--base-url",
         default=None,
-        help="API 基础 URL（优先级：参数 > 环境变量 DEEPSEEK_BASE_URL > .env 文件 > 默认值）"
+        help="API 基础 URL（优先级：参数 > 环境变量 MOONSHOT_BASE_URL > .env 文件 > 默认值）"
     )
     
     args = parser.parse_args()
+    
+    # 优先使用 --id 参数，其次使用位置参数
+    problem_id = args.id_flag if args.id_flag is not None else args.id
     
     try:
         solver = AISolver(
@@ -1061,8 +1083,8 @@ def main():
             base_url=args.base_url if args.base_url else None
         )
         
-        if args.id:
-            solver.solve_problem(args.id)
+        if problem_id:
+            solver.solve_problem(problem_id)
         else:
             solver.solve_daily_challenge()
     except KeyboardInterrupt:
