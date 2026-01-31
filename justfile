@@ -44,17 +44,17 @@ default:
 
 # LeetCode 题目管理
 leetcode +ARGS:
-    {{python_venv}} script/leetcode/cli.py {{ARGS}}
+    {{python_venv}} -m script.leetcode.cli {{ARGS}}
 
 # 简化的题目管理命令
 add TARGET *ARGS:
-    {{python_venv}} script/leetcode/cli.py add {{TARGET}} {{ARGS}}
+    {{python_venv}} -m script.leetcode.cli add {{TARGET}} {{ARGS}}
 
 rm TARGET:
-    {{python_venv}} script/leetcode/cli.py rm {{TARGET}}
+    {{python_venv}} -m script.leetcode.cli rm {{TARGET}}
 
 doc:
-    {{python_venv}} script/leetcode/cli.py doc
+    {{python_venv}} -m script.leetcode.cli doc
 
 # 构建项目
 build:
@@ -81,7 +81,7 @@ test ID="":
     @if [ -z "{{ID}}" ]; then \
         ./build/bin/problem_set_tests; \
     else \
-        {{python_venv}} script/leetcode/cli.py test {{ID}}; \
+        {{python_venv}} -m script.leetcode.cli test {{ID}}; \
     fi
 
 test-filter FILTER:
@@ -97,7 +97,7 @@ format:
 
 # AI 自动解题
 ai-solve *ARGS:
-    {{python_venv}} script/leetcode/ai_solver.py {{ARGS}}
+    {{python_venv}} -m script.leetcode.ai.solver {{ARGS}}
 
 # Python 虚拟环境管理
 venv-setup:

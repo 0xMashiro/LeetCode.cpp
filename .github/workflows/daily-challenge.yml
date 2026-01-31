@@ -44,7 +44,7 @@ jobs:
           DEEPSEEK_USE_REASONER: ${{ secrets.DEEPSEEK_USE_REASONER || 'true' }}
         run: |
           source venv/bin/activate
-          python script/leetcode/ai_solver.py
+          python -m script.leetcode.ai.solver
         continue-on-error: true  # 即使失败也继续，以便创建 PR 报告问题
       
       - name: Get problem ID and files
