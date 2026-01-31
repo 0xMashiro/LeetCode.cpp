@@ -104,6 +104,23 @@ jobs:
           cmake --build . -j
           ./bin/single_problem_test
       
+      - name: Update documentation
+        if: steps.get_info.outputs.has_solution == 'true'
+        run: |
+          # Install just
+          sudo apt-get install -y just
+          
+          # Generate updated SOLVED.md
+          source venv/bin/activate
+          just doc
+          
+          # Check if SOLVED.md was updated
+          if git diff --quiet SOLVED.md 2>/dev/null; then
+            echo "No changes to SOLVED.md"
+          else
+            echo "SOLVED.md updated"
+          fi
+      
       - name: Upload artifacts
         if: steps.get_info.outputs.report_file != ''
         uses: actions/upload-artifact@v4
@@ -131,3 +148,9 @@ jobs:
             ai-generated
           draft: false
           delete-branch: true
+          # Include all changes: new problem files + updated SOLVED.md
+          add-paths: |
+            src/leetcode/problems/
+            include/leetcode/problems/
+            test/leetcode/problems/
+            SOLVED.md
