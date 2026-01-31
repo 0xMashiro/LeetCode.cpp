@@ -5,7 +5,7 @@
 By the way, 在 Vibe Coding 时代还有人需要刷算法题吗？🤨 好像架构和设计变得越来越重要了。
 
 我尽可能把这个项目变成一个现代化工程（真的能跑起来！不是代码集！），目前已经可以依赖 AI 大模型驱动自动更新题解，详情参考
-[ai-generated](https://github.com/chaimode/LeetCode.cpp/pulls?q=label%3Aai-generated) 标签
+[ai-generated](https://github.com/0xMashiro/LeetCode.cpp/pulls?q=label%3Aai-generated) 标签
 与 [daily-challenge](./.github/workflows/daily-challenge.yml) 工作流。
 
 真的越来越懒惰了 Orz
