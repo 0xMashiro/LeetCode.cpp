@@ -96,16 +96,19 @@ class LRUCache {
    - 将题目中的所有示例都转换为 TEST_P 测试用例
 4. 调用 create_or_update_file 一次性生成三个文件（header、source、test）
 
-阶段 3：编译验证
-1. 调用 compile_project 编译
-2. 如果编译失败：
+阶段 3：编译与测试（合并操作）
+1. 调用 compile_and_test 进行编译和测试（推荐，使用 single 模式，速度最快）
+2. 如果 compile_and_test 返回编译失败：
    - 分析编译错误信息
    - 修复语法错误、类型不匹配、头文件问题
    - 重新生成（设置 overwrite_existing=true）
+   - 回到阶段 3 重新调用 compile_and_test
    - 注意：连续编译失败超过 5 次会触发警告，请仔细检查代码结构，避免简单重复修复
+3. 如果 compile_and_test 返回测试失败：
+   - 进入阶段 4 进行失败分析
 
-阶段 4：测试验证
-1. 调用 execute_test_suite 运行测试
+阶段 4：测试失败分析（仅当 compile_and_test 测试失败时）
+- compile_and_test 已经返回了详细的测试结果，直接分析其返回的错误信息
 2. 如果测试失败，必须执行以下分析流程：
 
 测试失败分析流程（强制执行）：
@@ -139,7 +142,7 @@ class LRUCache {
 步骤 4：修复并重新生成
 - 明确问题后，修复代码
 - 调用 create_or_update_file 设置 overwrite_existing=true
-- 回到阶段 3 重新编译测试
+- 回到阶段 3 重新调用 compile_and_test
 - 禁止跳过修复直接完成！
 
 阶段 5：LeetCode 提交验证
@@ -151,13 +154,13 @@ Wrong Answer（答案错误）：
 1. 分析失败信息：查看输入、输出、期望输出
 2. 添加失败的测试用例（如果提供）：使用 append_test_case 工具将 LeetCode 的失败用例添加到本地测试文件
 3. 修复代码：基于 LeetCode 失败信息和当前代码实现分析失败原因（边界条件？溢出？理解错误？），使用 create_or_update_file 修复（如有需要可 retrieve_file_content 确认代码状态）
-4. 本地验证：调用 compile_project 和 execute_test_suite 确保修复后通过所有测试
+4. 本地验证：调用 compile_and_test 确保修复后通过所有测试
 5. 重新提交：系统会自动重新提交到 LeetCode（最多重试 5 次）
 
 Runtime Error（运行时错误）：
 1. 查看错误信息（数组越界？空指针？除以零？）
 2. 基于错误堆栈信息分析并定位问题代码（如需确认可使用 retrieve_file_content）
-3. 修复后重新编译测试
+3. 修复后调用 compile_and_test 重新编译测试
 4. 系统会自动重新提交
 
 Time Limit Exceeded（超时）：
@@ -314,8 +317,7 @@ TEST_P(ProblemNameTest, SingleElement) {
 成功标准：
 
 完成标志：
-- compile_project 返回成功
-- execute_test_suite 返回所有测试通过
+- compile_and_test 返回编译成功且所有测试通过
 - 代码遵循项目规范
 - 解题报告生成成功
 

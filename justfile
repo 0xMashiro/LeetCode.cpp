@@ -148,7 +148,8 @@ multi *IDS:
 
 # 运行测试
 test ID="":
-    @if [ ! -f build/bin/problem_set_tests ]; then \
+    @# 检查是否有任何测试二进制文件
+    @if [ ! -f build/bin/problem_set_tests ] && [ ! -f build/bin/multi_problem_test ] && [ ! -f build/bin/single_problem_test ]; then \
         echo "请先构建项目: just build"; \
         exit 1; \
     fi

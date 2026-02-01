@@ -516,13 +516,13 @@ class AISolver:
                 # 解析参数
                 args = json.loads(tc.function_arguments)
                 
-                # 执行工具（对于 compile_project，自动传入当前 problem_id 以使用增量编译）
-                if tc.function_name == "compile_project" and self.problem_id:
+                # 执行工具（对于 compile_project 和 compile_and_test，自动传入当前 problem_id）
+                if tc.function_name in ("compile_project", "compile_and_test") and self.problem_id:
                     args["problem_id"] = self.problem_id
                 result = self.tool_executor.execute(tc.function_name, args)
                 
                 # 检测编译错误并计数
-                if tc.function_name == "compile_project":
+                if tc.function_name in ("compile_project", "compile_and_test"):
                     if not result.get("is_successful"):
                         self._compile_fix_count += 1
                         if self._compile_fix_count >= AIConfig.MAX_COMPILE_FIX_ATTEMPTS:
@@ -777,7 +777,7 @@ test_code 格式示例（注意缩进为2个空格）：
 使用 `retrieve_file_content` 查看当前代码，分析失败原因，然后使用 `create_or_update_file` 修复源文件中的问题。
 
 **步骤 3: 验证**
-调用 `compile_project` 和 `execute_test_suite` 确保修复后的代码通过所有测试。
+调用 `compile_and_test` 确保修复后的代码通过所有测试。
 
 请开始修复。"""
 
@@ -792,13 +792,9 @@ test_code 格式示例（注意缩进为2个空格）：
                 self._handle_tool_calls(message.tool_calls)
                 # 修复后需要验证编译和测试是否通过
                 log_with_time("🔍 验证修复结果...", ColorCode.CYAN)
-                compile_result = self.tool_executor.execute("compile_project", {"problem_id": self.problem_id})
-                if not compile_result.get("is_successful"):
-                    log_with_time("❌ 编译失败，修复未完成", ColorCode.RED)
-                    return False
-                test_result = self.tool_executor.execute("execute_test_suite", {"problem_id": self.problem_id})
-                if not test_result.get("is_successful"):
-                    log_with_time("❌ 测试失败，修复未完成", ColorCode.RED)
+                result = self.tool_executor.execute("compile_and_test", {"problem_id": self.problem_id})
+                if not result.get("is_successful"):
+                    log_with_time("❌ 修复未完成", ColorCode.RED)
                     return False
                 log_with_time("✅ 编译和测试通过", ColorCode.GREEN)
                 return True
@@ -820,7 +816,7 @@ test_code 格式示例（注意缩进为2个空格）：
 请:
 1. 分析错误原因（数组越界？空指针？除以零？）
 2. 使用 `retrieve_file_content` 查看代码
-3. 修复问题并重新编译测试"""
+3. 修复问题并调用 `compile_and_test` 验证"""
 
             self.messages.append({"role": "user", "content": fix_prompt})
             
@@ -831,13 +827,9 @@ test_code 格式示例（注意缩进为2个空格）：
                 self._handle_tool_calls(message.tool_calls)
                 # 修复后需要验证编译和测试是否通过
                 log_with_time("🔍 验证修复结果...", ColorCode.CYAN)
-                compile_result = self.tool_executor.execute("compile_project", {"problem_id": self.problem_id})
-                if not compile_result.get("is_successful"):
-                    log_with_time("❌ 编译失败，修复未完成", ColorCode.RED)
-                    return False
-                test_result = self.tool_executor.execute("execute_test_suite", {"problem_id": self.problem_id})
-                if not test_result.get("is_successful"):
-                    log_with_time("❌ 测试失败，修复未完成", ColorCode.RED)
+                result = self.tool_executor.execute("compile_and_test", {"problem_id": self.problem_id})
+                if not result.get("is_successful"):
+                    log_with_time("❌ 修复未完成", ColorCode.RED)
                     return False
                 log_with_time("✅ 编译和测试通过", ColorCode.GREEN)
                 return True

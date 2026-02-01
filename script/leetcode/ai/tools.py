@@ -28,6 +28,7 @@ class ToolDefinition:
             cls._create_or_update_file(),
             cls._retrieve_file_content(),
             cls._append_test_case(),
+            cls._compile_and_test(),
             cls._compile_project(),
             cls._execute_test_suite(),
             cls._fetch_structure_definition(),
@@ -206,6 +207,37 @@ class ToolDefinition:
         }
     
     @staticmethod
+    def _compile_and_test() -> Dict[str, Any]:
+        return {
+            "type": "function",
+            "function": {
+                "name": "compile_and_test",
+                "description": """编译并测试指定题目（single 模式）。
+
+这是一个组合工具，使用 just single 模式编译指定题目，然后立即运行测试。
+相比分开调用 compile_project 和 execute_test_suite，这个工具：
+1. 使用 single 模式编译，速度最快
+2. 自动运行对应测试，无需额外调用
+3. 返回详细的编译和测试结果
+
+使用场景：
+- 生成题目代码后，立即验证正确性
+- 修复代码后，快速验证修复结果""",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "problem_id": {
+                            "type": "integer",
+                            "description": "题目 ID（如 1, 2, 461）"
+                        }
+                    },
+                    "required": ["problem_id"],
+                    "additionalProperties": False
+                }
+            }
+        }
+    
+    @staticmethod
     def _execute_test_suite() -> Dict[str, Any]:
         return {
             "type": "function",
@@ -273,6 +305,7 @@ class ToolExecutor:
             "create_or_update_file": self._create_or_update_file,
             "retrieve_file_content": self._retrieve_file_content,
             "append_test_case": self._append_test_case,
+            "compile_and_test": self._compile_and_test,
             "compile_project": self._compile_project,
             "execute_test_suite": self._execute_test_suite,
             "fetch_structure_definition": self._fetch_structure_definition,
@@ -539,6 +572,80 @@ TEST_P({class_base}Test, {test_name}) {{
                 "error_message": "编译超时",
                 "error_type": "timeout",
                 "suggestion": "编译时间过长，可能是代码有无限递归或其他问题"
+            }
+        except Exception as e:
+            return {"is_successful": False, "error_message": str(e)}
+    
+    def _compile_and_test(self, problem_id: int) -> Dict[str, Any]:
+        """编译并测试指定题目（single 模式）
+        
+        Args:
+            problem_id: 题目 ID
+            
+        Returns:
+            包含编译和测试结果的字典
+        """
+        try:
+            # 第一步：使用 just single 编译
+            result = subprocess.run(
+                ["just", "single", str(problem_id)],
+                capture_output=True,
+                text=True,
+                timeout=AIConfig.BUILD_TIMEOUT + AIConfig.TEST_TIMEOUT
+            )
+            
+            output = result.stdout + result.stderr
+            
+            # 编译失败
+            if result.returncode != 0:
+                error_analysis = self._classify_compilation_error(output)
+                return {
+                    "is_successful": False,
+                    "error_message": "编译失败",
+                    "error_type": error_analysis["type"],
+                    "error_details": error_analysis["details"],
+                    "suggestion": error_analysis["suggestion"],
+                    "output": output
+                }
+            
+            # 编译成功，检查测试结果
+            # just single 会自动运行测试，从输出中解析结果
+            if "PASSED" in output and "FAILED" not in output.split("PASSED")[0]:
+                # 提取测试数量
+                import re
+                test_match = re.search(r'\[(==========)\]\s+(\d+)\s+test', output)
+                test_count = test_match.group(2) if test_match else "?"
+                
+                return {
+                    "is_successful": True,
+                    "status_message": f"编译成功，{test_count} 个测试通过",
+                    "output": output[-2000:] if len(output) > 2000 else output
+                }
+            elif "FAILED" in output:
+                # 测试失败，分析失败原因
+                error_analysis = self._analyze_test_failure(output)
+                return {
+                    "is_successful": False,
+                    "error_message": f"测试失败: {error_analysis['type']}",
+                    "error_type": error_analysis["type"],
+                    "error_details": error_analysis["details"],
+                    "suggestion": error_analysis["suggestion"],
+                    "output": output
+                }
+            else:
+                # 无法确定结果
+                return {
+                    "is_successful": True,
+                    "status_message": "编译成功，测试结果未知",
+                    "output": output[-2000:] if len(output) > 2000 else output
+                }
+                
+        except subprocess.TimeoutExpired:
+            return {
+                "is_successful": False,
+                "error_message": "编译或测试超时",
+                "error_type": "timeout",
+                "suggestion": "编译或测试时间过长，请检查代码是否有无限循环或其他问题"
             }
         except Exception as e:
             return {"is_successful": False, "error_message": str(e)}

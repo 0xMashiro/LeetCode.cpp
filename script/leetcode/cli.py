@@ -186,22 +186,39 @@ class LeetCodeCLI:
         
         project_root = self._get_project_root()
         
-        # 支持两种测试二进制文件：
-        # 1. problem_set_tests - 全量编译生成的
-        # 2. multi_problem_test - 增量编译（just multi）生成的
-        test_bin_full = project_root / "build/bin/problem_set_tests"
-        test_bin_multi = project_root / "build/bin/multi_problem_test"
+        # 支持三种测试二进制文件：
+        # 1. single_problem_test - just single 生成的（单题编译）
+        # 2. multi_problem_test - just multi 生成的（多题增量编译）
+        # 3. problem_set_tests - just build 生成的（全量编译）
+        # 优先级：时间最新的 > 其他的
+        test_bins = {
+            "single": project_root / "build/bin/single_problem_test",
+            "multi": project_root / "build/bin/multi_problem_test",
+            "full": project_root / "build/bin/problem_set_tests",
+        }
         
-        if test_bin_full.exists():
-            test_bin = test_bin_full
-        elif test_bin_multi.exists():
-            test_bin = test_bin_multi
-        else:
+        # 获取所有存在的二进制文件的修改时间
+        bin_mtimes = {}
+        for name, path in test_bins.items():
+            if path.exists():
+                bin_mtimes[name] = path.stat().st_mtime
+            else:
+                bin_mtimes[name] = 0
+        
+        # 选择修改时间最新的
+        if not any(bin_mtimes.values()):
             print_error("测试二进制文件未找到")
-            print_error(f"  全量编译: {test_bin_full}")
-            print_error(f"  增量编译: {test_bin_multi}")
-            print_error("请先运行 'just build' 或 'just multi <ID>' 构建项目")
+            print_error(f"  单题编译: {test_bins['single']} (just single <ID>)")
+            print_error(f"  多题编译: {test_bins['multi']} (just multi <ID>)")
+            print_error(f"  全量编译: {test_bins['full']} (just build)")
+            print_error("请先构建项目")
             sys.exit(1)
+        
+        latest_name = max(bin_mtimes, key=bin_mtimes.get)
+        test_bin = test_bins[latest_name]
+        
+        if verbose:
+            print_info(f"使用测试二进制: {test_bin.name} ({latest_name})")
         
         # 构建测试过滤器
         class_base = "".join(word.capitalize() for word in problem_info.slug.split("-"))
