@@ -146,6 +146,16 @@ class AISolver:
             question = daily["question"]
             problem_id = int(question["questionFrontendId"])
             
+            # 检查每日一题是否支持 C++
+            slug = question.get("titleSlug")
+            if slug:
+                from script.leetcode.problem_pool import ProblemPool
+                pool = ProblemPool()
+                if not pool._has_cpp_support(slug):
+                    log_with_time(f"⚠️ 今日每日一题 [{problem_id}] {question.get('title', '')} 不支持 C++，跳过", ColorCode.YELLOW)
+                    self._create_skip_marker(problem_id, "每日一题不支持 C++")
+                    return
+            
             self._solve(problem_id, question, is_daily=True)
         except Exception as e:
             log_with_time(f"❌ 错误: {e}", ColorCode.RED)
@@ -591,6 +601,12 @@ class AISolver:
         """打印完成信息（内容已在流式响应中打印，这里只打印标记）"""
         # 解题成功，无需额外输出（文件生成和测试通过的信息已在前面显示）
         pass
+    
+    def _create_skip_marker(self, problem_id: int, reason: str) -> None:
+        """创建跳过标记文件，用于 CI 跳过 PR 创建"""
+        skip_pr_file = Path("SKIP_PR")
+        skip_pr_file.write_text(f"题目 {problem_id} - {reason}\n", encoding='utf-8')
+        log_with_time(f"📝 已创建跳过标记: {reason}", ColorCode.CYAN)
     
     def _generate_solution_report(self, is_skip: bool = False) -> None:
         """生成专业解题报告（统一格式：固定部分 + AI生成内容）"""
