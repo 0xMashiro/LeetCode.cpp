@@ -2,19 +2,22 @@
 # -*- coding: utf-8 -*-
 """
 LeetCode C++ 题目管理 CLI 工具
-提供命令行接口用于管理 LeetCode 题目
 """
 
 import argparse
+import subprocess
 import sys
 from pathlib import Path
 
-from core import LeetCodeHelper, LeetCodeDB, SignatureParser
-from graphql_client import get_client
-from utils import color_text, ColorCode
+from script.leetcode.api import ProblemRepository
+from script.leetcode.services import FileGenerator, SignatureParser, DesignClassExtractor
+from script.leetcode.models import ProblemInfo
+from script.leetcode.config import FileTypeConfig
+from script.leetcode.utils import color_text, ColorCode
+from script.leetcode.exceptions import LeetCodeError
 
 
-__version__ = "1.0.0"
+__version__ = "2.0.0"
 
 
 def print_error(message: str):
@@ -37,6 +40,241 @@ def print_warning(message: str):
     print(color_text(f"⚠ {message}", ColorCode.YELLOW.value))
 
 
+class LeetCodeCLI:
+    """LeetCode CLI 主类"""
+    
+    def __init__(self):
+        self.repository = ProblemRepository()
+    
+    def resolve_problem(self, target: str) -> ProblemInfo:
+        """解析题目标识符（ID 或 slug）为题目信息"""
+        try:
+            if target.isdigit():
+                return self.repository.get_by_id(int(target))
+            else:
+                return self.repository.get_by_slug(target)
+        except LeetCodeError as e:
+            print_error(str(e))
+            print_info("提示：可以使用题目 ID（如 1）或 slug（如 two-sum）")
+            sys.exit(1)
+    
+    def handle_add(self, target: str, force: bool = False, verbose: bool = False):
+        """处理 add 命令"""
+        problem_info = self.resolve_problem(target)
+        is_design = self.repository.is_design_problem(problem_info.id)
+        
+        print()
+        print_info(f"题目: [{problem_info.id}] {problem_info.title}")
+        print_info(f"URL: {problem_info.url}")
+        
+        # 获取代码模板
+        code_template = None
+        if verbose:
+            print_info("正在获取代码模板...")
+        
+        try:
+            code_template = self.repository.get_cpp_code_template(problem_info.slug)
+        except Exception as e:
+            if verbose:
+                print_warning(f"获取代码模板失败: {e}")
+        
+        if is_design:
+            print()
+            print_success("自动识别为设计类题目")
+            
+            if code_template:
+                print_success("已获取代码模板，将从模板生成类定义")
+                design_def = DesignClassExtractor.extract(code_template)
+                generator = FileGenerator(
+                    problem_info=problem_info,
+                    is_design=True,
+                    design_class_def=design_def
+                )
+            else:
+                print_warning("未能获取代码模板，将使用默认模板")
+                generator = FileGenerator(problem_info=problem_info, is_design=True)
+            
+            generator.generate_files(force=force)
+            print()
+            print_success("文件创建完成")
+        else:
+            # 普通题目
+            extracted_signature = None
+            if code_template:
+                extracted_signature = SignatureParser.extract_from_code_template(code_template)
+                if extracted_signature:
+                    print()
+                    print_success(f"已从代码模板自动提取函数签名")
+                    print_info(f"函数签名: {color_text(extracted_signature, ColorCode.BLUE.value)}")
+            
+            if extracted_signature:
+                try:
+                    func_sig = SignatureParser.parse(extracted_signature)
+                    generator = FileGenerator(
+                        problem_info=problem_info,
+                        is_design=False,
+                        function_signature=func_sig
+                    )
+                    generator.generate_files(force=force)
+                    print()
+                    print_success("文件创建完成")
+                except Exception as e:
+                    print_error(f"无效的函数签名: {e}")
+                    sys.exit(1)
+            else:
+                # 提取失败，提示用户输入
+                print()
+                default_sig = "vector<int> twoSum(vector<int>& nums, int target)"
+                colored_sig = color_text(default_sig, ColorCode.BLUE.value)
+                
+                try:
+                    user_input = input(f"请输入函数签名 (默认: {colored_sig}): ").strip()
+                    signature = user_input or default_sig
+                    
+                    func_sig = SignatureParser.parse(signature)
+                    generator = FileGenerator(
+                        problem_info=problem_info,
+                        is_design=False,
+                        function_signature=func_sig
+                    )
+                    generator.generate_files(force=force)
+                    print()
+                    print_success("文件创建完成")
+                except (EOFError, KeyboardInterrupt):
+                    print()
+                    print_error("操作已取消")
+                    sys.exit(1)
+                except Exception as e:
+                    print_error(f"无效的函数签名: {e}")
+                    print_info("提示：函数签名格式应为: return_type function_name(param1_type param1_name, ...)")
+                    sys.exit(1)
+    
+    def handle_rm(self, target: str, verbose: bool = False):
+        """处理 rm 命令"""
+        problem_info = self.resolve_problem(target)
+        
+        print()
+        print_info(f"题目: [{problem_info.id}] {problem_info.title}")
+        
+        generator = FileGenerator(problem_info)
+        generator.remove_files()
+        
+        print()
+        print_success("文件删除完成")
+    
+    def _get_project_root(self) -> Path:
+        """获取项目根目录（通过查找 CMakeLists.txt 确定）"""
+        current = Path.cwd()
+        # 先检查当前目录
+        if (current / "CMakeLists.txt").exists():
+            return current
+        # 检查脚本所在目录的父目录（即项目根目录）
+        script_dir = Path(__file__).parent.parent.parent
+        if (script_dir / "CMakeLists.txt").exists():
+            return script_dir
+        # 回退到当前目录
+        return current
+    
+    def handle_test(self, target: str, verbose: bool = False):
+        """处理 test 命令"""
+        problem_info = self.resolve_problem(target)
+        
+        print()
+        print_info(f"题目: [{problem_info.id}] {problem_info.title}")
+        print_info("正在运行测试...")
+        print()
+        
+        project_root = self._get_project_root()
+        
+        # 支持两种测试二进制文件：
+        # 1. problem_set_tests - 全量编译生成的
+        # 2. multi_problem_test - 增量编译（just multi）生成的
+        test_bin_full = project_root / "build/bin/problem_set_tests"
+        test_bin_multi = project_root / "build/bin/multi_problem_test"
+        
+        if test_bin_full.exists():
+            test_bin = test_bin_full
+        elif test_bin_multi.exists():
+            test_bin = test_bin_multi
+        else:
+            print_error("测试二进制文件未找到")
+            print_error(f"  全量编译: {test_bin_full}")
+            print_error(f"  增量编译: {test_bin_multi}")
+            print_error("请先运行 'just build' 或 'just multi <ID>' 构建项目")
+            sys.exit(1)
+        
+        # 构建测试过滤器
+        class_base = "".join(word.capitalize() for word in problem_info.slug.split("-"))
+        test_filter = f"LeetCode*{class_base}Test*"
+        
+        result = subprocess.run(
+            [str(test_bin), f"--gtest_filter={test_filter}"]
+        )
+        
+        print()
+        if result.returncode == 0:
+            print_success("所有测试通过")
+        else:
+            print_error("测试失败")
+            sys.exit(1)
+    
+    def handle_doc(self, output: str, verbose: bool = False):
+        """处理 doc 命令"""
+        if verbose:
+            print_info("正在扫描已解决的题目...")
+        
+        # 获取所有题目并建立 slug 映射
+        all_problems = self.repository.build_slug_map()
+        
+        # 扫描源文件目录
+        source_folder = Path(FileTypeConfig.SOURCE.folder)
+        solved_problems = []
+        
+        if source_folder.exists():
+            for cpp_file in source_folder.glob("*.cpp"):
+                slug = cpp_file.stem
+                problem_info = all_problems.get(slug)
+                if problem_info:
+                    solved_problems.append(problem_info)
+        
+        if not solved_problems:
+            print_warning("未找到已解决的题目")
+            return
+        
+        solved_problems.sort(key=lambda p: p.id)
+        
+        # 生成 Markdown 文档
+        self._generate_solved_md(solved_problems, output)
+        
+        count = color_text(len(solved_problems), ColorCode.GREEN.value)
+        print()
+        print_success(f"找到 {count} 个已解决的题目")
+        print_success(f"文档已生成: {output}")
+    
+    def _generate_solved_md(self, solved_problems: list, output: str):
+        """生成已解决题目文档"""
+        output_path = Path(output)
+        source_folder = Path(FileTypeConfig.SOURCE.folder)
+        testcase_folder = Path(FileTypeConfig.TEST.folder)
+        
+        from script.leetcode.template import SOLVED_PROBLEM_DOC_HEADER
+        
+        with open(output_path, "w", encoding="utf-8") as f:
+            f.write(SOLVED_PROBLEM_DOC_HEADER)
+            for problem in solved_problems:
+                rel_solution = (source_folder / f"{problem.slug}.cpp").relative_to(
+                    output_path.parent
+                ).as_posix()
+                rel_test = (testcase_folder / f"{problem.slug}.cpp").relative_to(
+                    output_path.parent
+                ).as_posix()
+                f.write(
+                    f"| {problem.id} "
+                    f"| [{problem.title}]({problem.url}) "
+                    f"| [Code]({rel_solution}) / [Test]({rel_test}) |\n"
+                )
+
+
 def parse_args():
     """解析命令行参数"""
     parser = argparse.ArgumentParser(
@@ -45,14 +283,14 @@ def parse_args():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 示例:
-  %(prog)s add 1                    # 添加题目 1（自动识别设计类题目）
+  %(prog)s add 1                    # 添加题目 1
   %(prog)s add two-sum              # 添加题目 two-sum
-  %(prog)s add 146                  # 添加题目 146（自动识别为设计类）
+  %(prog)s add 146 --force          # 强制添加题目 146
   %(prog)s rm 1                     # 删除题目 1
   %(prog)s test 1                   # 测试题目 1
   %(prog)s doc                      # 生成已解决题目文档
 
-更多信息请访问: https://github.com/your-repo/LeetCode.cpp
+更多信息: https://github.com/your-repo/LeetCode.cpp
         """
     )
     
@@ -78,223 +316,25 @@ def parse_args():
     # add 命令
     add_parser = subparsers.add_parser(
         'add',
-        help='添加新题目（自动识别设计类题目）',
-        description='添加新的 LeetCode 题目，自动生成头文件、源文件和测试文件'
+        help='添加新题目',
+        description='添加新的 LeetCode 题目'
     )
-    add_parser.add_argument(
-        'target',
-        help='题目 ID 或 slug（例如: 1 或 two-sum）'
-    )
-    add_parser.add_argument(
-        '--force', '-f',
-        action='store_true',
-        help='强制覆盖已存在的文件'
-    )
+    add_parser.add_argument('target', help='题目 ID 或 slug')
+    add_parser.add_argument('--force', '-f', action='store_true', help='强制覆盖已存在的文件')
     
     # rm 命令
-    rm_parser = subparsers.add_parser(
-        'rm',
-        help='删除题目',
-        description='删除指定题目的所有相关文件'
-    )
-    rm_parser.add_argument(
-        'target',
-        help='题目 ID 或 slug（例如: 1 或 two-sum）'
-    )
+    rm_parser = subparsers.add_parser('rm', help='删除题目')
+    rm_parser.add_argument('target', help='题目 ID 或 slug')
     
     # test 命令
-    test_parser = subparsers.add_parser(
-        'test',
-        help='运行测试',
-        description='运行指定题目的测试用例'
-    )
-    test_parser.add_argument(
-        'target',
-        help='题目 ID 或 slug（例如: 1 或 two-sum）'
-    )
+    test_parser = subparsers.add_parser('test', help='运行测试')
+    test_parser.add_argument('target', help='题目 ID 或 slug')
     
     # doc 命令
-    doc_parser = subparsers.add_parser(
-        'doc',
-        help='生成已解决题目文档',
-        description='生成已解决题目的 Markdown 文档'
-    )
-    doc_parser.add_argument(
-        '--output', '-o',
-        default='./SOLVED.md',
-        help='输出文件路径（默认: ./SOLVED.md）'
-    )
+    doc_parser = subparsers.add_parser('doc', help='生成已解决题目文档')
+    doc_parser.add_argument('--output', '-o', default='./SOLVED.md', help='输出文件路径')
     
     return parser.parse_args()
-
-
-def resolve_problem_info(db: LeetCodeDB, target: str, verbose: bool = False) -> tuple:
-    """解析题目信息并自动检测是否为设计类题目"""
-    if verbose:
-        print_info(f"正在解析题目: {target}")
-    
-    try:
-        if target.isnumeric():
-            problem_id = int(target)
-            problem_info = db.get_by_id(problem_id)
-            is_design = db.is_design_problem(problem_id)
-        else:
-            problem_info = db.get_by_slug(target)
-            is_design = db.is_design_problem(problem_info.id)
-        
-        if verbose:
-            print_success(f"找到题目: [{problem_info.id}] {problem_info.title}")
-        
-        return problem_info, is_design
-    except ValueError as e:
-        print_error(f"无法找到题目 '{target}': {e}")
-        print_info("提示：可以使用题目 ID（如 1）或 slug（如 two-sum）")
-        sys.exit(1)
-    except Exception as e:
-        print_error(f"解析题目时出错: {e}")
-        sys.exit(1)
-
-
-def handle_add(db: LeetCodeDB, target: str, force: bool = False, verbose: bool = False):
-    """处理 add 操作"""
-    problem_info, is_design = resolve_problem_info(db, target, verbose)
-    
-    print()
-    print_info(f"题目: [{problem_info.id}] {problem_info.title}")
-    print_info(f"URL: {problem_info.url}")
-    
-    # 统一获取代码模板
-    if verbose:
-        print_info("正在获取代码模板...")
-    
-    client = get_client()
-    code_template = None
-    try:
-        code_template = client.get_cpp_code_template(problem_info.slug)
-    except Exception as e:
-        if verbose:
-            print_warning(f"获取代码模板失败: {e}")
-    
-    if is_design:
-        print()
-        print_success("自动识别为设计类题目")
-        
-        if code_template:
-            print_success("已获取代码模板，将从模板生成类定义")
-            helper = LeetCodeHelper(problem_info=problem_info, is_design=is_design, code_template=code_template)
-        else:
-            print_warning("未能获取代码模板，将使用默认模板")
-            helper = LeetCodeHelper(problem_info=problem_info, is_design=is_design)
-        
-        helper.create_files(force=force)
-        print()
-        print_success("文件创建完成")
-    else:
-        # 普通题目：尝试从代码模板中自动提取函数签名
-        helper = LeetCodeHelper(problem_info=problem_info, is_design=is_design)
-        
-        extracted_signature = None
-        if code_template:
-            extracted_signature = SignatureParser.extract_from_code_template(code_template)
-            if extracted_signature:
-                print()
-                print_success("已从代码模板自动提取函数签名")
-                print_info(f"函数签名: {color_text(extracted_signature, ColorCode.BLUE.value)}")
-        
-        # 如果成功提取，直接使用；否则提示用户输入
-        if extracted_signature:
-            try:
-                helper.update_signature(extracted_signature)
-                helper.create_files(force=force)
-                print()
-                print_success("文件创建完成")
-            except ValueError as e:
-                print_error(f"无效的函数签名: {e}")
-                print_info("提示：请检查函数签名格式是否正确")
-                sys.exit(1)
-        else:
-            # 提取失败，提示用户输入
-            default_signature = helper.signature
-            print()
-            colored_signature = color_text(default_signature, ColorCode.BLUE.value)
-            prompt = f"请输入函数签名 (默认: {colored_signature}): "
-            
-            try:
-                signature = input(prompt).strip() or default_signature
-            except (EOFError, KeyboardInterrupt):
-                print()
-                print_error("操作已取消")
-                sys.exit(1)
-            
-            try:
-                helper.update_signature(signature)
-                helper.create_files(force=force)
-                print()
-                print_success("文件创建完成")
-            except ValueError as e:
-                print_error(f"无效的函数签名: {e}")
-                print_info("提示：函数签名格式应为: return_type function_name(param1_type param1_name, ...)")
-                sys.exit(1)
-
-
-def handle_rm(db: LeetCodeDB, target: str, verbose: bool = False):
-    """处理 rm 操作"""
-    problem_info, _ = resolve_problem_info(db, target, verbose)
-    
-    print()
-    print_info(f"题目: [{problem_info.id}] {problem_info.title}")
-    
-    helper = LeetCodeHelper(problem_info=problem_info)
-    helper.remove_files()
-    
-    print()
-    print_success("文件删除完成")
-
-
-def handle_test(db: LeetCodeDB, target: str, verbose: bool = False):
-    """处理 test 操作"""
-    problem_info, _ = resolve_problem_info(db, target, verbose)
-    
-    print()
-    print_info(f"题目: [{problem_info.id}] {problem_info.title}")
-    print_info("正在运行测试...")
-    print()
-    
-    helper = LeetCodeHelper(problem_info=problem_info)
-    try:
-        success = helper.run_test()
-        print()
-        if success:
-            print_success("所有测试通过")
-            sys.exit(0)
-        else:
-            print_error("测试失败")
-            sys.exit(1)
-    except FileNotFoundError as e:
-        print_error(f"测试二进制文件未找到: {e}")
-        print_info("请先运行 'just build' 构建项目")
-        sys.exit(1)
-    except Exception as e:
-        print_error(f"运行测试时出错: {e}")
-        sys.exit(1)
-
-
-def handle_doc(db: LeetCodeDB, output: str, verbose: bool = False):
-    """处理 doc 操作"""
-    if verbose:
-        print_info("正在扫描已解决的题目...")
-    
-    helper = LeetCodeHelper()
-    solved_problems = helper.get_solved_problems(db)
-    
-    if not solved_problems:
-        print_warning("未找到已解决的题目")
-        sys.exit(0)
-    
-    helper.generate_solved_problem_md_file(solved_problems, output)
-    
-    print()
-    print_success(f"文档已生成: {output}")
 
 
 def check_project_root():
@@ -308,22 +348,19 @@ def main():
     """主函数"""
     args = parse_args()
     
-    # 检查是否在正确的目录
     check_project_root()
     
-    # 创建数据库实例
-    db = LeetCodeDB()
+    cli = LeetCodeCLI()
     
-    # 根据操作类型分发处理
     try:
         if args.operation == 'add':
-            handle_add(db, args.target, force=args.force, verbose=args.verbose)
+            cli.handle_add(args.target, force=args.force, verbose=args.verbose)
         elif args.operation == 'rm':
-            handle_rm(db, args.target, verbose=args.verbose)
+            cli.handle_rm(args.target, verbose=args.verbose)
         elif args.operation == 'test':
-            handle_test(db, args.target, verbose=args.verbose)
+            cli.handle_test(args.target, verbose=args.verbose)
         elif args.operation == 'doc':
-            handle_doc(db, args.output, verbose=args.verbose)
+            cli.handle_doc(args.output, verbose=args.verbose)
         else:
             print_error(f"未知操作: {args.operation}")
             sys.exit(1)

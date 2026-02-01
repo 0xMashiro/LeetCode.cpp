@@ -2,17 +2,28 @@ name: Daily LeetCode Challenge
 
 on:
   schedule:
-    # 每天 UTC 时间 0:00 运行（北京时间 8:00）
-    - cron: '0 0 * * *'
-  workflow_dispatch:  # 允许手动触发
+    # Run at 00:30 UTC every day (08:30 Beijing time)
+    - cron: '30 0 * * *'
+  workflow_dispatch:
+    inputs:
+      problem_id:
+        description: 'Problem ID to solve (optional)'
+        required: false
+        default: ''
+
+# Prevent concurrent runs
+concurrency:
+  group: daily-challenge
+  cancel-in-progress: false
 
 jobs:
-  solve-daily-challenge:
+  solve:
+    name: Solve Daily Challenge
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       contents: write
       pull-requests: write
-      issues: write
     
     steps:
       - name: Checkout repository
@@ -26,10 +37,23 @@ jobs:
         with:
           python-version: '3.12'
       
-      - name: Install system dependencies
+      - name: Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y cmake build-essential ccache ninja-build just
+      
+      - name: Setup ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          # Daily challenge uses its own primary cache key
+          # but can restore from CI's full build cache for faster initial builds
+          key: ${{ runner.os }}-gcc-daily-challenge-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-gcc-daily-challenge-
+            ${{ runner.os }}-gcc-full-
+            ${{ runner.os }}-gcc-incremental-
+            ${{ runner.os }}-gcc-
+          max-size: 500M
       
       - name: Set up Python virtual environment
         run: |
@@ -40,89 +64,119 @@ jobs:
       
       - name: Run AI solver
         env:
-          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
-          DEEPSEEK_USE_REASONER: ${{ secrets.DEEPSEEK_USE_REASONER || 'true' }}
+          MOONSHOT_API_KEY: ${{ secrets.MOONSHOT_API_KEY }}
+          AI_SOLVER_GENERATE_REPORT: 'true'
         run: |
           source venv/bin/activate
-          python script/leetcode/ai_solver.py
-        continue-on-error: true  # 即使失败也继续，以便创建 PR 报告问题
+          if [ -n "${{ github.event.inputs.problem_id }}" ]; then
+            python -m script.leetcode.ai.solver ${{ github.event.inputs.problem_id }} --report
+          else
+            python -m script.leetcode.ai.solver --report
+          fi
+        continue-on-error: true
       
-      - name: Get problem ID and files
-        id: get_files
+      - name: Get problem info
+        id: get_info
         run: |
-          # 查找解题报告并提取 problem_id
+          # Check SKIP_PR flag first
+          if [ -f "SKIP_PR" ]; then
+            echo "should_skip=true" >> $GITHUB_OUTPUT
+            echo "skip_reason=$(cat SKIP_PR)" >> $GITHUB_OUTPUT
+            echo "Skipping PR creation - $(cat SKIP_PR)"
+            exit 0
+          else
+            echo "should_skip=false" >> $GITHUB_OUTPUT
+          fi
+          
           REPORT_FILE=$(ls SOLUTION_REPORT_*.md 2>/dev/null | head -1)
           PROBLEM_ID=$(echo ${REPORT_FILE#SOLUTION_REPORT_} | sed 's/\.md$//')
           
-          # 设置默认输出
           echo "problem_id=${PROBLEM_ID:-}" >> $GITHUB_OUTPUT
           echo "report_file=${REPORT_FILE:-}" >> $GITHUB_OUTPUT
-          echo "skip_pr=false" >> $GITHUB_OUTPUT
           echo "has_solution=false" >> $GITHUB_OUTPUT
           
-          # 如果没有报告文件，直接退出
-          [ -z "$REPORT_FILE" ] && echo "✗ 未找到解题报告" && exit 0
+          [ -z "$REPORT_FILE" ] && echo "No solution report found" && exit 0
           
-          echo "✓ 找到报告: $REPORT_FILE (ID: $PROBLEM_ID)"
+          echo "Found report: $REPORT_FILE (ID: $PROBLEM_ID)"
           
-          # 检查 SKIP_PR 标记
-          if [ -f "SKIP_PR" ]; then
-            echo "skip_pr=true" >> $GITHUB_OUTPUT
-            {
-              echo "skip_reason<<EOF"
-              cat SKIP_PR
-              echo "EOF"
-            } >> $GITHUB_OUTPUT
-            echo "⚠️  跳过 PR: $(cat SKIP_PR)"
-            exit 0
-          fi
+          # Check both new files (??) and modified files (M)
+          SOURCE_FILE=$(git status --porcelain | grep -E '^(\?\?| M)' | grep 'src/leetcode/problems/.*\.cpp$' | awk '{print $2}' | head -1)
+          HEADER_FILE=$(git status --porcelain | grep -E '^(\?\?| M)' | grep 'include/leetcode/problems/.*\.h$' | awk '{print $2}' | head -1)
+          TEST_FILE=$(git status --porcelain | grep -E '^(\?\?| M)' | grep 'test/leetcode/problems/.*\.cpp$' | awk '{print $2}' | head -1)
           
-          # 使用 git 查找新生成的代码文件
-          SOURCE_FILE=$(git status --porcelain | grep '^??' | grep 'src/leetcode/problems/.*\.cpp$' | awk '{print $2}' | head -1)
-          HEADER_FILE=$(git status --porcelain | grep '^??' | grep 'include/leetcode/problems/.*\.h$' | awk '{print $2}' | head -1)
-          TEST_FILE=$(git status --porcelain | grep '^??' | grep 'test/leetcode/problems/.*\.cpp$' | awk '{print $2}' | head -1)
-          
-          # 检查所有文件是否存在
           if [ -n "$SOURCE_FILE" ] && [ -n "$HEADER_FILE" ] && [ -n "$TEST_FILE" ]; then
+            PROBLEM_SLUG=$(basename "$SOURCE_FILE" .cpp)
+            echo "problem_slug=$PROBLEM_SLUG" >> $GITHUB_OUTPUT
             echo "has_solution=true" >> $GITHUB_OUTPUT
             echo "source_file=$SOURCE_FILE" >> $GITHUB_OUTPUT
             echo "header_file=$HEADER_FILE" >> $GITHUB_OUTPUT
             echo "test_file=$TEST_FILE" >> $GITHUB_OUTPUT
-            echo "✓ 找到所有文件，将创建 PR"
+            echo "All required files found for: $PROBLEM_SLUG"
           else
-            echo "✗ 文件不完整 (SOURCE: ${SOURCE_FILE:-未找到}, HEADER: ${HEADER_FILE:-未找到}, TEST: ${TEST_FILE:-未找到})"
+            echo "Incomplete files generated"
+            [ -z "$SOURCE_FILE" ] && echo "  - Missing source file"
+            [ -z "$HEADER_FILE" ] && echo "  - Missing header file"
+            [ -z "$TEST_FILE" ] && echo "  - Missing test file"
           fi
       
-      - name: Log skip reason
-        if: steps.get_files.outputs.skip_pr == 'true'
+      - name: Build and test solution
+        if: steps.get_info.outputs.has_solution == 'true'
         run: |
-          echo "⏭️  跳过 PR 创建"
-          echo "原因: ${{ steps.get_files.outputs.skip_reason }}"
+          PROBLEM_SLUG="${{ steps.get_info.outputs.problem_slug }}"
+          echo "Building and testing: $PROBLEM_SLUG"
+          
+          mkdir -p build && cd build
+          cmake .. -G Ninja \
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
+            -DLEETCODE_SINGLE_PROBLEM="$PROBLEM_SLUG"
+          cmake --build . -j
+          ./bin/single_problem_test
+      
+      - name: Update documentation
+        if: steps.get_info.outputs.has_solution == 'true'
+        run: |
+          # Generate updated SOLVED.md
+          source venv/bin/activate
+          just doc
+          
+          # Check if SOLVED.md was updated
+          if git diff --quiet SOLVED.md 2>/dev/null; then
+            echo "No changes to SOLVED.md"
+          else
+            echo "SOLVED.md updated"
+          fi
       
       - name: Upload artifacts
-        if: steps.get_files.outputs.report_file != ''
+        if: steps.get_info.outputs.report_file != ''
         uses: actions/upload-artifact@v4
         with:
-          name: solution-files-problem-${{ steps.get_files.outputs.problem_id }}
+          name: solution-problem-${{ steps.get_info.outputs.problem_id }}
           path: |
-            ${{ steps.get_files.outputs.report_file }}
-            ${{ steps.get_files.outputs.source_file }}
-            ${{ steps.get_files.outputs.header_file }}
-            ${{ steps.get_files.outputs.test_file }}
-          retention-days: 30
+            ${{ steps.get_info.outputs.report_file }}
+            ${{ steps.get_info.outputs.source_file }}
+            ${{ steps.get_info.outputs.header_file }}
+            ${{ steps.get_info.outputs.test_file }}
+          retention-days: 7
           if-no-files-found: ignore
       
       - name: Create Pull Request
-        if: steps.get_files.outputs.has_solution == 'true'
+        if: steps.get_info.outputs.has_solution == 'true' && steps.get_info.outputs.should_skip != 'true' && success()
         uses: peter-evans/create-pull-request@v5
         with:
-          commit-message: "feat: Solve LeetCode Daily Challenge #${{ steps.get_files.outputs.problem_id }}"
-          title: "🤖 Daily Challenge: Problem #${{ steps.get_files.outputs.problem_id }}"
-          body-path: ${{ steps.get_files.outputs.report_file }}
-          branch: daily-challenge-${{ steps.get_files.outputs.problem_id }}-${{ github.run_id }}
+          commit-message: "feat: Add solution for LeetCode #${{ steps.get_info.outputs.problem_id }}"
+          title: "🤖 Daily Challenge: Problem #${{ steps.get_info.outputs.problem_id }}"
+          body-path: ${{ steps.get_info.outputs.report_file }}
+          branch: daily-challenge/${{ steps.get_info.outputs.problem_id }}
           base: main
           labels: |
             daily-challenge
             ai-generated
           draft: false
           delete-branch: true
+          # Include all changes: new problem files + updated SOLVED.md
+          add-paths: |
+            src/leetcode/problems/
+            include/leetcode/problems/
+            test/leetcode/problems/
+            SOLVED.md
