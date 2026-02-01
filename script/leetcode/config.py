@@ -62,6 +62,7 @@ class AIConfig:
     
     # 修复策略
     MAX_COMPILE_FIX_ATTEMPTS = 5  # 连续编译错误的最大修复次数，超过则放弃
+    MAX_LEETCODE_FIX_ATTEMPTS = 3  # LeetCode 验证失败后的最大修复次数，超过则放弃
 
 
 @dataclass(frozen=True)

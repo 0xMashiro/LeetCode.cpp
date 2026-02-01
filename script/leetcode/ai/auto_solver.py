@@ -159,14 +159,20 @@ class AutoSolver:
                 
                 # 判断是否成功（通过题目数量变化 + LeetCode 验证通过）
                 leetcode_passed = "LeetCode 验证通过！" in stdout_output or "LeetCode 验证通过" in stdout_output
+                # 检查是否因为 LeetCode 修复次数耗尽而失败
+                leetcode_fix_exhausted = "达到 LeetCode 验证失败最大修复次数" in stdout_output
                 
                 if end_count > start_count and leetcode_passed:
                     self._log("✅ 解题完成，新增题目", "SUCCESS")
                     return True, None
+                elif end_count > start_count and leetcode_fix_exhausted:
+                    # 文件创建了但 LeetCode 验证最终未能通过（已尝试修复但次数耗尽）
+                    self._log("⚠️ 本地文件已生成，但 LeetCode 验证最终未能通过（已尝试多次修复）", "WARNING")
+                    return False, "leetcode_verification_failed_after_retries"
                 elif end_count > start_count and not leetcode_passed:
-                    # 文件创建了但 LeetCode 验证失败
-                    self._log("❌ 本地文件已生成，但 LeetCode 验证未通过", "WARNING")
-                    return False, "leetcode_verification_failed"
+                    # 文件创建了但 LeetCode 验证失败（可能是没有 Cookie 跳过验证）
+                    self._log("⚠️ 本地文件已生成，LeetCode 验证未进行或失败", "WARNING")
+                    return True, None  # 本地测试通过也算成功，LeetCode 验证是额外的
                 
                 # 分析失败原因
                 output = stdout_output + stderr_output

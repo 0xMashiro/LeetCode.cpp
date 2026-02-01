@@ -93,6 +93,8 @@ class AISolver:
         
         # 编译错误计数（防止在编译错误上无限循环）
         self._compile_fix_count: int = 0
+        # LeetCode 验证失败修复计数
+        self._leetcode_fix_count: int = 0
     
     def _load_env(self) -> None:
         """加载环境变量"""
@@ -285,12 +287,13 @@ class AISolver:
         ]
         self._current_reasoning = ""
         self._compile_fix_count = 0  # 重置编译错误计数
+        self._leetcode_fix_count = 0  # 重置 LeetCode 修复计数
     
     def _run_conversation_loop(self) -> bool:
         """运行对话循环
         
         Returns:
-            bool: 是否成功完成解题
+            bool: 是否成功完成解题（包括本地测试通过和 LeetCode 验证通过）
         """
         model_name = self.provider.model
         self._print_model_info(model_name)
@@ -317,14 +320,34 @@ class AISolver:
                 handle_elapsed = time.time() - handle_start
                 log_with_time(f"🛠️  工具执行完成 ({handle_elapsed:.1f}s)", ColorCode.CYAN)
             else:
-                # 没有工具调用，解题完成
+                # 没有工具调用，表示 AI 认为解题完成
                 round_elapsed = time.time() - round_start
                 log_with_time(f"✅ 第 {iteration + 1} 轮完成 ({round_elapsed:.1f}s)", ColorCode.GREEN)
                 self._print_completion(message)
                 self._generate_solution_report()
+                
                 # 自动提交到 LeetCode 验证
-                self._submit_to_leetcode()
-                return True
+                leetcode_success, feedback = self._submit_to_leetcode()
+                
+                if leetcode_success:
+                    # 验证通过，解题成功
+                    return True
+                
+                # LeetCode 验证失败，需要继续修复
+                self._leetcode_fix_count += 1
+                max_leetcode_fix = getattr(AIConfig, 'MAX_LEETCODE_FIX_ATTEMPTS', 3)
+                
+                if self._leetcode_fix_count >= max_leetcode_fix:
+                    log_with_time(f"⚠️ 达到 LeetCode 验证失败最大修复次数 ({max_leetcode_fix})，停止修复", ColorCode.YELLOW)
+                    return False
+                
+                log_with_time(f"🔧 LeetCode 验证失败，开始第 {self._leetcode_fix_count}/{max_leetcode_fix} 次修复尝试...", ColorCode.YELLOW)
+                
+                # 将错误反馈添加到对话，让 AI 继续修复
+                self.messages.append({"role": "user", "content": feedback})
+                
+                # 继续下一轮对话进行修复
+                continue
         
         # 达到最大迭代次数
         log_with_time("⚠️ 达到最大迭代次数，停止处理", ColorCode.YELLOW)
@@ -671,174 +694,121 @@ class AISolver:
         else:
             log_with_time(f"💬 使用 {model_name} 模型", ColorCode.CYAN)
     
-    def _submit_to_leetcode(self) -> bool:
+    def _submit_to_leetcode(self) -> tuple[bool, Optional[str]]:
         """本地测试通过后，提交到 LeetCode 验证
         
         Returns:
-            bool: 是否通过 LeetCode 验证
+            tuple[bool, Optional[str]]: (是否通过验证, 错误反馈信息用于AI修复)
+            - 通过验证: (True, None)
+            - 未通过验证: (False, 错误反馈信息)
+            - 无 Cookie 跳过验证: (True, None)
         """
         if not self.problem_id:
-            return False
+            return False, "无法获取题目 ID"
         
         # 检查是否有 LEETCODE_COOKIE
         if not os.getenv("LEETCODE_COOKIE"):
             print()
             print(color_text("💡 提示: 设置 LEETCODE_COOKIE 后可自动提交到 LeetCode 验证", ColorCode.CYAN.value))
-            return True  # 返回 True 表示本地已通过
+            return True, None  # 返回 True 表示本地已通过
         
-        max_retries = AIConfig.LEETCODE_SUBMIT_MAX_RETRIES
-        for attempt in range(max_retries):
-            print()
-            log_with_time(f"🌐 第 {attempt + 1}/{max_retries} 次提交到 LeetCode 验证...", ColorCode.CYAN)
-            
-            try:
-                # 导入提交模块
-                from script.leetcode.submit import LeetCodeSubmitter
-                
-                submitter = LeetCodeSubmitter()
-                # 提交并获取详细结果
-                result = submitter.submit_problem_with_result(self.problem_id, solution_num=1)
-                
-                if result.status == "Accepted":
-                    log_with_time("✅ LeetCode 验证通过！", ColorCode.GREEN)
-                    return True
-                
-                # 处理不同类型的失败
-                if result.status == "Wrong Answer" and result.failed_test_case:
-                    log_with_time(f"❌ Wrong Answer (测试用例 {result.passed_test_cases + 1}/{result.total_test_cases})", ColorCode.RED)
-                    
-                    # 获取失败信息
-                    failed = result.failed_test_case
-                    log_with_time("\n失败的测试用例:", ColorCode.YELLOW)
-                    log_with_time(f"输入: {failed.get('input', 'N/A')[:200]}...")
-                    log_with_time(f"输出: {failed.get('actual', 'N/A')[:200]}...")
-                    log_with_time(f"期望: {failed.get('expected', 'N/A')[:200]}...")
-                    
-                    # 更新本地测试用例并修复
-                    if attempt < max_retries - 1:
-                        log_with_time("🔧 更新本地测试用例并修复代码...", ColorCode.YELLOW)
-                        if self._fix_with_leetcode_test_case(failed):
-                            log_with_time("✅ 代码修复完成，重新提交...", ColorCode.GREEN)
-                            continue
-                        else:
-                            log_with_time("❌ 自动修复失败", ColorCode.RED)
-                            return False
-                    
-                elif result.status == "Runtime Error":
-                    log_with_time(f"💥 Runtime Error: {result.error_message}", ColorCode.RED)
-                    if attempt < max_retries - 1:
-                        log_with_time("🔧 尝试修复运行时错误...", ColorCode.YELLOW)
-                        if self._fix_runtime_error(result.error_message):
-                            continue
-                    return False
-                    
-                elif result.status == "Time Limit Exceeded":
-                    log_with_time("⏱️ Time Limit Exceeded", ColorCode.YELLOW)
-                    return False
-                    
-                else:
-                    log_with_time(f"❌ {result.status}", ColorCode.RED)
-                    return False
-                    
-            except Exception as e:
-                log_with_time(f"⚠️  提交到 LeetCode 时出错: {e}", ColorCode.YELLOW)
-                return False
+        print()
+        log_with_time("🌐 正在提交到 LeetCode 验证...", ColorCode.CYAN)
         
-        return False
-    
-    def _fix_with_leetcode_test_case(self, failed_test_case: Dict) -> bool:
-        """使用 LeetCode 失败的测试用例修复代码"""
         try:
-            # 构建修复提示
-            fix_prompt = f"""本地测试已通过，但 LeetCode 提交失败。
-
-失败的测试用例:
-- 输入: {failed_test_case.get('input', 'N/A')}
-- 输出: {failed_test_case.get('actual', 'N/A')}
-- 期望: {failed_test_case.get('expected', 'N/A')}
-
-请按以下步骤修复：
-
-**步骤 1: 添加失败的测试用例**
-使用 `append_test_case` 工具将此测试用例添加到本地测试文件。
-test_name 建议使用 "WrongAnswerCase1" 或描述性名称如 "EdgeCaseEmptyArray"
-test_code 格式示例（注意缩进为2个空格）：
-```
-  // 输入: nums = [1,2,3], target = 4
-  // 期望: [0,1]
-  vector<int> nums = {{1, 2, 3}};
-  int target = 4;
-  vector<int> expected = {{0, 1}};
-  vector<int> result = solution.twoSum(nums, target);
-  EXPECT_EQ(expected, result);
-```
-
-**步骤 2: 分析并修复**
-使用 `retrieve_file_content` 查看当前代码，分析失败原因，然后使用 `create_or_update_file` 修复源文件中的问题。
-
-**步骤 3: 验证**
-调用 `compile_and_test` 确保修复后的代码通过所有测试。
-
-请开始修复。"""
-
-            # 添加修复提示到对话
-            self.messages.append({"role": "user", "content": fix_prompt})
+            # 导入提交模块
+            from script.leetcode.submit import LeetCodeSubmitter
             
-            # 运行一轮对话让 AI 修复
-            message = self._call_api(self.provider.model)
-            self.messages.append(self._build_message_to_save(message))
+            submitter = LeetCodeSubmitter()
+            # 提交并获取详细结果
+            result = submitter.submit_problem_with_result(self.problem_id, solution_num=1)
             
-            if message.tool_calls:
-                self._handle_tool_calls(message.tool_calls)
-                # 修复后需要验证编译和测试是否通过
-                log_with_time("🔍 验证修复结果...", ColorCode.CYAN)
-                result = self.tool_executor.execute("compile_and_test", {"problem_id": self.problem_id})
-                if not result.get("is_successful"):
-                    log_with_time("❌ 修复未完成", ColorCode.RED)
-                    return False
-                log_with_time("✅ 编译和测试通过", ColorCode.GREEN)
-                return True
+            if result.status == "Accepted":
+                log_with_time("✅ LeetCode 验证通过！", ColorCode.GREEN)
+                return True, None
             
-            return False
-            
+            # 构建错误反馈信息用于 AI 修复
+            feedback = self._build_leetcode_error_feedback(result)
+            return False, feedback
+                
         except Exception as e:
-            print(color_text(f"修复过程出错: {e}", ColorCode.RED.value))
-            return False
+            error_msg = f"提交到 LeetCode 时出错: {e}"
+            log_with_time(f"⚠️  {error_msg}", ColorCode.YELLOW)
+            return False, error_msg
     
-    def _fix_runtime_error(self, error_message: str) -> bool:
-        """修复运行时错误"""
-        try:
-            fix_prompt = f"""代码出现 Runtime Error:
-
-错误信息:
-{error_message}
-
-请:
-1. 分析错误原因（数组越界？空指针？除以零？）
-2. 使用 `retrieve_file_content` 查看代码
-3. 修复问题并调用 `compile_and_test` 验证"""
-
-            self.messages.append({"role": "user", "content": fix_prompt})
+    def _build_leetcode_error_feedback(self, result) -> str:
+        """根据 LeetCode 返回结果构建 AI 修复提示"""
+        from script.leetcode.submit import SubmissionResult
+        
+        lines = ["LeetCode 提交失败，需要修复。", ""]
+        
+        if result.status == "Wrong Answer":
+            lines.append(f"❌ Wrong Answer (通过了 {result.passed_test_cases}/{result.total_test_cases} 个测试用例)")
+            lines.append("")
+            if result.failed_test_case:
+                failed = result.failed_test_case
+                lines.append("失败的测试用例:")
+                lines.append(f"- 输入: {failed.get('input', 'N/A')}")
+                lines.append(f"- 输出: {failed.get('actual', 'N/A')}")
+                lines.append(f"- 期望: {failed.get('expected', 'N/A')}")
+                lines.append("")
+                lines.append("请按以下步骤修复：")
+                lines.append("")
+                lines.append("**步骤 1: 添加失败的测试用例到本地**")
+                lines.append("使用 `append_test_case` 工具将此测试用例添加到本地测试文件。")
+                lines.append("test_name 建议使用描述性名称如 'WrongAnswerCase1' 或 'EdgeCaseEmptyArray'")
+                lines.append("test_code 格式示例（注意缩进为2个空格）：")
+                lines.append("```")
+                lines.append("  // 输入: nums = [1,2,3], target = 4")
+                lines.append("  // 期望: [0,1]")
+                lines.append("  vector<int> nums = {{1, 2, 3}};")
+                lines.append("  int target = 4;")
+                lines.append("  vector<int> expected = {{0, 1}};")
+                lines.append("  vector<int> result = solution.twoSum(nums, target);")
+                lines.append("  EXPECT_EQ(expected, result);")
+                lines.append("```")
+                lines.append("")
+                lines.append("**步骤 2: 分析并修复代码**")
+                lines.append("使用 `retrieve_file_content` 查看当前代码，分析失败原因，")
+                lines.append("然后使用 `create_or_update_file` 修复源文件中的问题。")
+                lines.append("")
+                lines.append("**步骤 3: 验证修复**")
+                lines.append("调用 `compile_and_test` 确保修复后的代码通过所有测试。")
+                
+        elif result.status == "Runtime Error":
+            lines.append(f"💥 Runtime Error")
+            if result.error_message:
+                lines.append(f"错误信息: {result.error_message}")
+            lines.append("")
+            lines.append("请分析错误原因（数组越界？空指针？除以零？），然后：")
+            lines.append("1. 使用 `retrieve_file_content` 查看代码")
+            lines.append("2. 修复问题并使用 `create_or_update_file` 更新代码")
+            lines.append("3. 调用 `compile_and_test` 验证修复")
             
-            message = self._call_api(self.provider.model)
-            self.messages.append(self._build_message_to_save(message))
+        elif result.status == "Time Limit Exceeded":
+            lines.append("⏱️ Time Limit Exceeded")
+            lines.append("")
+            lines.append("算法时间复杂度过高，请考虑：")
+            lines.append("1. 优化算法（例如使用更高效的数据结构）")
+            lines.append("2. 减少冗余计算")
+            lines.append("3. 使用 `retrieve_file_content` 查看当前实现并改进")
             
-            if message.tool_calls:
-                self._handle_tool_calls(message.tool_calls)
-                # 修复后需要验证编译和测试是否通过
-                log_with_time("🔍 验证修复结果...", ColorCode.CYAN)
-                result = self.tool_executor.execute("compile_and_test", {"problem_id": self.problem_id})
-                if not result.get("is_successful"):
-                    log_with_time("❌ 修复未完成", ColorCode.RED)
-                    return False
-                log_with_time("✅ 编译和测试通过", ColorCode.GREEN)
-                return True
+        elif result.status == "Compile Error":
+            lines.append("❌ Compile Error")
+            if result.error_message:
+                lines.append(f"编译错误信息: {result.error_message}")
+            lines.append("")
+            lines.append("请检查代码语法并修复编译错误。")
             
-            return False
-            
-        except Exception as e:
-            log_with_time(f"修复运行时错误出错: {e}", ColorCode.RED)
-            return False
+        else:
+            lines.append(f"❌ {result.status}")
+            if result.error_message:
+                lines.append(f"错误信息: {result.error_message}")
+        
+        lines.append("")
+        lines.append("请开始修复。")
+        
+        return "\n".join(lines)
     
     @staticmethod
     def _get_system_prompt() -> str:
