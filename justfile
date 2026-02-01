@@ -43,6 +43,10 @@ default:
     @echo "  just ai-solve --random   - 随机挑选未解决的题目（测试用）"
     @echo "  just ai-solve --auto     - 自动循环解决所有未完成的题目"
     @echo ""
+    @echo "LeetCode 提交："
+    @echo "  just submit <ID>         - 转换并提交到 LeetCode（默认第1个解法）"
+    @echo "  just submit <ID> -n 2  - 提交第2个解法到 LeetCode"
+    @echo ""
     @echo "Python 环境："
     @echo "  just venv-setup          - 创建并设置虚拟环境"
     @echo "  just venv-install        - 安装 Python 依赖"
@@ -168,6 +172,10 @@ format:
 # AI 自动解题
 ai-solve *ARGS:
     {{python_venv}} -m script.leetcode.ai.solver {{ARGS}}
+
+# 提交到 LeetCode
+submit ID *ARGS:
+    {{python_venv}} -m script.leetcode.submit {{ID}} {{ARGS}}
 
 # Python 虚拟环境管理
 venv-setup:

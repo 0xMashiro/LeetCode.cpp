@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Dict, Any, List, Optional
 
 from openai import OpenAI
+from openai._types import NOT_GIVEN
 from dotenv import load_dotenv
 
 import sys
@@ -79,6 +80,9 @@ class AISolver:
         self.problem_tags: List[str] = []
         self.is_daily: bool = False
         self._current_reasoning: str = ""
+        
+        # 编译错误计数（防止在编译错误上无限循环）
+        self._compile_fix_count: int = 0
     
     def _load_env(self) -> None:
         """加载环境变量"""
@@ -251,12 +255,8 @@ class AISolver:
     
     def _init_conversation(self, problem_id: int, is_daily: bool) -> None:
         """初始化对话"""
-        # 获取题目详细信息
+        # 获取题目基本信息
         problem_data = self.repository.get_detail_by_id(problem_id, include_code=True)
-        
-        # 清理题目描述（去除 HTML 标签）
-        import re
-        content_text = re.sub(r'<[^>]+>', '', problem_data.content)
         
         user_message = f"""请帮我解决 LeetCode 题目：
 
@@ -264,16 +264,15 @@ class AISolver:
 标题: {problem_data.title}
 难度: {problem_data.difficulty}
 
-题目描述:
-{content_text}
-
-请使用 `get_problem_info` 工具获取题目信息并开始解决。"""
+请使用 `fetch_problem_metadata` 工具获取题目完整信息。
+获取后，请先用中文用自己的话描述题目要求（确保你真正理解了题意），然后开始解题。"""
         
         self.messages = [
             {"role": "system", "content": self._get_system_prompt()},
             {"role": "user", "content": user_message}
         ]
         self._current_reasoning = ""
+        self._compile_fix_count = 0  # 重置编译错误计数
     
     def _run_conversation_loop(self) -> bool:
         """运行对话循环
@@ -285,7 +284,8 @@ class AISolver:
         self._print_model_info(model_name)
         
         for iteration in range(AIConfig.MAX_ITERATIONS):
-            print(color_text(f"💭 AI 思考中... (第 {iteration + 1} 轮)", ColorCode.YELLOW.value))
+            print(color_text(f"🔄 第 {iteration + 1} 轮对话", ColorCode.YELLOW.value))
+            print(color_text("⏳ 正在等待 AI 响应...", ColorCode.CYAN.value), end=" ", flush=True)
             
             try:
                 message = self._call_api(model_name)
@@ -304,6 +304,8 @@ class AISolver:
                 # 没有工具调用，解题完成
                 self._print_completion(message)
                 self._generate_solution_report()
+                # 自动提交到 LeetCode 验证
+                self._submit_to_leetcode()
                 return True
         
         # 达到最大迭代次数
@@ -312,6 +314,8 @@ class AISolver:
     
     def _call_api(self, model_name: str) -> Message:
         """调用 API 并处理流式响应"""
+        import time
+        
         params = {
             "model": model_name,
             "messages": self.messages,
@@ -329,38 +333,69 @@ class AISolver:
         full_content = ""
         tool_calls = []
         
-        if self.use_reasoner:
-            print(color_text("🧠 思考过程:", ColorCode.CYAN.value), end="", flush=True)
+        first_chunk_received = False
+        chunk_count = 0
+        max_chunks = 100000  # 防止无限循环的安全上限
+        last_chunk_time = time.time()
+        stream_timeout = 60  # 60秒没有新数据则认为超时
         
-        for chunk in stream:
-            if not chunk.choices:
-                continue
-            
-            delta = chunk.choices[0].delta
-            
-            # 处理思考内容
-            if hasattr(delta, 'reasoning_content') and delta.reasoning_content:
-                full_reasoning += delta.reasoning_content
-                self._current_reasoning += delta.reasoning_content
-                print(delta.reasoning_content, end="", flush=True)
-            
-            # 处理内容
-            if hasattr(delta, 'content') and delta.content:
-                if not full_content and self.use_reasoner and full_reasoning:
-                    print()  # 思考结束换行
+        try:
+            for chunk in stream:
+                chunk_count += 1
+                if chunk_count > max_chunks:
+                    print(color_text("\n⚠️ 达到最大 chunk 数限制，强制结束流", ColorCode.YELLOW.value))
+                    break
                 
-                if not full_content:
-                    print(color_text("\n💬 回复:", ColorCode.BLUE.value), end="", flush=True)
+                current_time = time.time()
+                if current_time - last_chunk_time > stream_timeout:
+                    print(color_text(f"\n⚠️ 流响应超时({stream_timeout}秒无数据)，强制结束", ColorCode.YELLOW.value))
+                    break
                 
-                full_content += delta.content
-                print(delta.content, end="", flush=True)
-            
-            # 收集工具调用
-            if hasattr(delta, 'tool_calls') and delta.tool_calls:
-                tool_calls = self._merge_tool_calls(delta.tool_calls, tool_calls)
-            
-            if chunk.choices[0].finish_reason:
-                break
+                if not chunk.choices:
+                    continue
+                
+                delta = chunk.choices[0].delta
+                last_chunk_time = current_time  # 更新最后收到数据的时间
+                
+                # 标记已收到第一个 chunk，清除等待提示
+                if not first_chunk_received:
+                    print("\r" + " " * 30 + "\r", end="", flush=True)
+                    first_chunk_received = True
+                    if self.use_reasoner:
+                        print(color_text("🧠 思考过程: ", ColorCode.CYAN.value), end="", flush=True)
+                
+                # 处理思考内容
+                if hasattr(delta, 'reasoning_content') and delta.reasoning_content:
+                    full_reasoning += delta.reasoning_content
+                    self._current_reasoning += delta.reasoning_content
+                    print(delta.reasoning_content, end="", flush=True)
+                
+                # 处理内容
+                if hasattr(delta, 'content') and delta.content:
+                    if not full_content and self.use_reasoner and full_reasoning:
+                        print()  # 思考结束换行
+                    
+                    if not full_content:
+                        print(color_text("\n💬 回复:", ColorCode.BLUE.value), end="", flush=True)
+                    
+                    full_content += delta.content
+                    print(delta.content, end="", flush=True)
+                
+                # 收集工具调用
+                if hasattr(delta, 'tool_calls') and delta.tool_calls:
+                    tool_calls = self._merge_tool_calls(delta.tool_calls, tool_calls)
+                
+                if chunk.choices[0].finish_reason:
+                    break
+        finally:
+            # 确保 stream 被正确关闭
+            try:
+                stream.close()
+            except Exception:
+                pass
+        
+        if not first_chunk_received:
+            print(color_text("\n⚠️ 未收到任何响应数据", ColorCode.YELLOW.value))
         
         print()
         
@@ -462,6 +497,18 @@ class AISolver:
                 if tc.function_name == "compile_project" and self.problem_id:
                     args["problem_id"] = self.problem_id
                 result = self.tool_executor.execute(tc.function_name, args)
+                
+                # 检测编译错误并计数
+                if tc.function_name == "compile_project":
+                    if not result.get("is_successful"):
+                        self._compile_fix_count += 1
+                        if self._compile_fix_count >= AIConfig.MAX_COMPILE_FIX_ATTEMPTS:
+                            # 添加警告消息
+                            warning_msg = f"⚠️ 警告：已连续 {self._compile_fix_count} 次编译失败。建议：\n1. 仔细检查代码结构和语法\n2. 使用 retrieve_file_content 查看完整代码\n3. 考虑简化实现或检查头文件包含"
+                            print(color_text(warning_msg, ColorCode.YELLOW.value))
+                    else:
+                        # 编译成功，重置计数
+                        self._compile_fix_count = 0
                 
                 # 显示结果
                 self._print_tool_result(result)
@@ -601,6 +648,161 @@ class AISolver:
         else:
             print(color_text(f"💬 使用 {model_name} 模型", ColorCode.CYAN.value))
         print()
+    
+    def _submit_to_leetcode(self) -> bool:
+        """本地测试通过后，提交到 LeetCode 验证
+        
+        Returns:
+            bool: 是否通过 LeetCode 验证
+        """
+        if not self.problem_id:
+            return False
+        
+        # 检查是否有 LEETCODE_COOKIE
+        if not os.getenv("LEETCODE_COOKIE"):
+            print()
+            print(color_text("💡 提示: 设置 LEETCODE_COOKIE 后可自动提交到 LeetCode 验证", ColorCode.CYAN.value))
+            return True  # 返回 True 表示本地已通过
+        
+        max_retries = AIConfig.LEETCODE_SUBMIT_MAX_RETRIES
+        for attempt in range(max_retries):
+            print()
+            print(color_text(f"🌐 第 {attempt + 1}/{max_retries} 次提交到 LeetCode 验证...", ColorCode.CYAN.value))
+            
+            try:
+                # 导入提交模块
+                from script.leetcode.submit import LeetCodeSubmitter
+                
+                submitter = LeetCodeSubmitter()
+                # 提交并获取详细结果
+                result = submitter.submit_problem_with_result(self.problem_id, solution_num=1)
+                
+                if result.status == "Accepted":
+                    print(color_text("✅ LeetCode 验证通过！", ColorCode.GREEN.value))
+                    return True
+                
+                # 处理不同类型的失败
+                if result.status == "Wrong Answer" and result.failed_test_case:
+                    print(color_text(f"❌ Wrong Answer (测试用例 {result.passed_test_cases + 1}/{result.total_test_cases})", ColorCode.RED.value))
+                    
+                    # 获取失败信息
+                    failed = result.failed_test_case
+                    print(f"\n失败的测试用例:")
+                    print(f"输入: {failed.get('input', 'N/A')[:200]}...")
+                    print(f"输出: {failed.get('actual', 'N/A')[:200]}...")
+                    print(f"期望: {failed.get('expected', 'N/A')[:200]}...")
+                    
+                    # 更新本地测试用例并修复
+                    if attempt < max_retries - 1:
+                        print(color_text("\n🔧 更新本地测试用例并修复代码...", ColorCode.YELLOW.value))
+                        if self._fix_with_leetcode_test_case(failed):
+                            print(color_text("✅ 代码修复完成，重新提交...", ColorCode.GREEN.value))
+                            continue
+                        else:
+                            print(color_text("❌ 自动修复失败", ColorCode.RED.value))
+                            return False
+                    
+                elif result.status == "Runtime Error":
+                    print(color_text(f"💥 Runtime Error: {result.error_message}", ColorCode.RED.value))
+                    if attempt < max_retries - 1:
+                        print(color_text("\n🔧 尝试修复运行时错误...", ColorCode.YELLOW.value))
+                        if self._fix_runtime_error(result.error_message):
+                            continue
+                    return False
+                    
+                elif result.status == "Time Limit Exceeded":
+                    print(color_text("⏱️ Time Limit Exceeded", ColorCode.YELLOW.value))
+                    return False
+                    
+                else:
+                    print(color_text(f"❌ {result.status}", ColorCode.RED.value))
+                    return False
+                    
+            except Exception as e:
+                print(color_text(f"⚠️  提交到 LeetCode 时出错: {e}", ColorCode.YELLOW.value))
+                return False
+        
+        return False
+    
+    def _fix_with_leetcode_test_case(self, failed_test_case: Dict) -> bool:
+        """使用 LeetCode 失败的测试用例修复代码"""
+        try:
+            # 构建修复提示
+            fix_prompt = f"""本地测试已通过，但 LeetCode 提交失败。
+
+失败的测试用例:
+- 输入: {failed_test_case.get('input', 'N/A')}
+- 输出: {failed_test_case.get('actual', 'N/A')}
+- 期望: {failed_test_case.get('expected', 'N/A')}
+
+请按以下步骤修复：
+
+**步骤 1: 添加失败的测试用例**
+使用 `append_test_case` 工具将此测试用例添加到本地测试文件。
+test_name 建议使用 "WrongAnswerCase1" 或描述性名称如 "EdgeCaseEmptyArray"
+test_code 格式示例（注意缩进为2个空格）：
+```
+  // 输入: nums = [1,2,3], target = 4
+  // 期望: [0,1]
+  vector<int> nums = {{1, 2, 3}};
+  int target = 4;
+  vector<int> expected = {{0, 1}};
+  vector<int> result = solution.twoSum(nums, target);
+  EXPECT_EQ(expected, result);
+```
+
+**步骤 2: 分析并修复**
+使用 `retrieve_file_content` 查看当前代码，分析失败原因，然后使用 `create_or_update_file` 修复源文件中的问题。
+
+**步骤 3: 验证**
+调用 `compile_project` 和 `execute_test_suite` 确保修复后的代码通过所有测试。
+
+请开始修复。"""
+
+            # 添加修复提示到对话
+            self.messages.append({"role": "user", "content": fix_prompt})
+            
+            # 运行一轮对话让 AI 修复
+            message = self._call_api(self.provider.model)
+            self.messages.append(self._build_message_to_save(message))
+            
+            if message.tool_calls:
+                self._handle_tool_calls(message.tool_calls)
+                return True
+            
+            return False
+            
+        except Exception as e:
+            print(color_text(f"修复过程出错: {e}", ColorCode.RED.value))
+            return False
+    
+    def _fix_runtime_error(self, error_message: str) -> bool:
+        """修复运行时错误"""
+        try:
+            fix_prompt = f"""代码出现 Runtime Error:
+
+错误信息:
+{error_message}
+
+请:
+1. 分析错误原因（数组越界？空指针？除以零？）
+2. 使用 `retrieve_file_content` 查看代码
+3. 修复问题并重新编译测试"""
+
+            self.messages.append({"role": "user", "content": fix_prompt})
+            
+            message = self._call_api(self.provider.model)
+            self.messages.append(self._build_message_to_save(message))
+            
+            if message.tool_calls:
+                self._handle_tool_calls(message.tool_calls)
+                return True
+            
+            return False
+            
+        except Exception as e:
+            print(color_text(f"修复运行时错误出错: {e}", ColorCode.RED.value))
+            return False
     
     @staticmethod
     def _get_system_prompt() -> str:

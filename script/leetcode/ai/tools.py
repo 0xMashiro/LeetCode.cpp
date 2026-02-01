@@ -27,6 +27,7 @@ class ToolDefinition:
             cls._fetch_problem_metadata(),
             cls._create_or_update_file(),
             cls._retrieve_file_content(),
+            cls._append_test_case(),
             cls._compile_project(),
             cls._execute_test_suite(),
             cls._fetch_structure_definition(),
@@ -141,6 +142,44 @@ class ToolDefinition:
         }
     
     @staticmethod
+    def _append_test_case() -> Dict[str, Any]:
+        return {
+            "type": "function",
+            "function": {
+                "name": "append_test_case",
+                "description": """向现有测试文件追加新的测试用例。
+
+使用场景：
+- LeetCode 提交失败后，将失败的测试用例添加到本地测试文件
+- 修复特定边界情况的测试
+
+特点：
+- 只追加，不覆盖已有测试用例
+- 自动处理命名空间和测试类结构
+- 自动添加 TEST_P 宏和必要的包含头""",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "problem_id": {
+                            "type": "integer",
+                            "description": "题目 ID"
+                        },
+                        "test_name": {
+                            "type": "string",
+                            "description": "测试用例名称，建议使用描述性名称（如 WrongAnswerCase1, EdgeCaseEmptyArray）"
+                        },
+                        "test_code": {
+                            "type": "string",
+                            "description": "测试代码内容，只需要 TEST_P 宏内部的代码，不需要完整的 TEST_P 包装"
+                        }
+                    },
+                    "required": ["problem_id", "test_name", "test_code"],
+                    "additionalProperties": False
+                }
+            }
+        }
+    
+    @staticmethod
     def _compile_project() -> Dict[str, Any]:
         return {
             "type": "function",
@@ -233,6 +272,7 @@ class ToolExecutor:
             "fetch_problem_metadata": self._fetch_problem_metadata,
             "create_or_update_file": self._create_or_update_file,
             "retrieve_file_content": self._retrieve_file_content,
+            "append_test_case": self._append_test_case,
             "compile_project": self._compile_project,
             "execute_test_suite": self._execute_test_suite,
             "fetch_structure_definition": self._fetch_structure_definition,
@@ -378,6 +418,68 @@ class ToolExecutor:
                 "file_path": str(file_path),
                 "content": content
             }
+        except Exception as e:
+            return {"is_successful": False, "error_message": str(e)}
+    
+    def _append_test_case(self, problem_id: int, test_name: str, test_code: str) -> Dict[str, Any]:
+        """向测试文件追加新的测试用例"""
+        try:
+            problem_info = self.repository.get_by_id(problem_id)
+            test_path = Path(f"{ProjectPaths.TEST_PROBLEMS}/{problem_info.slug}.cpp")
+            
+            if not test_path.exists():
+                return {
+                    "is_successful": False,
+                    "error_message": f"测试文件不存在: {test_path}"
+                }
+            
+            # 读取现有内容
+            content = test_path.read_text(encoding='utf-8')
+            
+            # 在 INSTANTIATE_TEST_SUITE_P 之前插入新的测试用例
+            # 查找 INSTANTIATE_TEST_SUITE_P 的位置
+            import re
+            match = re.search(r'INSTANTIATE_TEST_SUITE_P\(', content)
+            if not match:
+                return {
+                    "is_successful": False,
+                    "error_message": "无法找到 INSTANTIATE_TEST_SUITE_P 标记"
+                }
+            
+            insert_pos = match.start()
+            
+            # 处理 test_code 的缩进（确保每行有 2 空格缩进）
+            indented_code = '\n'.join(
+                '  ' + line if line.strip() else line
+                for line in test_code.strip().split('\n')
+            )
+            
+            # 构建新的测试用例代码
+            # 格式示例：
+            # 
+            # TEST_P(ClassNameTest, TestName) {
+            #   // test body indented by 2 spaces
+            # }
+            # 
+            test_case = f'''
+// LeetCode 失败用例: {test_name}
+TEST_P({problem_info.class_name}Test, {test_name}) {{
+{indented_code}
+}}
+'''
+            
+            # 插入新测试用例
+            new_content = content[:insert_pos] + test_case + content[insert_pos:]
+            
+            # 写回文件
+            test_path.write_text(new_content, encoding='utf-8')
+            
+            return {
+                "is_successful": True,
+                "message": f"测试用例 '{test_name}' 已添加到 {test_path}",
+                "test_file": str(test_path)
+            }
+            
         except Exception as e:
             return {"is_successful": False, "error_message": str(e)}
     

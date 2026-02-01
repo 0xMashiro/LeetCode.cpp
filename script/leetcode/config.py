@@ -49,9 +49,19 @@ class CacheConfig:
 @dataclass(frozen=True)
 class AIConfig:
     """AI 解题配置"""
+    # 主解题循环最大轮数（包含代码生成、编译、本地测试）
     MAX_ITERATIONS = 20
+    
+    # LeetCode 提交相关配置
+    LEETCODE_SUBMIT_MAX_RETRIES = 5  # LeetCode 提交失败后的最大重试次数
+    LEETCODE_SUBMIT_TIMEOUT = 60     # 等待 LeetCode 判题结果的超时时间（秒）
+    
+    # 编译和测试超时
     BUILD_TIMEOUT = 120
     TEST_TIMEOUT = 60
+    
+    # 修复策略
+    MAX_COMPILE_FIX_ATTEMPTS = 5  # 连续编译错误的最大修复次数，超过则放弃
 
 
 @dataclass(frozen=True)
