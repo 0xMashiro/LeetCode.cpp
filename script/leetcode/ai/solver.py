@@ -251,11 +251,23 @@ class AISolver:
     
     def _init_conversation(self, problem_id: int, is_daily: bool) -> None:
         """初始化对话"""
-        user_message = (
-            f"请帮我解决 LeetCode 每日一题：题目 ID {problem_id}" 
-            if is_daily else 
-            f"请帮我解决 LeetCode 题目：题目 ID {problem_id}"
-        )
+        # 获取题目详细信息
+        problem_data = self.repository.get_detail_by_id(problem_id, include_code=True)
+        
+        # 清理题目描述（去除 HTML 标签）
+        import re
+        content_text = re.sub(r'<[^>]+>', '', problem_data.content)
+        
+        user_message = f"""请帮我解决 LeetCode 题目：
+
+题目 ID: {problem_id}
+标题: {problem_data.title}
+难度: {problem_data.difficulty}
+
+题目描述:
+{content_text}
+
+请使用 `get_problem_info` 工具获取题目信息并开始解决。"""
         
         self.messages = [
             {"role": "system", "content": self._get_system_prompt()},
