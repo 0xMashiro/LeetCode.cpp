@@ -39,7 +39,9 @@ default:
     @echo "AI 自动解题："
     @echo "  just ai-solve            - 使用 AI 解决每日一题"
     @echo "  just ai-solve <ID>       - 使用 AI 解决指定题目"
+    @echo "  just ai-solve --report   - 生成解题报告（CI 使用）"
     @echo "  just ai-solve --random   - 随机挑选未解决的题目（测试用）"
+    @echo "  just ai-solve --auto     - 自动循环解决所有未完成的题目"
     @echo ""
     @echo "Python 环境："
     @echo "  just venv-setup          - 创建并设置虚拟环境"
@@ -77,7 +79,30 @@ rebuild:
 
 # 单题编译运行（快速，只编译指定题目）
 single ID:
-    just multi {{ID}}
+    #!/usr/bin/env bash
+    set -e
+    unset LD_LIBRARY_PATH
+    
+    ID="{{ID}}"
+    if [ -z "$ID" ]; then
+        echo "用法: just single <ID>"
+        echo "示例: just single 1"
+        exit 1
+    fi
+    
+    echo "正在解析题目..."
+    SLUG=$({{python_venv}} script/leetcode/get_slug.py "$ID")
+    echo "  $ID -> $SLUG"
+    
+    echo ""
+    echo "开始编译单题..."
+    mkdir -p build
+    cd build
+    cmake .. -G Ninja -DCMAKE_BUILD_TYPE=Debug -DLEETCODE_SINGLE_PROBLEM="$SLUG"
+    cmake --build . -j
+    echo ""
+    echo "运行测试..."
+    ./bin/single_problem_test
 
 # 多题编译运行（编译指定题目列表，适合 CI）
 # 示例: just multi 1 2 146 lru-cache

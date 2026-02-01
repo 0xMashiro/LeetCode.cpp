@@ -138,7 +138,8 @@ class LRUCache {
 
 ### 阶段 5：完成
 - 所有测试通过
-- 生成解题报告
+- 生成解题报告（如果开启）
+- **不要输出额外的总结文字**，测试通过即表示完成
 
 ## 代码质量检查清单
 
@@ -203,6 +204,33 @@ int solve(int x) {
 }
 ```
 
+### 5. 树/链表题的内存管理（重点！）
+
+**⚠️ 警告：严禁手动 delete！**
+
+TreeNode、ListNode 等数据结构有**自动析构**，会自动清理所有子节点。**严禁手动 `delete` 任何节点**，否则会导致双重释放或内存错误。
+
+**错误做法：手动 delete**
+```cpp
+// 错误！严禁手动 delete
+TreeNode* result = solution.solve(root);
+// ...
+delete root;    // ❌ 不要这样做！
+delete result;  // ❌ 不要这样做！
+```
+
+**正确做法：让自动析构处理**
+```cpp
+// 正确！利用自动析构，无需手动 delete
+TreeNode* result = solution.solve(root);
+// 函数结束时 root 和 result 会自动被析构，无需手动操作
+```
+
+**测试用例原则**：
+- 不要写任何 `delete node` 的代码
+- 不要写析构函数或清理代码
+- 依赖 LeetCode 数据结构的自动内存管理
+
 ## 测试用例设计指南
 
 ### 必须包含的测试
@@ -223,6 +251,7 @@ TEST_P(ProblemNameTest, Example1) {
   // 题目示例 1
   auto input = constructInput(...);  // 使用辅助函数
   EXPECT_EQ(expected, solution.solve(input));
+  // ⚠️ 注意：不要 delete input/expected！自动析构会处理
 }
 
 TEST_P(ProblemNameTest, Example2) {
@@ -254,9 +283,9 @@ TEST_P(ProblemNameTest, SingleElement) {
 
 ## 禁止事项
 
-❌ **严禁**：
+❌ **严禁（违反会导致测试崩溃）**：
+- **手动 delete TreeNode/ListNode 等数据结构（会导致双重释放！）**
 - 测试失败后不分析直接完成
-- 手动 delete 项目提供的数据结构
 - 包含 <bits/stdc++.h> 或其他非标准头文件
 - 使用全局变量
 - 修改参考示例的代码结构
@@ -303,6 +332,7 @@ REPORT_GENERATION_PROMPT = """你就是 Andrej Karpathy。你正在写一篇关�
 请遵循这个**心理流**来组织文章（不需要严格照搬标题，保持流动性）：
 
 1.  **The Hook (钩子)**：用最直白的大白话翻译题目。这题到底在算什么？为什么它看起来有点意思？
+    *   **必须包含**：用 1-2 句话中文简述题目要求（输入是什么，输出是什么，要解决什么问题）
 2.  **The Trap (陷阱)**：先带读者走一条看似合理但走不通（或太慢）的路。解释为什么我们会本能地往那边想，以及为什么那是死胡同。
 3.  **The Insight (洞察)**：那个关键的转折点。是什么观察让你意识到可以用更优的方法？（比如：“既然数组是有序的，那我们其实没必要...”）
 4.  **The Build (构建)**：手把手地构建最终算法。配合具体的 Case Walkthrough（像 Debugger 一样一步步走）。

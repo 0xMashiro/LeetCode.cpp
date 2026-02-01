@@ -162,6 +162,19 @@ class LeetCodeCLI:
         print()
         print_success("文件删除完成")
     
+    def _get_project_root(self) -> Path:
+        """获取项目根目录（通过查找 CMakeLists.txt 确定）"""
+        current = Path.cwd()
+        # 先检查当前目录
+        if (current / "CMakeLists.txt").exists():
+            return current
+        # 检查脚本所在目录的父目录（即项目根目录）
+        script_dir = Path(__file__).parent.parent.parent
+        if (script_dir / "CMakeLists.txt").exists():
+            return script_dir
+        # 回退到当前目录
+        return current
+    
     def handle_test(self, target: str, verbose: bool = False):
         """处理 test 命令"""
         problem_info = self.resolve_problem(target)
@@ -171,9 +184,23 @@ class LeetCodeCLI:
         print_info("正在运行测试...")
         print()
         
-        test_bin = Path("build/bin/problem_set_tests")
-        if not test_bin.exists():
-            print_error("测试二进制文件未找到，请先运行 'just build' 构建项目")
+        project_root = self._get_project_root()
+        
+        # 支持两种测试二进制文件：
+        # 1. problem_set_tests - 全量编译生成的
+        # 2. multi_problem_test - 增量编译（just multi）生成的
+        test_bin_full = project_root / "build/bin/problem_set_tests"
+        test_bin_multi = project_root / "build/bin/multi_problem_test"
+        
+        if test_bin_full.exists():
+            test_bin = test_bin_full
+        elif test_bin_multi.exists():
+            test_bin = test_bin_multi
+        else:
+            print_error("测试二进制文件未找到")
+            print_error(f"  全量编译: {test_bin_full}")
+            print_error(f"  增量编译: {test_bin_multi}")
+            print_error("请先运行 'just build' 或 'just multi <ID>' 构建项目")
             sys.exit(1)
         
         # 构建测试过滤器

@@ -106,16 +106,24 @@ set(LEETCODE_MULTI_PROBLEMS "" CACHE STRING "Compile multiple problems (semicolo
 file(GLOB leetcode_UTILS_FILES CONFIGURE_DEPENDS ${COMMON_SOURCE}/leetcode/utils/*.cpp)
 
 if(LEETCODE_SINGLE_PROBLEM)
-    # Single problem mode (convert to list for unified processing)
-    set(LEETCODE_MULTI_PROBLEMS ${LEETCODE_SINGLE_PROBLEM})
+    # Single problem mode
+    set(SINGLE_TEST_TARGET "single_problem_test")
+    message(STATUS "Single-problem mode: ${LEETCODE_SINGLE_PROBLEM}")
 endif()
 
-if(LEETCODE_MULTI_PROBLEMS)
-    # Multi-problem compilation mode
+if(LEETCODE_SINGLE_PROBLEM OR LEETCODE_MULTI_PROBLEMS)
+    # Single or Multi-problem compilation mode
     set(leetcode_SRC_FILES ${leetcode_UTILS_FILES})
     set(leetcode_TEST_FILES "")
     
-    foreach(PROBLEM_SLUG ${LEETCODE_MULTI_PROBLEMS})
+    # Determine which problems to compile
+    if(LEETCODE_SINGLE_PROBLEM)
+        set(PROBLEMS_TO_COMPILE ${LEETCODE_SINGLE_PROBLEM})
+    else()
+        set(PROBLEMS_TO_COMPILE ${LEETCODE_MULTI_PROBLEMS})
+    endif()
+    
+    foreach(PROBLEM_SLUG ${PROBLEMS_TO_COMPILE})
         set(PROBLEM_HDR ${COMMON_INCLUDES}/leetcode/problems/${PROBLEM_SLUG}.h)
         set(PROBLEM_SRC ${COMMON_SOURCE}/leetcode/problems/${PROBLEM_SLUG}.cpp)
         set(PROBLEM_TEST ${COMMON_TEST}/leetcode/problems/${PROBLEM_SLUG}.cpp)
@@ -138,9 +146,13 @@ if(LEETCODE_MULTI_PROBLEMS)
         message(STATUS "Compiling problem: ${PROBLEM_SLUG}")
     endforeach()
     
-    # Multi-problem mode uses a different executable name
-    set(MULTI_TEST_TARGET "multi_problem_test")
-    message(STATUS "Multi-problem mode: ${LEETCODE_MULTI_PROBLEMS}")
+    # Set executable name based on mode
+    if(LEETCODE_SINGLE_PROBLEM)
+        set(MULTI_TEST_TARGET "single_problem_test")
+    else()
+        set(MULTI_TEST_TARGET "multi_problem_test")
+        message(STATUS "Multi-problem mode: ${LEETCODE_MULTI_PROBLEMS}")
+    endif()
 else()
     # Full build mode
     file(GLOB_RECURSE leetcode_SRC_FILES CONFIGURE_DEPENDS ${COMMON_SOURCE}/leetcode/*.cpp)
@@ -157,15 +169,15 @@ target_include_directories(leetcode
 )
 
 # Precompiled headers to reduce compile time (full build only)
-if(NOT LEETCODE_MULTI_PROBLEMS)
+if(NOT LEETCODE_SINGLE_PROBLEM AND NOT LEETCODE_MULTI_PROBLEMS)
     target_precompile_headers(leetcode PUBLIC ${COMMON_INCLUDES}/leetcode/core.h)
 endif()
 
 ########################################
 # Problem Set Integration Tests
 ########################################
-if(LEETCODE_MULTI_PROBLEMS)
-    # Multi-problem test executable (single problem is a special case)
+if(LEETCODE_SINGLE_PROBLEM OR LEETCODE_MULTI_PROBLEMS)
+    # Single or Multi-problem test executable
     add_executable(${MULTI_TEST_TARGET} ${leetcode_TEST_FILES})
     target_link_libraries(${MULTI_TEST_TARGET}
         PRIVATE

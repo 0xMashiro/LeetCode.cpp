@@ -101,10 +101,15 @@ jobs:
       - name: Setup ccache
         uses: hendrikmuhs/ccache-action@v1.2
         with:
-          key: ${{ runner.os }}-gcc-incremental-${{ needs.detect-changes.outputs.problems }}
+          # Use problem list in key for incremental builds
+          # This allows separate caches for different PRs but share within same problems
+          key: ${{ runner.os }}-gcc-incremental-${{ hashFiles('CMakeLists.txt') }}-${{ needs.detect-changes.outputs.problems }}
           restore-keys: |
+            ${{ runner.os }}-gcc-incremental-${{ hashFiles('CMakeLists.txt') }}-
             ${{ runner.os }}-gcc-incremental-
+            ${{ runner.os }}-gcc-full-
             ${{ runner.os }}-gcc-
+          max-size: 500M
 
       - name: Build changed problems
         run: |
@@ -140,10 +145,12 @@ jobs:
       - name: Setup ccache
         uses: hendrikmuhs/ccache-action@v1.2
         with:
-          key: ${{ runner.os }}-gcc-full-${{ hashFiles('CMakeLists.txt', '**/*.cpp', '**/*.h') }}
+          # Full build cache - most comprehensive, used as fallback for all builds
+          key: ${{ runner.os }}-gcc-full-${{ hashFiles('CMakeLists.txt', 'src/leetcode/utils/*.cpp', 'include/leetcode/*.h') }}
           restore-keys: |
             ${{ runner.os }}-gcc-full-
             ${{ runner.os }}-gcc-
+          max-size: 500M
 
       - name: Build project
         run: |

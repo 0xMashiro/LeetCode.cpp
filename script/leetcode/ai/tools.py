@@ -147,11 +147,19 @@ class ToolDefinition:
             "function": {
                 "name": "compile_project",
                 "description": """编译项目。
-注意：这会编译整个项目（包括所有历史题目），可能需要几秒到几十秒。
-如果只想验证语法，可以先只生成头文件和源文件进行编译。""",
+支持两种模式：
+1. **增量编译**（推荐）：提供 problem_id 参数，只编译指定题目（快速）
+2. **全量编译**：不提供参数，编译整个项目（包括所有历史题目，较慢）
+
+优先使用增量编译，速度更快且不受 CMake GLOB 缓存影响。""",
                 "parameters": {
                     "type": "object",
-                    "properties": {},
+                    "properties": {
+                        "problem_id": {
+                            "type": "integer",
+                            "description": "题目 ID（如 1, 2, 461）。如果提供，只编译该题目（增量编译，更快）"
+                        }
+                    },
                     "required": [],
                     "additionalProperties": False
                 }
@@ -373,15 +381,34 @@ class ToolExecutor:
         except Exception as e:
             return {"is_successful": False, "error_message": str(e)}
     
-    def _compile_project(self) -> Dict[str, Any]:
-        """编译项目"""
+    def _compile_project(self, problem_id: Optional[int] = None) -> Dict[str, Any]:
+        """编译项目
+        
+        Args:
+            problem_id: 如果指定，使用增量编译只编译该题目；否则全量编译
+        """
         try:
-            result = subprocess.run(
-                ["just", "build"],
-                capture_output=True,
-                text=True,
-                timeout=AIConfig.BUILD_TIMEOUT
-            )
+            if problem_id:
+                # 增量编译：只编译指定题目（使用 just multi，更快且不受 GLOB 缓存影响）
+                result = subprocess.run(
+                    ["just", "multi", str(problem_id)],
+                    capture_output=True,
+                    text=True,
+                    timeout=AIConfig.BUILD_TIMEOUT
+                )
+            else:
+                # 全量编译：编译整个项目
+                # 强制重新配置 CMake，确保能检测到新添加的文件
+                cmake_cache = Path("build/CMakeCache.txt")
+                if cmake_cache.exists():
+                    cmake_cache.unlink()
+                
+                result = subprocess.run(
+                    ["just", "build"],
+                    capture_output=True,
+                    text=True,
+                    timeout=AIConfig.BUILD_TIMEOUT
+                )
             
             if result.returncode == 0:
                 return {

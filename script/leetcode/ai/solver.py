@@ -19,7 +19,7 @@ import sys
 from script.leetcode.api import ProblemRepository
 from script.leetcode.ai.tools import ToolDefinition, ToolExecutor
 from script.leetcode.ai.prompts import get_system_prompt, get_report_generation_prompt
-from script.leetcode.config import AIConfig, ProjectPaths
+from script.leetcode.config import AIConfig, AIProvider, ProjectPaths
 from script.leetcode.exceptions import ProblemNotFoundError
 from script.leetcode.utils import color_text, ColorCode
 
@@ -48,18 +48,27 @@ class AISolver:
         self, 
         api_key: Optional[str] = None, 
         base_url: Optional[str] = None,
-        repository: Optional[ProblemRepository] = None
+        repository: Optional[ProblemRepository] = None,
+        enable_report: Optional[bool] = None,
+        provider: Optional[AIProvider] = None
     ):
         self._load_env()
-        self.api_key = api_key or self._get_api_key()
-        self.base_url = base_url or self._get_base_url()
         
+        # 选择 Provider（从参数、环境变量或默认）
+        self.provider = provider or AIProvider.from_env()
+        
+        self.api_key = api_key or self._get_api_key()
+        self.base_url = base_url or self.provider.base_url
+        self.enable_report = enable_report if enable_report is not None else self._get_enable_report()
+        
+        # 创建 OpenAI 客户端
         self.client = OpenAI(api_key=self.api_key, base_url=self.base_url)
+        
         self.repository = repository or ProblemRepository()
         self.tool_executor = ToolExecutor(self.repository)
         
         self.messages: List[Dict[str, Any]] = []
-        self.use_reasoner = self._get_use_reasoner()
+        self.use_reasoner = self.provider.use_reasoner
         
         # 报告收集
         self.reasoning_log: List[str] = []
@@ -81,26 +90,31 @@ class AISolver:
             load_dotenv()
     
     def _get_api_key(self) -> str:
-        """获取 API Key"""
-        api_key = os.getenv("MOONSHOT_API_KEY")
+        """获取 API Key（根据 Provider 自动选择环境变量名）"""
+        # 根据 Provider 名称选择对应的环境变量
+        env_var_map = {
+            "moonshot": "MOONSHOT_API_KEY",
+        }
+        
+        env_var = env_var_map.get(self.provider.name, f"{self.provider.name.upper()}_API_KEY")
+        api_key = os.getenv(env_var)
+        
+        if not api_key:
+            # 如果没有找到特定 Provider 的 Key，尝试通用的 AI_API_KEY
+            api_key = os.getenv("AI_API_KEY")
+        
         if not api_key:
             raise ValueError(
-                "请设置 MOONSHOT_API_KEY：\n"
-                "  1. 创建 .env 文件并添加 MOONSHOT_API_KEY=your_key\n"
-                "  2. 或设置环境变量: export MOONSHOT_API_KEY=your_key"
+                f"请设置 {env_var}：\n"
+                f"  1. 创建 .env 文件并添加 {env_var}=your_key\n"
+                f"  2. 或设置环境变量: export {env_var}=your_key\n"
+                f"  3. 或使用通用的 AI_API_KEY"
             )
         return api_key
     
-    def _get_base_url(self) -> str:
-        """获取 base URL"""
-        return os.getenv("MOONSHOT_BASE_URL", AIConfig.DEFAULT_BASE_URL)
-    
-    def _get_use_reasoner(self) -> bool:
-        """获取是否启用深度思考模式"""
-        model = os.getenv("MOONSHOT_MODEL", AIConfig.DEFAULT_MODEL)
-        if "kimi-k2.5" in model or "thinking" in model:
-            return True
-        return os.getenv("MOONSHOT_ENABLE_THINKING", "false").lower() == "true"
+    def _get_enable_report(self) -> bool:
+        """获取是否启用解题报告生成（默认关闭以节省 token）"""
+        return os.getenv("AI_SOLVER_GENERATE_REPORT", "false").lower() == "true"
     
     @property
     def tools(self) -> List[Dict[str, Any]]:
@@ -121,6 +135,8 @@ class AISolver:
         except Exception as e:
             print(color_text(f"❌ 错误: {e}", ColorCode.RED.value))
             traceback.print_exc()
+            raise  # 重新抛出异常，让外层处理
+            raise  # 重新抛出异常，让外层处理
     
     def solve_problem(self, problem_id: int) -> None:
         """解决指定题目"""
@@ -185,7 +201,11 @@ class AISolver:
         self._init_conversation(problem_id, is_daily)
         
         # 运行对话循环
-        self._run_conversation_loop()
+        success = self._run_conversation_loop()
+        
+        # 如果达到最大迭代次数仍未完成，视为失败
+        if not success:
+            raise RuntimeError(f"解题失败：达到最大迭代次数 ({AIConfig.MAX_ITERATIONS} 轮)，未能完成题目 {problem_id}")
     
     def _log_problem_info(
         self, 
@@ -243,9 +263,13 @@ class AISolver:
         ]
         self._current_reasoning = ""
     
-    def _run_conversation_loop(self) -> None:
-        """运行对话循环"""
-        model_name = os.getenv("MOONSHOT_MODEL", AIConfig.DEFAULT_MODEL)
+    def _run_conversation_loop(self) -> bool:
+        """运行对话循环
+        
+        Returns:
+            bool: 是否成功完成解题
+        """
+        model_name = self.provider.model
         self._print_model_info(model_name)
         
         for iteration in range(AIConfig.MAX_ITERATIONS):
@@ -256,7 +280,7 @@ class AISolver:
             except Exception as e:
                 print(color_text(f"❌ API 调用错误: {e}", ColorCode.RED.value))
                 traceback.print_exc()
-                break
+                return False
             
             # 保存消息
             self.messages.append(self._build_message_to_save(message))
@@ -268,9 +292,11 @@ class AISolver:
                 # 没有工具调用，解题完成
                 self._print_completion(message)
                 self._generate_solution_report()
-                break
-        else:
-            print(color_text("⚠️ 达到最大迭代次数，停止处理", ColorCode.YELLOW.value))
+                return True
+        
+        # 达到最大迭代次数
+        print(color_text("⚠️ 达到最大迭代次数，停止处理", ColorCode.YELLOW.value))
+        return False
     
     def _call_api(self, model_name: str) -> Message:
         """调用 API 并处理流式响应"""
@@ -281,8 +307,8 @@ class AISolver:
             "stream": True
         }
         
-        # 非 k2.5 模型需要额外设置
-        if self.use_reasoner and "kimi-k2.5" not in model_name:
+        # 非 reasoner 模型需要额外设置
+        if self.use_reasoner and not self.provider.use_reasoner:
             params["extra_body"] = {"thinking": {"type": "enabled"}}
         
         stream = self.client.chat.completions.create(**params)
@@ -420,7 +446,9 @@ class AISolver:
                 # 解析参数
                 args = json.loads(tc.function_arguments)
                 
-                # 执行工具
+                # 执行工具（对于 compile_project，自动传入当前 problem_id 以使用增量编译）
+                if tc.function_name == "compile_project" and self.problem_id:
+                    args["problem_id"] = self.problem_id
                 result = self.tool_executor.execute(tc.function_name, args)
                 
                 # 显示结果
@@ -456,12 +484,16 @@ class AISolver:
     
     def _print_completion(self, message: Message) -> None:
         """打印完成信息（内容已在流式响应中打印，这里只打印标记）"""
-        print()
-        print(color_text("✅ AI 完成", ColorCode.GREEN.value))
+        # 解题成功，无需额外输出（文件生成和测试通过的信息已在前面显示）
+        pass
     
     def _generate_solution_report(self, is_skip: bool = False) -> None:
         """生成专业解题报告（统一格式：固定部分 + AI生成内容）"""
         if not self.problem_id:
+            return
+        
+        # 检查是否启用报告生成（默认关闭以节省 token）
+        if not self.enable_report:
             return
         
         print()
@@ -529,7 +561,7 @@ class AISolver:
         
         try:
             response = self.client.chat.completions.create(
-                model=os.getenv("MOONSHOT_MODEL", AIConfig.DEFAULT_MODEL),
+                model=self.provider.model,
                 messages=[
                     {"role": "system", "content": get_report_generation_prompt()},
                     {"role": "user", "content": user_prompt}
@@ -573,15 +605,23 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 示例:
-  # 解决每日一题
+  # 解决每日一题（默认 moonshot，不生成报告）
   python -m script.leetcode.ai.solver
   
   # 解决指定题目
   python -m script.leetcode.ai.solver 1
   
+  # 生成解题报告（CI 使用）
+  python -m script.leetcode.ai.solver --report
+  python -m script.leetcode.ai.solver 1 --report
+  
   # 随机挑选未解决的题目（用于测试增量编译）
   python -m script.leetcode.ai.solver --random
   python -m script.leetcode.ai.solver --random --difficulty Easy
+  
+  # 自动循环模式（持续解决未完成的题目）
+  python -m script.leetcode.ai.solver --auto
+  python -m script.leetcode.ai.solver --auto --report
         """
     )
     parser.add_argument(
@@ -596,6 +636,11 @@ def main():
         help="随机挑选未解决的题目"
     )
     parser.add_argument(
+        "--auto",
+        action="store_true",
+        help="自动循环模式：持续解决未完成的题目，直到全部完成"
+    )
+    parser.add_argument(
         "--difficulty",
         choices=["Easy", "Medium", "Hard"],
         help="配合 --random 使用，指定难度"
@@ -608,13 +653,62 @@ def main():
         "--base-url",
         help="API 基础 URL"
     )
-    
+    parser.add_argument(
+        "--report",
+        action="store_true",
+        help="生成解题报告（默认关闭以节省 token，CI 可开启）"
+    )
+    parser.add_argument(
+        "--max-retries",
+        type=int,
+        default=3,
+        help="自动模式下每次执行的最大重试次数（默认: 3）"
+    )
+    parser.add_argument(
+        "--retry-delay",
+        type=int,
+        default=60,
+        help="自动模式下重试间隔秒数（默认: 60）"
+    )
+    parser.add_argument(
+        "--fail-streak-limit",
+        type=int,
+        default=3,
+        help="自动模式下连续失败多少次后暂停（默认: 3）"
+    )
+    parser.add_argument(
+        "--fail-streak-pause",
+        type=int,
+        default=60,
+        help="自动模式下连续失败后的暂停秒数（默认: 60）"
+    )
     args = parser.parse_args()
+    
+    # 自动模式
+    if args.auto:
+        from script.leetcode.ai.auto_solver import AutoSolver
+        auto_solver = AutoSolver(
+            report=args.report,
+            max_retries=args.max_retries,
+            retry_delay=args.retry_delay,
+            fail_streak_limit=args.fail_streak_limit,
+            fail_streak_pause=args.fail_streak_pause,
+            api_key=args.api_key,
+            base_url=args.base_url,
+        )
+        try:
+            auto_solver.run()
+        except KeyboardInterrupt:
+            print()
+            print(color_text("操作已中断", ColorCode.YELLOW.value))
+            sys.exit(130)
+        return
     
     try:
         solver = AISolver(
             api_key=args.api_key,
-            base_url=args.base_url
+            base_url=args.base_url,
+            enable_report=args.report
         )
         
         if args.id:
@@ -635,9 +729,11 @@ def main():
     except KeyboardInterrupt:
         print()
         print(color_text("操作已中断", ColorCode.YELLOW.value))
+        sys.exit(130)  # 130 是 Ctrl+C 的标准退出码
     except Exception as e:
         print(color_text(f"错误: {e}", ColorCode.RED.value))
         traceback.print_exc()
+        sys.exit(1)
 
 
 if __name__ == "__main__":

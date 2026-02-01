@@ -6,6 +6,7 @@
 
 from dataclasses import dataclass
 from enum import Enum
+import os
 
 
 @dataclass(frozen=True)
@@ -51,8 +52,41 @@ class AIConfig:
     MAX_ITERATIONS = 20
     BUILD_TIMEOUT = 120
     TEST_TIMEOUT = 60
-    DEFAULT_BASE_URL = "https://api.moonshot.cn/v1"
-    DEFAULT_MODEL = "kimi-k2.5"
+
+
+@dataclass(frozen=True)
+class AIProvider:
+    """AI Provider 配置"""
+    name: str
+    base_url: str
+    model: str
+    use_reasoner: bool
+    
+    # 预定义的 Providers
+    @classmethod
+    def MOONSHOT(cls) -> "AIProvider":
+        return cls(
+            name="moonshot",
+            base_url="https://api.moonshot.cn/v1",
+            model="kimi-k2.5",
+            use_reasoner=True
+        )
+    
+    @classmethod
+    def from_env(cls) -> "AIProvider":
+        """从环境变量获取 Provider 配置"""
+        provider = os.getenv("AI_PROVIDER", "moonshot").lower()
+        
+        if provider == "moonshot":
+            return cls.MOONSHOT()
+        else:
+            # 自定义配置（支持其他 OpenAI 兼容的 API）
+            return cls(
+                name=provider,
+                base_url=os.getenv("AI_BASE_URL", cls.MOONSHOT().base_url),
+                model=os.getenv("AI_MODEL", cls.MOONSHOT().model),
+                use_reasoner=os.getenv("AI_USE_REASONER", "true").lower() == "true"
+            )
 
 
 class FileTypeConfig(Enum):
