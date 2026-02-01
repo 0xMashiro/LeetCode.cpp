@@ -122,7 +122,13 @@ class ToolDefinition:
             "type": "function",
             "function": {
                 "name": "retrieve_file_content",
-                "description": "读取已生成的文件内容。测试失败或编译错误时，使用此工具查看当前文件内容进行分析",
+                "description": """读取已生成的文件内容。测试失败或编译错误时，使用此工具查看当前文件内容进行分析。
+
+⚠️ 重要约束：
+- **retrieve 后必须修改文件！** 禁止「retrieve → compile」不改文件的无效循环
+- 如果只是验证修复思路，直接在脑中分析，不要 retrieve
+- 只有在不确定当前代码状态、需要确认细节时才 retrieve  
+- retrieve 后必须调用 create_or_update_file（overwrite_existing=true）更新文件""",
                 "parameters": {
                     "type": "object",
                     "properties": {
@@ -222,7 +228,12 @@ class ToolDefinition:
 
 使用场景：
 - 生成题目代码后，立即验证正确性
-- 修复代码后，快速验证修复结果""",
+- 修复代码后，快速验证修复结果
+
+⚠️ 重要约束：
+- **如果上一次调用返回了 "编译成功，所有测试通过"，禁止再次调用！**
+- 测试通过后，等待系统处理（LeetCode 提交或生成报告），不要重复测试
+- 只有在修改了代码（create_or_update_file）或添加了测试用例（append_test_case）后才再次调用""",
                 "parameters": {
                     "type": "object",
                     "properties": {
@@ -605,7 +616,8 @@ TEST_P({class_base}Test, {test_name}) {{
                     "error_type": error_analysis["type"],
                     "error_details": error_analysis["details"],
                     "suggestion": error_analysis["suggestion"],
-                    "output": output
+                    "output": output,
+                    "next_steps": "❌ 编译失败。修复流程：1) 仔细阅读错误信息和错误详情；2) 分析问题原因（语法？类型？头文件？）；3) 直接调用 create_or_update_file 修复代码（overwrite_existing=true）；4) 修复后再次调用 compile_and_test 验证。⚠️ 禁止仅 retrieve 不修改的循环！"
                 }
             
             # 编译成功，检查测试结果
@@ -619,7 +631,8 @@ TEST_P({class_base}Test, {test_name}) {{
                 return {
                     "is_successful": True,
                     "status_message": f"编译成功，{test_count} 个测试通过",
-                    "output": output[-2000:] if len(output) > 2000 else output
+                    "output": output[-2000:] if len(output) > 2000 else output,
+                    "next_steps": "✅ 本地测试已通过。现在：1) 等待系统自动提交到 LeetCode 验证；2) 禁止再次调用 compile_and_test；3) 如果 LeetCode 返回失败，按 Wrong Answer 流程处理（添加测试用例 → 修复代码 → 重新测试）"
                 }
             elif "FAILED" in output:
                 # 测试失败，分析失败原因
@@ -630,7 +643,8 @@ TEST_P({class_base}Test, {test_name}) {{
                     "error_type": error_analysis["type"],
                     "error_details": error_analysis["details"],
                     "suggestion": error_analysis["suggestion"],
-                    "output": output
+                    "output": output,
+                    "next_steps": "❌ 测试失败。修复流程：1) 分析错误信息和失败详情；2) 确定修复方案；3) 直接调用 create_or_update_file 修复代码（overwrite_existing=true）；4) 修复后再次调用 compile_and_test 验证。⚠️ 禁止 retrieve_file_content → compile 不改文件的循环！"
                 }
             else:
                 # 无法确定结果
@@ -645,7 +659,8 @@ TEST_P({class_base}Test, {test_name}) {{
                 "is_successful": False,
                 "error_message": "编译或测试超时",
                 "error_type": "timeout",
-                "suggestion": "编译或测试时间过长，请检查代码是否有无限循环或其他问题"
+                "suggestion": "编译或测试时间过长，请检查代码是否有无限循环或其他问题",
+                "next_steps": "⏱️ 超时。检查：1) 是否有死循环；2) 算法时间复杂度是否过高；3) 测试用例是否过大。修复后重新调用 compile_and_test"
             }
         except Exception as e:
             return {"is_successful": False, "error_message": str(e)}

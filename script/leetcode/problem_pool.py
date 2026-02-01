@@ -113,6 +113,9 @@ class ProblemPool:
         Returns:
             题目 ID，如果没有符合条件的题目返回 None
         """
+        import time
+        start_time = time.time()
+        
         candidates = self._get_unsolved()
         
         if difficulty:
@@ -124,25 +127,31 @@ class ProblemPool:
         if not candidates:
             return None
         
-        # 尝试多次，避免选到不支持 C++ 的题目
-        attempts = min(max_attempts, len(candidates))
-        for _ in range(attempts):
-            if not candidates:
-                break
-                
-            problem = random.choice(candidates)
+        # 随机打乱候选列表，然后批量检查
+        random.shuffle(candidates)
+        batch_size = min(max_attempts, len(candidates))
+        batch = candidates[:batch_size]
+        
+        # 批量检查 C++ 支持（减少 API 调用开销）
+        for problem in batch:
             slug = problem.get("titleSlug")
             problem_id = int(problem.get("questionFrontendId", problem.get("questionId", 0)))
             
+            # 快速检查：已知的直接返回结果
+            if slug in self._unsupported_cpp_slugs:
+                continue
+            
             # 检查是否支持 C++
             if self._has_cpp_support(slug):
+                elapsed = time.time() - start_time
+                print(f"  ✅ 选中题目 [{problem_id}] {problem.get('title', '')} (耗时 {elapsed:.1f}s)")
                 return problem_id
-            
-            # 不支持 C++，从候选列表移除，继续尝试
-            candidates.remove(problem)
-            print(f"  ⚠️ 题目 [{problem_id}] {problem.get('title', '')} 不支持 C++，跳过")
+            else:
+                print(f"  ⚠️ 题目 [{problem_id}] {problem.get('title', '')} 不支持 C++，跳过")
         
         # 尝试次数用尽，返回 None
+        elapsed = time.time() - start_time
+        print(f"  ⚠️ 未找到支持 C++ 的题目 (耗时 {elapsed:.1f}s)")
         return None
     
     def get_stats(self) -> Dict:
