@@ -232,6 +232,8 @@ class AISolver:
         # 如果达到最大迭代次数仍未完成，视为失败
         if not success:
             log_with_time(f"❌ 解题失败 ({solve_elapsed:.1f}s): 达到最大迭代次数", ColorCode.RED)
+            # 清理已生成的文件
+            self._cleanup_files(problem_id)
             raise RuntimeError(f"解题失败：达到最大迭代次数 ({AIConfig.MAX_ITERATIONS} 轮)，未能完成题目 {problem_id}")
         
         log_with_time(f"✅ 解题流程完成，总耗时 {solve_elapsed:.1f}s", ColorCode.GREEN)
@@ -276,6 +278,20 @@ class AISolver:
             skip_pr_file.write_text(f"题目 {problem_id} 已解决，跳过 PR 创建。\n", encoding='utf-8')
             return True
         return False
+    
+    def _cleanup_files(self, problem_id: int) -> None:
+        """清理已生成的文件（解题失败时调用）"""
+        from script.leetcode.services import FileGenerator
+        
+        try:
+            problem_info = self.repository.get_by_id(problem_id)
+            generator = FileGenerator(problem_info)
+            
+            removed = generator.remove_files()
+            if removed:
+                log_with_time(f"🧹 已清理 {len(removed)} 个生成的文件", ColorCode.YELLOW)
+        except Exception as e:
+            log_with_time(f"⚠️ 清理文件时出错: {e}", ColorCode.YELLOW)
     
     def _init_conversation(self, problem_id: int, is_daily: bool) -> None:
         """初始化对话"""
