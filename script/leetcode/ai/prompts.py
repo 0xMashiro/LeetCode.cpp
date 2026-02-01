@@ -148,14 +148,21 @@ class LRUCache {
 阶段 5：LeetCode 提交验证
 本地测试通过后，系统会自动提交到 LeetCode 进行最终验证。
 
-如果 LeetCode 返回失败，按以下流程处理：
+如果 LeetCode 返回失败，按以下流程处理（严格执行顺序）：
 
 Wrong Answer（答案错误）：
 1. 分析失败信息：查看输入、输出、期望输出
 2. 添加失败的测试用例（如果提供）：使用 append_test_case 工具将 LeetCode 的失败用例添加到本地测试文件
-3. 修复代码：基于 LeetCode 失败信息和当前代码实现分析失败原因（边界条件？溢出？理解错误？），使用 create_or_update_file 修复（如有需要可 retrieve_file_content 确认代码状态）
-4. 本地验证：调用 compile_and_test 确保修复后通过所有测试
+3. 修复代码（关键步骤）：
+   - 基于 LeetCode 失败信息分析失败原因（边界条件？溢出？理解错误？）
+   - **直接调用 create_or_update_file 修复代码（overwrite_existing=true）**
+   - **不要先 retrieve_file_content！你已经知道要改什么，直接改！**
+4. 本地验证：**修复代码后**，调用 compile_and_test 确保通过所有测试
 5. 重新提交：系统会自动重新提交到 LeetCode（最多重试 5 次）
+
+⚠️ 常见错误警示：
+- ❌ 错误：retrieve_file_content → compile_and_test（没改文件就测试，浪费轮次）
+- ✅ 正确：分析原因 → create_or_update_file（改文件） → compile_and_test（验证）
 
 Runtime Error（运行时错误）：
 1. 查看错误信息（数组越界？空指针？除以零？）
@@ -172,6 +179,23 @@ Time Limit Exceeded（超时）：
 - 本地测试通过且 LeetCode 验证通过
 - 生成解题报告（如果开启）
 - 不要输出额外的总结文字，测试通过即表示完成
+
+工具调用纪律（防止无效循环）：
+
+1. compile_and_test 通过后：
+   - ✅ 如果 LeetCode 验证还在进行，等待系统反馈
+   - ❌ 禁止再次调用 compile_and_test "确认一下"
+   - ❌ 禁止无意义的 retrieve_file_content "查看当前状态"
+
+2. 收到 LeetCode 失败反馈后：
+   - ✅ 必须先改代码（create_or_update_file）再测试
+   - ❌ 禁止 retrieve → compile 不改文件的无效循环
+
+3. 每一轮对话必须有明确进展：
+   - 要么修复了代码（create_or_update_file）
+   - 要么添加了测试用例（append_test_case）
+   - 要么确认了修复结果（compile_and_test）
+   - ❌ 禁止无实质进展的重复操作
 
 代码质量检查清单：
 
@@ -303,6 +327,11 @@ TEST_P(ProblemNameTest, SingleElement) {
 第 4 轮及以后：考虑重新设计算法，检查是否误解题意
 
 重要：每轮修复后必须使用 overwrite_existing=true 重新生成所有三个文件。
+
+修复轮次纪律：
+- 每一轮必须有实质修改：create_or_update_file 或 append_test_case
+- 禁止「retrieve → compile → 发现还是错」的无用循环
+- 如果不知道改哪里，先分析失败信息，不要急着调工具
 
 禁止事项：
 
