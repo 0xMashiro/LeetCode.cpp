@@ -66,6 +66,7 @@ jobs:
         env:
           MOONSHOT_API_KEY: ${{ secrets.MOONSHOT_API_KEY }}
           AI_SOLVER_GENERATE_REPORT: 'true'
+          LEETCODE_COOKIE: ${{ secrets.LEETCODE_COOKIE }}
         run: |
           source venv/bin/activate
           if [ -n "${{ github.event.inputs.problem_id }}" ]; then
