@@ -88,6 +88,7 @@
 | 740 | [Delete and Earn](https://leetcode.com/problems/delete-and-earn/) | [Code](src/leetcode/problems/delete-and-earn.cpp) / [Test](test/leetcode/problems/delete-and-earn.cpp) |
 | 744 | [Find Smallest Letter Greater Than Target](https://leetcode.com/problems/find-smallest-letter-greater-than-target/) | [Code](src/leetcode/problems/find-smallest-letter-greater-than-target.cpp) / [Test](test/leetcode/problems/find-smallest-letter-greater-than-target.cpp) |
 | 756 | [Pyramid Transition Matrix](https://leetcode.com/problems/pyramid-transition-matrix/) | [Code](src/leetcode/problems/pyramid-transition-matrix.cpp) / [Test](test/leetcode/problems/pyramid-transition-matrix.cpp) |
+| 799 | [Champagne Tower](https://leetcode.com/problems/champagne-tower/) | [Code](src/leetcode/problems/champagne-tower.cpp) / [Test](test/leetcode/problems/champagne-tower.cpp) |
 | 816 | [Ambiguous Coordinates](https://leetcode.com/problems/ambiguous-coordinates/) | [Code](src/leetcode/problems/ambiguous-coordinates.cpp) / [Test](test/leetcode/problems/ambiguous-coordinates.cpp) |
 | 829 | [Consecutive Numbers Sum](https://leetcode.com/problems/consecutive-numbers-sum/) | [Code](src/leetcode/problems/consecutive-numbers-sum.cpp) / [Test](test/leetcode/problems/consecutive-numbers-sum.cpp) |
 | 837 | [New 21 Game](https://leetcode.com/problems/new-21-game/) | [Code](src/leetcode/problems/new-21-game.cpp) / [Test](test/leetcode/problems/new-21-game.cpp) |
