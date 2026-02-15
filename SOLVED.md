@@ -12,6 +12,7 @@
 | 62 | [Unique Paths](https://leetcode.com/problems/unique-paths/) | [Code](src/leetcode/problems/unique-paths.cpp) / [Test](test/leetcode/problems/unique-paths.cpp) |
 | 63 | [Unique Paths II](https://leetcode.com/problems/unique-paths-ii/) | [Code](src/leetcode/problems/unique-paths-ii.cpp) / [Test](test/leetcode/problems/unique-paths-ii.cpp) |
 | 66 | [Plus One](https://leetcode.com/problems/plus-one/) | [Code](src/leetcode/problems/plus-one.cpp) / [Test](test/leetcode/problems/plus-one.cpp) |
+| 67 | [Add Binary](https://leetcode.com/problems/add-binary/) | [Code](src/leetcode/problems/add-binary.cpp) / [Test](test/leetcode/problems/add-binary.cpp) |
 | 68 | [Text Justification](https://leetcode.com/problems/text-justification/) | [Code](src/leetcode/problems/text-justification.cpp) / [Test](test/leetcode/problems/text-justification.cpp) |
 | 71 | [Simplify Path](https://leetcode.com/problems/simplify-path/) | [Code](src/leetcode/problems/simplify-path.cpp) / [Test](test/leetcode/problems/simplify-path.cpp) |
 | 85 | [Maximal Rectangle](https://leetcode.com/problems/maximal-rectangle/) | [Code](src/leetcode/problems/maximal-rectangle.cpp) / [Test](test/leetcode/problems/maximal-rectangle.cpp) |
