@@ -101,6 +101,7 @@
 | 848 | [Shifting Letters](https://leetcode.com/problems/shifting-letters/) | [Code](src/leetcode/problems/shifting-letters.cpp) / [Test](test/leetcode/problems/shifting-letters.cpp) |
 | 865 | [Smallest Subtree with all the Deepest Nodes](https://leetcode.com/problems/smallest-subtree-with-all-the-deepest-nodes/) | [Code](src/leetcode/problems/smallest-subtree-with-all-the-deepest-nodes.cpp) / [Test](test/leetcode/problems/smallest-subtree-with-all-the-deepest-nodes.cpp) |
 | 867 | [Transpose Matrix](https://leetcode.com/problems/transpose-matrix/) | [Code](src/leetcode/problems/transpose-matrix.cpp) / [Test](test/leetcode/problems/transpose-matrix.cpp) |
+| 868 | [Binary Gap](https://leetcode.com/problems/binary-gap/) | [Code](src/leetcode/problems/binary-gap.cpp) / [Test](test/leetcode/problems/binary-gap.cpp) |
 | 897 | [Increasing Order Search Tree](https://leetcode.com/problems/increasing-order-search-tree/) | [Code](src/leetcode/problems/increasing-order-search-tree.cpp) / [Test](test/leetcode/problems/increasing-order-search-tree.cpp) |
 | 898 | [Bitwise ORs of Subarrays](https://leetcode.com/problems/bitwise-ors-of-subarrays/) | [Code](src/leetcode/problems/bitwise-ors-of-subarrays.cpp) / [Test](test/leetcode/problems/bitwise-ors-of-subarrays.cpp) |
 | 915 | [Partition Array into Disjoint Intervals](https://leetcode.com/problems/partition-array-into-disjoint-intervals/) | [Code](src/leetcode/problems/partition-array-into-disjoint-intervals.cpp) / [Test](test/leetcode/problems/partition-array-into-disjoint-intervals.cpp) |
