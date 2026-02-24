@@ -115,6 +115,7 @@
 | 992 | [Subarrays with K Different Integers](https://leetcode.com/problems/subarrays-with-k-different-integers/) | [Code](src/leetcode/problems/subarrays-with-k-different-integers.cpp) / [Test](test/leetcode/problems/subarrays-with-k-different-integers.cpp) |
 | 999 | [Available Captures for Rook](https://leetcode.com/problems/available-captures-for-rook/) | [Code](src/leetcode/problems/available-captures-for-rook.cpp) / [Test](test/leetcode/problems/available-captures-for-rook.cpp) |
 | 1019 | [Next Greater Node In Linked List](https://leetcode.com/problems/next-greater-node-in-linked-list/) | [Code](src/leetcode/problems/next-greater-node-in-linked-list.cpp) / [Test](test/leetcode/problems/next-greater-node-in-linked-list.cpp) |
+| 1022 | [Sum of Root To Leaf Binary Numbers](https://leetcode.com/problems/sum-of-root-to-leaf-binary-numbers/) | [Code](src/leetcode/problems/sum-of-root-to-leaf-binary-numbers.cpp) / [Test](test/leetcode/problems/sum-of-root-to-leaf-binary-numbers.cpp) |
 | 1023 | [Camelcase Matching](https://leetcode.com/problems/camelcase-matching/) | [Code](src/leetcode/problems/camelcase-matching.cpp) / [Test](test/leetcode/problems/camelcase-matching.cpp) |
 | 1036 | [Escape a Large Maze](https://leetcode.com/problems/escape-a-large-maze/) | [Code](src/leetcode/problems/escape-a-large-maze.cpp) / [Test](test/leetcode/problems/escape-a-large-maze.cpp) |
 | 1037 | [Valid Boomerang](https://leetcode.com/problems/valid-boomerang/) | [Code](src/leetcode/problems/valid-boomerang.cpp) / [Test](test/leetcode/problems/valid-boomerang.cpp) |
