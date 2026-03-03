@@ -173,6 +173,7 @@
 | 1534 | [Count Good Triplets](https://leetcode.com/problems/count-good-triplets/) | [Code](src/leetcode/problems/count-good-triplets.cpp) / [Test](test/leetcode/problems/count-good-triplets.cpp) |
 | 1536 | [Minimum Swaps to Arrange a Binary Grid](https://leetcode.com/problems/minimum-swaps-to-arrange-a-binary-grid/) | [Code](src/leetcode/problems/minimum-swaps-to-arrange-a-binary-grid.cpp) / [Test](test/leetcode/problems/minimum-swaps-to-arrange-a-binary-grid.cpp) |
 | 1544 | [Make The String Great](https://leetcode.com/problems/make-the-string-great/) | [Code](src/leetcode/problems/make-the-string-great.cpp) / [Test](test/leetcode/problems/make-the-string-great.cpp) |
+| 1545 | [Find Kth Bit in Nth Binary String](https://leetcode.com/problems/find-kth-bit-in-nth-binary-string/) | [Code](src/leetcode/problems/find-kth-bit-in-nth-binary-string.cpp) / [Test](test/leetcode/problems/find-kth-bit-in-nth-binary-string.cpp) |
 | 1550 | [Three Consecutive Odds](https://leetcode.com/problems/three-consecutive-odds/) | [Code](src/leetcode/problems/three-consecutive-odds.cpp) / [Test](test/leetcode/problems/three-consecutive-odds.cpp) |
 | 1559 | [Detect Cycles in 2D Grid](https://leetcode.com/problems/detect-cycles-in-2d-grid/) | [Code](src/leetcode/problems/detect-cycles-in-2d-grid.cpp) / [Test](test/leetcode/problems/detect-cycles-in-2d-grid.cpp) |
 | 1572 | [Matrix Diagonal Sum](https://leetcode.com/problems/matrix-diagonal-sum/) | [Code](src/leetcode/problems/matrix-diagonal-sum.cpp) / [Test](test/leetcode/problems/matrix-diagonal-sum.cpp) |
