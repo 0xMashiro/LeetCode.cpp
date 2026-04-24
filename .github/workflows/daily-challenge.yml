@@ -66,13 +66,15 @@ jobs:
         env:
           MOONSHOT_API_KEY: ${{ secrets.MOONSHOT_API_KEY }}
           AI_SOLVER_GENERATE_REPORT: 'true'
-          LEETCODE_COOKIE: ${{ secrets.LEETCODE_COOKIE }}
         run: |
+          # 纯 AI 判题路径：本地编译 + gtest 通过即完成，不做 LeetCode 判题。
+          # 未来如果要加 "先 AI 解，再 LeetCode 验证" 的独立 job，单独用
+          # --require-leetcode + LEETCODE_COOKIE，互不耦合。
           source venv/bin/activate
           if [ -n "${{ github.event.inputs.problem_id }}" ]; then
-            python -m script.leetcode.ai.solver ${{ github.event.inputs.problem_id }} --report
+            python -m script.leetcode.ai.solver ${{ github.event.inputs.problem_id }} --report --no-leetcode
           else
-            python -m script.leetcode.ai.solver --report
+            python -m script.leetcode.ai.solver --report --no-leetcode
           fi
         continue-on-error: true
       
@@ -162,7 +164,7 @@ jobs:
           if-no-files-found: ignore
       
       - name: Create Pull Request
-        if: steps.get_info.outputs.has_solution == 'true' && steps.get_info.outputs.should_skip != 'true' && success()
+        if: steps.get_info.outputs.has_solution == 'true' && steps.get_info.outputs.should_skip != 'true'
         uses: peter-evans/create-pull-request@v5
         with:
           commit-message: "feat: Add solution for LeetCode #${{ steps.get_info.outputs.problem_id }}"

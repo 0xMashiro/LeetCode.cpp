@@ -65,5 +65,11 @@ SOLUTION_REPORT_*.md
 # AI Solver skip marker (temporary, not committed)
 SKIP_PR
 
+# AI Solver run logs (metrics + per-problem logs, local only)
+.ai-run-logs/
+
+# Cookie watch runtime state
+.cookie-watch/
+
 # Manim ouput media files
 media/

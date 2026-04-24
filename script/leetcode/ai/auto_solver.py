@@ -35,6 +35,7 @@ class AutoSolver:
         fail_streak_pause: int = 60,
         api_key: Optional[str] = None,
         base_url: Optional[str] = None,
+        require_leetcode: Optional[bool] = None,
     ):
         self.report = report
         self.max_retries = max_retries
@@ -43,6 +44,8 @@ class AutoSolver:
         self.fail_streak_pause = fail_streak_pause
         self.api_key = api_key
         self.base_url = base_url
+        # None=随子进程默认(env + 默认 True); True/False 都透传为显式 CLI flag
+        self.require_leetcode = require_leetcode
         
         # 统计信息
         self.start_time = datetime.now()
@@ -102,6 +105,10 @@ class AutoSolver:
         cmd = [python_exe, "-m", "script.leetcode.ai.solver", "--random"]
         if self.report:
             cmd.append("--report")
+        if self.require_leetcode is True:
+            cmd.append("--require-leetcode")
+        elif self.require_leetcode is False:
+            cmd.append("--no-leetcode")
         return cmd
     
     def run_once(self) -> tuple[bool, Optional[str]]:

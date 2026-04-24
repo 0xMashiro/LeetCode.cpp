@@ -26,6 +26,7 @@ default:
     @echo "  just test           - 运行所有测试"
     @echo "  just test <ID>      - 运行指定题目测试（需先全量构建）"
     @echo "  just test-filter <FILTER> - 运行过滤后的测试"
+    @echo "  just py-test        - 运行 Python 单元测试（tests/）"
     @echo ""
     @echo "题目管理："
     @echo "  just add <ID> [--force]  - 添加题目（--force 强制覆盖）"
@@ -44,8 +45,11 @@ default:
     @echo "  just ai-solve --auto     - 自动循环解决所有未完成的题目"
     @echo ""
     @echo "LeetCode 提交："
-    @echo "  just submit <ID>         - 转换并提交到 LeetCode（默认第1个解法）"
-    @echo "  just submit <ID> -n 2  - 提交第2个解法到 LeetCode"
+    @echo "  just submit <ID>         - 转换并提交到 LeetCode（默认最后一个 = 最优解）"
+    @echo "  just submit <ID> -n 2    - 提交第 2 个 registerStrategy"
+    @echo "  just submit <ID> --all   - 所有策略逐个翻译并提交（验证多解正确性，走缓存）"
+    @echo "  just cookie check        - 检查 LEETCODE_COOKIE 是否有效"
+    @echo "  just cookie update       - 一键同步浏览器 Cookie 到 GitHub Secret"
     @echo ""
     @echo "Python 环境："
     @echo "  just venv-setup          - 创建并设置虚拟环境"
@@ -166,6 +170,9 @@ test-filter FILTER:
     fi
     ./build/bin/problem_set_tests --gtest_filter={{FILTER}}
 
+py-test:
+    {{python_venv}} -m unittest discover -s tests -p "test_*.py" -v
+
 # 代码格式化
 format:
     @bash script/code-format.sh
@@ -177,6 +184,32 @@ ai-solve *ARGS:
 # 提交到 LeetCode
 submit ID *ARGS:
     {{python_venv}} -m script.leetcode.submit {{ID}} {{ARGS}}
+
+cookie ACTION *ARGS:
+    #!/usr/bin/env bash
+    set -e
+    action="{{ACTION}}"
+    args="{{ARGS}}"
+
+    case "$action" in
+      check)
+        {{python_venv}} script/ci/check_leetcode_cookie.py --strict $args
+        ;;
+      update)
+        if grep -qi microsoft /proc/version 2>/dev/null; then
+          {{python_venv}} script/ci/sync_leetcode_cookie_wsl.py $args
+        else
+          {{python_venv}} script/ci/sync_leetcode_cookie.py $args
+        fi
+        ;;
+      *)
+        echo "用法: just cookie <check|update> [args...]"
+        echo "示例:"
+        echo "  just cookie check"
+        echo "  just cookie update"
+        exit 1
+        ;;
+    esac
 
 # Python 虚拟环境管理
 venv-setup:

@@ -8,6 +8,8 @@ import random
 from pathlib import Path
 from typing import List, Optional, Dict, Any, Set
 
+from script.leetcode.api import ProblemRepository
+
 
 class ProblemPool:
     """题目池：管理所有题目，支持随机挑选未解决的题目"""
@@ -71,11 +73,8 @@ class ProblemPool:
         if slug in self._unsupported_cpp_slugs:
             return False
         
-        # 尝试从 API 获取代码片段信息
         try:
-            from script.leetcode.api import ProblemRepository
-            repo = ProblemRepository()
-            data = repo.get_detail_by_slug(slug, include_code=True)
+            data = ProblemRepository().get_detail_by_slug(slug, include_code=True)
             
             # 检查是否有 C++ 代码片段
             if data.code_snippets:

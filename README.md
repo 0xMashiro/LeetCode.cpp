@@ -99,7 +99,48 @@ TwoSumSolution::TwoSumSolution() {
 just test                 # 运行所有测试
 just test <ID>            # 运行指定题目测试（如：just test 1）
 just test-filter <FILTER> # 运行过滤后的测试
+just py-test              # 运行 Python 单元测试（tests/）
 ```
+
+### LeetCode Cookie 一键同步（可选）
+
+如果你不想手动登录后复制 Cookie，可以使用本地脚本从浏览器读取已登录会话并直接更新 GitHub Secret：
+
+```bash
+# 首次需要依赖和 gh 登录
+pip install browser-cookie3
+gh auth login
+
+# 在仓库根目录执行（默认更新 LEETCODE_COOKIE）
+just cookie update --repo <owner/repo>
+# 或在 .env 配置 GITHUB_REPO 后直接执行
+just cookie update
+
+# 校验当前 LEETCODE_COOKIE（无效时返回非0）
+just cookie check
+```
+
+如果你在 WSL，不想在终端手动输入命令：
+- 直接在 Windows 资源管理器双击 [cookie-update.cmd](/home/chai/workspace/LeetCode.cpp/cookie-update.cmd)
+- 它会自动调用 `script/ci/cookie_update_windows.ps1` 完成 dry-run + secret 更新
+
+如果你在 WSL 且不想手动复制 Cookie：
+- 直接运行 `just cookie update`
+- 脚本会自动拉起 Windows 浏览器登录页（CDP），你登录后回终端按回车即可自动抓取并更新 Secret
+- 依赖：`venv/bin/pip install playwright`
+
+脚本位置：
+- `script/ci/sync_leetcode_cookie.py`：读取浏览器 Cookie + 更新 Secret
+- `script/ci/check_leetcode_cookie.py`：校验 Cookie 有效性（GraphQL userStatus）
+
+### Cookie 过期 webhook 告警（可选）
+
+仓库内置工作流：`.github/workflows/leetcode-cookie-health.yml`，每天定时检查 `LEETCODE_COOKIE`。
+
+如需告警，请配置仓库 Secret：
+- `LEETCODE_COOKIE_ALERT_WEBHOOK_URL`：你的 webhook 地址（企业微信/飞书/Slack/自建服务）
+
+当 Cookie 失效时，工作流会自动向该地址发送告警消息。
 
 ### 调试代码
 

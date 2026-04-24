@@ -11,6 +11,7 @@ from script.leetcode.models import ProblemInfo, FunctionSignature, DesignClassDe
 from script.leetcode.config import FileTypeConfig
 from script.leetcode.exceptions import FileOperationError
 from script.leetcode.utils import color_text, ColorCode
+from script.leetcode.services.design_class_extractor import DesignClassExtractor
 from script.leetcode.services.template_renderer import TemplateRenderer
 
 
@@ -55,9 +56,7 @@ class FileGenerator:
         }
         
         if self.is_design:
-            # 设计类题目需要方法声明和实现
             if self.design_class_def:
-                from .signature_parser import DesignClassExtractor
                 base_context['method_declarations'] = DesignClassExtractor.format_method_declarations(
                     self.design_class_def
                 )

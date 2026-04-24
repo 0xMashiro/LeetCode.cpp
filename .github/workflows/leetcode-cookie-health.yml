@@ -1,0 +1,63 @@
+name: LeetCode Cookie Health
+
+on:
+  schedule:
+    # Every day at 00:10 UTC
+    - cron: '10 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  check-cookie:
+    name: Check LeetCode Cookie
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Check LEETCODE_COOKIE
+        id: check
+        env:
+          LEETCODE_COOKIE: ${{ secrets.LEETCODE_COOKIE }}
+        run: |
+          python3 script/ci/check_leetcode_cookie.py
+
+      - name: Send webhook alert when cookie is invalid
+        if: steps.check.outputs.valid != 'true' && secrets.LEETCODE_COOKIE_ALERT_WEBHOOK_URL != ''
+        env:
+          WEBHOOK_URL: ${{ secrets.LEETCODE_COOKIE_ALERT_WEBHOOK_URL }}
+          REASON: ${{ steps.check.outputs.reason }}
+          USERNAME: ${{ steps.check.outputs.username }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          REPO: ${{ github.repository }}
+        run: |
+          payload=$(python3 - <<'PY'
+          import json
+          import os
+
+          content = (
+              "【LeetCode Cookie 告警】\n"
+              f"仓库: {os.getenv('REPO', '')}\n"
+              "状态: 无效\n"
+              f"原因: {os.getenv('REASON', '')}\n"
+              f"用户: {os.getenv('USERNAME', '')}\n"
+              f"运行: {os.getenv('RUN_URL', '')}"
+          )
+          print(json.dumps({"msgtype": "text", "text": {"content": content}}, ensure_ascii=False))
+          PY
+          )
+          curl -sS -X POST "$WEBHOOK_URL" \
+            -H 'Content-Type: application/json' \
+            -d "$payload" >/dev/null
+
+      - name: Print summary
+        run: |
+          echo "cookie_valid=${{ steps.check.outputs.valid }}"
+          echo "reason=${{ steps.check.outputs.reason }}"
+          echo "username=${{ steps.check.outputs.username }}"

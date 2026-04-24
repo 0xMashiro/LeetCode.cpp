@@ -5,7 +5,7 @@
 提供高层次的题目数据访问接口
 """
 
-from typing import List, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 from script.leetcode.models import ProblemInfo, ProblemData
 from script.leetcode.exceptions import ProblemNotFoundError
@@ -77,9 +77,15 @@ class ProblemRepository:
         problem_data = self._client.get_problem_by_slug(slug, include_code_snippets=True)
         return problem_data.get_cpp_code_template()
     
-    def get_daily_challenge(self) -> Dict[str, any]:
+    def get_daily_challenge(self) -> Dict[str, Any]:
         """获取每日一题"""
         return self._client.get_daily_challenge()
+
+    def resolve_target(self, target: str) -> ProblemInfo:
+        """统一把用户传入的字符串（数字 ID 或 slug）解析成 ProblemInfo。"""
+        if target.isdigit():
+            return self.get_by_id(int(target))
+        return self.get_by_slug(target)
     
     def find_by_slug_prefix(self, prefix: str) -> List[ProblemInfo]:
         """通过 slug 前缀搜索题目"""

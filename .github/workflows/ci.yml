@@ -7,14 +7,22 @@ on:
       - 'src/**/*.cpp'
       - 'include/**/*.h'
       - 'test/**/*.cpp'
+      - 'script/**/*.py'
+      - 'tests/**/*.py'
       - 'CMakeLists.txt'
+      - 'requirements.txt'
+      - 'justfile'
   pull_request:
     branches: [main, master, develop]
     paths:
       - 'src/**/*.cpp'
       - 'include/**/*.h'
       - 'test/**/*.cpp'
+      - 'script/**/*.py'
+      - 'tests/**/*.py'
       - 'CMakeLists.txt'
+      - 'requirements.txt'
+      - 'justfile'
 
 # Cancel redundant workflows
 concurrency:
@@ -22,6 +30,27 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  python-tests:
+    name: Python Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Python dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install -r requirements.txt
+
+      - name: Run Python unit tests
+        run: |
+          python3 -m unittest discover -s tests -p "test_*.py" -v
+
   detect-changes:
     name: Detect Changes
     runs-on: ubuntu-latest

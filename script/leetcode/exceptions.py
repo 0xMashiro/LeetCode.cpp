@@ -49,3 +49,14 @@ class SignatureError(LeetCodeError):
 class FileOperationError(LeetCodeError):
     """文件操作错误"""
     pass
+
+
+class StreamResponseError(LeetCodeError):
+    """AI 流式响应异常（超时、未收到任何数据、达到 chunk 上限等）
+
+    专门用于把"流中断"与"模型主动完成"区分开，避免空响应被误判为解题完成。
+    """
+
+    def __init__(self, reason: str):
+        self.reason = reason
+        super().__init__(reason)
