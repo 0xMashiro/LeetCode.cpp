@@ -23,7 +23,6 @@ jobs:
     timeout-minutes: 30
     permissions:
       contents: write
-      pull-requests: write
     
     steps:
       - name: Checkout repository
@@ -64,19 +63,53 @@ jobs:
       
       - name: Run AI solver
         env:
-          MOONSHOT_API_KEY: ${{ secrets.MOONSHOT_API_KEY }}
+          AI_PROVIDER: deepseek
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          DEEPSEEK_MODEL: deepseek-v4-flash
+          DEEPSEEK_THINKING: enabled
           AI_SOLVER_GENERATE_REPORT: 'true'
+          AI_SOLVER_METRICS_DIR: ai-metrics
+          LEETCODE_COOKIE: ${{ secrets.LEETCODE_COOKIE }}
         run: |
-          # 纯 AI 判题路径：本地编译 + gtest 通过即完成，不做 LeetCode 判题。
-          # 未来如果要加 "先 AI 解，再 LeetCode 验证" 的独立 job，单独用
-          # --require-leetcode + LEETCODE_COOKIE，互不耦合。
+          # Fully automated path: only continue when LeetCode returns Accepted.
           source venv/bin/activate
           if [ -n "${{ github.event.inputs.problem_id }}" ]; then
-            python -m script.leetcode.ai.solver ${{ github.event.inputs.problem_id }} --report --no-leetcode
+            python -m script.leetcode.ai.solver ${{ github.event.inputs.problem_id }} --report --require-leetcode
           else
-            python -m script.leetcode.ai.solver --report --no-leetcode
+            python -m script.leetcode.ai.solver --report --require-leetcode
           fi
-        continue-on-error: true
+
+      - name: Require LeetCode Accepted
+        run: |
+          source venv/bin/activate
+          python - <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+
+          if Path("SKIP_PR").exists():
+              print("SKIP_PR exists; no new solution needs LeetCode gate.")
+              sys.exit(0)
+
+          metrics = sorted(
+              Path("ai-metrics").glob("metrics_*.json"),
+              key=lambda p: p.stat().st_mtime,
+          )
+          if not metrics:
+              raise SystemExit("No AI solver metrics found; cannot prove LeetCode Accepted.")
+
+          latest = metrics[-1]
+          data = json.loads(latest.read_text(encoding="utf-8"))
+          if data.get("leetcode_passed") is not True:
+              raise SystemExit(
+                  "LeetCode gate failed: "
+                  f"leetcode_passed={data.get('leetcode_passed')!r}, "
+                  f"skip_reason={data.get('skip_reason')!r}, "
+                  f"failure_reason={data.get('failure_reason')!r}"
+              )
+
+          print(f"LeetCode Accepted confirmed by {latest}")
+          PY
       
       - name: Get problem info
         id: get_info
@@ -160,26 +193,26 @@ jobs:
             ${{ steps.get_info.outputs.source_file }}
             ${{ steps.get_info.outputs.header_file }}
             ${{ steps.get_info.outputs.test_file }}
+            ai-metrics/*.json
           retention-days: 7
           if-no-files-found: ignore
       
-      - name: Create Pull Request
+      - name: Commit and push solution
         if: steps.get_info.outputs.has_solution == 'true' && steps.get_info.outputs.should_skip != 'true'
-        uses: peter-evans/create-pull-request@v5
-        with:
-          commit-message: "feat: Add solution for LeetCode #${{ steps.get_info.outputs.problem_id }}"
-          title: "🤖 Daily Challenge: Problem #${{ steps.get_info.outputs.problem_id }}"
-          body-path: ${{ steps.get_info.outputs.report_file }}
-          branch: daily-challenge/${{ steps.get_info.outputs.problem_id }}
-          base: main
-          labels: |
-            daily-challenge
-            ai-generated
-          draft: false
-          delete-branch: true
-          # Include all changes: new problem files + updated SOLVED.md
-          add-paths: |
-            src/leetcode/problems/
-            include/leetcode/problems/
-            test/leetcode/problems/
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add \
+            "${{ steps.get_info.outputs.source_file }}" \
+            "${{ steps.get_info.outputs.header_file }}" \
+            "${{ steps.get_info.outputs.test_file }}" \
             SOLVED.md
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+
+          git commit -m "feat: Add solution for LeetCode #${{ steps.get_info.outputs.problem_id }}"
+          git push origin HEAD:main
