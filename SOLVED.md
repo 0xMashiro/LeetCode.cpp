@@ -96,6 +96,7 @@
 | 756 | [Pyramid Transition Matrix](https://leetcode.com/problems/pyramid-transition-matrix/) | [Code](src/leetcode/problems/pyramid-transition-matrix.cpp) / [Test](test/leetcode/problems/pyramid-transition-matrix.cpp) |
 | 761 | [Special Binary String](https://leetcode.com/problems/special-binary-string/) | [Code](src/leetcode/problems/special-binary-string.cpp) / [Test](test/leetcode/problems/special-binary-string.cpp) |
 | 788 | [Rotated Digits](https://leetcode.com/problems/rotated-digits/) | [Code](src/leetcode/problems/rotated-digits.cpp) / [Test](test/leetcode/problems/rotated-digits.cpp) |
+| 796 | [Rotate String](https://leetcode.com/problems/rotate-string/) | [Code](src/leetcode/problems/rotate-string.cpp) / [Test](test/leetcode/problems/rotate-string.cpp) |
 | 799 | [Champagne Tower](https://leetcode.com/problems/champagne-tower/) | [Code](src/leetcode/problems/champagne-tower.cpp) / [Test](test/leetcode/problems/champagne-tower.cpp) |
 | 816 | [Ambiguous Coordinates](https://leetcode.com/problems/ambiguous-coordinates/) | [Code](src/leetcode/problems/ambiguous-coordinates.cpp) / [Test](test/leetcode/problems/ambiguous-coordinates.cpp) |
 | 829 | [Consecutive Numbers Sum](https://leetcode.com/problems/consecutive-numbers-sum/) | [Code](src/leetcode/problems/consecutive-numbers-sum.cpp) / [Test](test/leetcode/problems/consecutive-numbers-sum.cpp) |
