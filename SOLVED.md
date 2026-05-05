@@ -11,6 +11,7 @@
 | 37 | [Sudoku Solver](https://leetcode.com/problems/sudoku-solver/) | [Code](src/leetcode/problems/sudoku-solver.cpp) / [Test](test/leetcode/problems/sudoku-solver.cpp) |
 | 42 | [Trapping Rain Water](https://leetcode.com/problems/trapping-rain-water/) | [Code](src/leetcode/problems/trapping-rain-water.cpp) / [Test](test/leetcode/problems/trapping-rain-water.cpp) |
 | 48 | [Rotate Image](https://leetcode.com/problems/rotate-image/) | [Code](src/leetcode/problems/rotate-image.cpp) / [Test](test/leetcode/problems/rotate-image.cpp) |
+| 61 | [Rotate List](https://leetcode.com/problems/rotate-list/) | [Code](src/leetcode/problems/rotate-list.cpp) / [Test](test/leetcode/problems/rotate-list.cpp) |
 | 62 | [Unique Paths](https://leetcode.com/problems/unique-paths/) | [Code](src/leetcode/problems/unique-paths.cpp) / [Test](test/leetcode/problems/unique-paths.cpp) |
 | 63 | [Unique Paths II](https://leetcode.com/problems/unique-paths-ii/) | [Code](src/leetcode/problems/unique-paths-ii.cpp) / [Test](test/leetcode/problems/unique-paths-ii.cpp) |
 | 66 | [Plus One](https://leetcode.com/problems/plus-one/) | [Code](src/leetcode/problems/plus-one.cpp) / [Test](test/leetcode/problems/plus-one.cpp) |
