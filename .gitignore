@@ -68,6 +68,9 @@ SKIP_PR
 # AI Solver run logs (metrics + per-problem logs, local only)
 .ai-run-logs/
 
+# Codex local state
+.codex
+
 # Cookie watch runtime state
 .cookie-watch/
 
