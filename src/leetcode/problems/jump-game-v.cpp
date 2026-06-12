@@ -72,8 +72,8 @@ JumpGameVSolution::JumpGameVSolution() {
   setMetaInfo({.id = 1340,
                .title = "Jump Game V",
                .url = "https://leetcode.com/problems/jump-game-v/"});
-  registerStrategy("Memoization DFS", solution1);
-  registerStrategy("Sort + DP", solution2);
+  registerStrategy({.name = "Memoization DFS"}, solution1);
+  registerStrategy({.name = "Sort + DP"}, solution2);
 }
 
 int JumpGameVSolution::maxJumps(vector<int>& arr, int d) {

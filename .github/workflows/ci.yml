@@ -203,16 +203,16 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y cmake build-essential ccache ninja-build python3 gcc g++
+          sudo apt-get install -y cmake build-essential ccache ninja-build python3 gcc g++ clang lld
 
       - name: Setup ccache
         uses: hendrikmuhs/ccache-action@v1.2
         with:
           # Full build cache - most comprehensive, used as fallback for all builds
-          key: ${{ runner.os }}-gcc-full-${{ hashFiles('CMakeLists.txt', 'src/leetcode/utils/*.cpp', 'include/leetcode/*.h') }}
+          key: ${{ runner.os }}-clang-unity-full-${{ hashFiles('CMakeLists.txt', 'src/leetcode/utils/*.cpp', 'include/leetcode/*.h') }}
           restore-keys: |
-            ${{ runner.os }}-gcc-full-
-            ${{ runner.os }}-gcc-
+            ${{ runner.os }}-clang-unity-full-
+            ${{ runner.os }}-clang-
           max-size: 500M
 
       - name: Setup ccache symlinks
@@ -232,8 +232,11 @@ jobs:
           mkdir -p build && cd build
           cmake .. -G Ninja \
             -DCMAKE_BUILD_TYPE=Release \
-            -DCMAKE_C_COMPILER=/usr/local/lib/ccache/gcc \
-            -DCMAKE_CXX_COMPILER=/usr/local/lib/ccache/g++
+            -DCMAKE_C_COMPILER=clang \
+            -DCMAKE_CXX_COMPILER=clang++ \
+            -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld" \
+            -DCMAKE_UNITY_BUILD=ON \
+            -DCMAKE_UNITY_BUILD_BATCH_SIZE=32
           cmake --build . -j
           ccache -s
 

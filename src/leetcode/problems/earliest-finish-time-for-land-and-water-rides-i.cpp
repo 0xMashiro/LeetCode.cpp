@@ -130,8 +130,8 @@ EarliestFinishTimeForLandAndWaterRidesISolution::EarliestFinishTimeForLandAndWat
   setMetaInfo({.id = 3633,
                .title = "Earliest Finish Time for Land and Water Rides I",
                .url = "https://leetcode.com/problems/earliest-finish-time-for-land-and-water-rides-i/"});
-  registerStrategy("Brute Force", solution1);
-  registerStrategy("Sorting + Binary Search", solution2);
+  registerStrategy({.name = "Brute Force"}, solution1);
+  registerStrategy({.name = "Sorting + Binary Search"}, solution2);
 }
 
 int EarliestFinishTimeForLandAndWaterRidesISolution::earliestFinishTime(

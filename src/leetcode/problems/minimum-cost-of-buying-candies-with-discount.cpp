@@ -23,7 +23,7 @@ MinimumCostOfBuyingCandiesWithDiscountSolution::MinimumCostOfBuyingCandiesWithDi
   setMetaInfo({.id = 2144,
                .title = "Minimum Cost of Buying Candies With Discount",
                .url = "https://leetcode.com/problems/minimum-cost-of-buying-candies-with-discount/"});
-  registerStrategy("Greedy + Sort", solution1);
+  registerStrategy({.name = "Greedy + Sort"}, solution1);
 }
 
 int MinimumCostOfBuyingCandiesWithDiscountSolution::minimumCost(vector<int>& cost) {

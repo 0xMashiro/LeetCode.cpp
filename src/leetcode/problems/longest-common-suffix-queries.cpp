@@ -85,7 +85,7 @@ LongestCommonSuffixQueriesSolution::LongestCommonSuffixQueriesSolution() {
                .title = "Longest Common Suffix Queries",
                .url = "https://leetcode.com/problems/longest-common-suffix-queries/"});
   // 单解：Trie（反转）。暴力法 O(N^2) 在 N=1e4 下不可行，无其他合理范式。
-  registerStrategy("Trie Suffix Matching", solution1);
+  registerStrategy({.name = "Trie Suffix Matching"}, solution1);
 }
 
 vector<int> LongestCommonSuffixQueriesSolution::stringIndices(

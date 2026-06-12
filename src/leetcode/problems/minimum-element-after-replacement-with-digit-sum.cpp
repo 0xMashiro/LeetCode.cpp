@@ -53,8 +53,8 @@ MinimumElementAfterReplacementWithDigitSumSolution::MinimumElementAfterReplaceme
   setMetaInfo({.id = 3300,
                .title = "Minimum Element After Replacement With Digit Sum",
                .url = "https://leetcode.com/problems/minimum-element-after-replacement-with-digit-sum/"});
-  registerStrategy("On-the-fly Digit Sum", solution1);
-  registerStrategy("Precomputed Lookup", solution2);
+  registerStrategy({.name = "On-the-fly Digit Sum"}, solution1);
+  registerStrategy({.name = "Precomputed Lookup"}, solution2);
 }
 
 int MinimumElementAfterReplacementWithDigitSumSolution::minElement(vector<int>& nums) {

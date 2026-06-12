@@ -38,8 +38,8 @@ LeftAndRightSumDifferencesSolution::LeftAndRightSumDifferencesSolution() {
   setMetaInfo({.id = 2574,
                .title = "Left and Right Sum Differences",
                .url = "https://leetcode.com/problems/left-and-right-sum-differences/"});
-  registerStrategy("Brute Force", solution1);
-  registerStrategy("Prefix Sum", solution2);
+  registerStrategy({.name = "Brute Force"}, solution1);
+  registerStrategy({.name = "Prefix Sum"}, solution2);
 }
 
 vector<int> LeftAndRightSumDifferencesSolution::leftRightDifference(vector<int>& nums) {

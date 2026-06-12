@@ -122,8 +122,8 @@ TotalWavinessOfNumbersInRangeIiSolution::
   setMetaInfo({.id = 3753,
                .title = "Total Waviness of Numbers in Range II",
                .url = "https://leetcode.com/problems/total-waviness-of-numbers-in-range-ii/"});
-  registerStrategy("BruteForce", solution1);  // @expected: TLE
-  registerStrategy("DigitDP", solution2);
+  registerStrategy({.name = "BruteForce", .expected = "TLE"}, solution1);
+  registerStrategy({.name = "DigitDP"}, solution2);
 }
 
 // ---------------------------------------------------------------

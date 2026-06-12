@@ -23,7 +23,7 @@ DestroyingAsteroidsSolution::DestroyingAsteroidsSolution() {
   setMetaInfo({.id = 2126,
                .title = "Destroying Asteroids",
                .url = "https://leetcode.com/problems/destroying-asteroids/"});
-  registerStrategy("Sorting + Greedy", solution1);
+  registerStrategy({.name = "Sorting + Greedy"}, solution1);
 }
 
 bool DestroyingAsteroidsSolution::asteroidsDestroyed(int mass, std::vector<int>& asteroids) {

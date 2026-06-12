@@ -57,9 +57,9 @@ CountTheNumberOfSpecialCharactersISolution::CountTheNumberOfSpecialCharactersISo
   setMetaInfo({.id = 3120,
                .title = "Count the Number of Special Characters I",
                .url = "https://leetcode.com/problems/count-the-number-of-special-characters-i/"});
-  registerStrategy("Brute Force", solution1);  // O(n*26) 暴力搜索
-  registerStrategy("Bool Array", solution2);   // O(n) 哈希数组
-  registerStrategy("Bitmask", solution3);      // O(n) 位运算最优
+  registerStrategy({.name = "Brute Force"}, solution1);  // O(n*26) 暴力搜索
+  registerStrategy({.name = "Bool Array"}, solution2);   // O(n) 哈希数组
+  registerStrategy({.name = "Bitmask"}, solution3);      // O(n) 位运算最优
 }
 
 int CountTheNumberOfSpecialCharactersISolution::numberOfSpecialChars(string word) {

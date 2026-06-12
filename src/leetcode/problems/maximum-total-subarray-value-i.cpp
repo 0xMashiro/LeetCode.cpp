@@ -22,7 +22,7 @@ MaximumTotalSubarrayValueISolution::MaximumTotalSubarrayValueISolution() {
   setMetaInfo({.id = 3689,
                .title = "Maximum Total Subarray Value I",
                .url = "https://leetcode.com/problems/maximum-total-subarray-value-i/"});
-  registerStrategy("Greedy (Global Max - Min)", solution1);
+  registerStrategy({.name = "Greedy (Global Max - Min)"}, solution1);
 }
 
 long long MaximumTotalSubarrayValueISolution::maxTotalValue(vector<int>& nums, int k) {

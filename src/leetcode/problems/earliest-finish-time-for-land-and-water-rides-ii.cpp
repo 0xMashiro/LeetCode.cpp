@@ -109,8 +109,8 @@ EarliestFinishTimeForLandAndWaterRidesIiSolution::EarliestFinishTimeForLandAndWa
   setMetaInfo({.id = 3635,
                .title = "Earliest Finish Time for Land and Water Rides II",
                .url = "https://leetcode.com/problems/earliest-finish-time-for-land-and-water-rides-ii/"});
-  registerStrategy("Brute Force", solution1);  // @expected: TLE
-  registerStrategy("Greedy + Binary Search", solution2);
+  registerStrategy({.name = "Brute Force", .expected = "TLE"}, solution1);
+  registerStrategy({.name = "Greedy + Binary Search"}, solution2);
 }
 
 int EarliestFinishTimeForLandAndWaterRidesIiSolution::earliestFinishTime(

@@ -44,8 +44,8 @@ CheckIfArrayIsSortedAndRotatedSolution::CheckIfArrayIsSortedAndRotatedSolution()
   setMetaInfo({.id = 1752,
                .title = "Check if Array Is Sorted and Rotated",
                .url = "https://leetcode.com/problems/check-if-array-is-sorted-and-rotated/"});
-  registerStrategy("Brute Force", solution1);
-  registerStrategy("Count Drops", solution2);
+  registerStrategy({.name = "Brute Force"}, solution1);
+  registerStrategy({.name = "Count Drops"}, solution2);
 }
 
 bool CheckIfArrayIsSortedAndRotatedSolution::check(vector<int>& nums) {

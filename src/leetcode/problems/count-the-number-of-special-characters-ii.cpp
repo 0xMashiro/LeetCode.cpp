@@ -82,8 +82,8 @@ CountTheNumberOfSpecialCharactersIiSolution::CountTheNumberOfSpecialCharactersIi
                .title = "Count the Number of Special Characters II",
                .url = "https://leetcode.com/problems/count-the-number-of-special-characters-ii/"});
   // 方案1 是最优解（状态机一次扫描），方案2 是另一种思路（预处理位置法）
-  registerStrategy("State Machine", solution1);
-  registerStrategy("Position Tracking", solution2);
+  registerStrategy({.name = "State Machine"}, solution1);
+  registerStrategy({.name = "Position Tracking"}, solution2);
 }
 
 int CountTheNumberOfSpecialCharactersIiSolution::numberOfSpecialChars(std::string word) {
