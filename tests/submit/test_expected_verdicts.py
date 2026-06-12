@@ -36,6 +36,16 @@ _SRC_MIXED = """
     s.registerStrategy("C", [&]{});
 """
 
+_SRC_METADATA = """
+    s.registerStrategy({.name = "Brute Force",
+                        .expected = "Time Limit Exceeded",
+                        .time_complexity = "O(nq)"},
+                       solution1);
+    s.registerStrategy({.name = "Optimal",
+                        .expected = "Accepted"},
+                       solution2);
+"""
+
 
 class TestParseExpectedVerdicts(unittest.TestCase):
     def test_shorthand_maps_to_leetcode_status(self) -> None:
@@ -81,6 +91,20 @@ class TestParseExpectedVerdicts(unittest.TestCase):
             parse_expected_verdicts(src),
             {1: "Time Limit Exceeded", 2: "Wrong Answer"},
         )
+
+    def test_strategy_metadata_expected_field(self) -> None:
+        self.assertEqual(
+            parse_expected_verdicts(_SRC_METADATA),
+            {1: "Time Limit Exceeded", 2: "Accepted"},
+        )
+
+    def test_strategy_metadata_expected_takes_precedence_over_comment(self) -> None:
+        src = """
+        s.registerStrategy({.name = "A",
+                            .expected = "Accepted"},
+                           solution1);  // @expected: TLE
+        """
+        self.assertEqual(parse_expected_verdicts(src), {1: "Accepted"})
 
 
 class TestResolveExpected(unittest.TestCase):

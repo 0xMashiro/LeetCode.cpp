@@ -73,11 +73,11 @@ doc:
 # 构建项目
 build:
     @mkdir -p build
-    cd build && cmake .. -G Ninja -DCMAKE_BUILD_TYPE=Debug -DLEETCODE_SINGLE_PROBLEM="" && cmake --build . -j
+    cd build && cmake .. -G Ninja -DCMAKE_BUILD_TYPE=Debug -DLEETCODE_SINGLE_PROBLEM="" -DLEETCODE_MULTI_PROBLEMS="" && cmake --build . -j
 
 build-release:
     @mkdir -p build
-    cd build && cmake .. -G Ninja -DCMAKE_BUILD_TYPE=Release -DLEETCODE_SINGLE_PROBLEM="" && cmake --build . -j
+    cd build && cmake .. -G Ninja -DCMAKE_BUILD_TYPE=Release -DLEETCODE_SINGLE_PROBLEM="" -DLEETCODE_MULTI_PROBLEMS="" && cmake --build . -j
 
 clean:
     rm -rf build

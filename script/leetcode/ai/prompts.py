@@ -92,8 +92,18 @@ TwoSumSolution::TwoSumSolution() {
                .title = "Two Sum",
                .url = "https://leetcode.com/problems/two-sum"});
   // 策略按面试思考顺序从朴素到最优递增注册,最后一个是最优解(默认会被提交)
-  registerStrategy("Brute Force", solution1);  // O(n²) 暴力,教学用,可能 TLE
-  registerStrategy("Hash Map", solution2);     // O(n) 最优,提交的就是这个
+  registerStrategy({.name = "Brute Force",
+                    .expected = "Accepted",
+                    .time_complexity = "O(n²)",
+                    .space_complexity = "O(1)",
+                    .tags = {"array", "brute-force"}},
+                   solution1);
+  registerStrategy({.name = "Hash Map",
+                    .expected = "Accepted",
+                    .time_complexity = "O(n)",
+                    .space_complexity = "O(n)",
+                    .tags = {"array", "hash-table"}},
+                   solution2);
 }
 
 // ⭐ 公开方法调度：必须通过 getSolution()(args...) 调用选中策略 —— 这是 SolutionBase 继承来的 API
@@ -137,9 +147,10 @@ SolutionBase<Func> 公开 API 速查（照单抄，别发明新名字）：
 | 方法 | 返回 | 说明 |
 |---|---|---|
 | `setMetaInfo({.id, .title, .url})` | void | 构造函数里调一次；MetaInfo 就这 3 个字段，没有 difficulty/tags/name |
-| `registerStrategy(name, func)` | void | 构造函数里每个策略注册一次；重名会抛异常 |
+| `registerStrategy({.name, .expected, .time_complexity, .space_complexity, .tags, .notes}, func)` | void | 推荐入口；结构化记录每个策略，最后一个应是最优解 |
+| `registerStrategy(name, func)` | void | 简化入口；只有 name，没有复杂度/预期 verdict 元信息 |
 | `setStrategy(name)` | void | 测试 fixture 的 `SetUp()` 里调；未注册的名字会抛异常 |
-| `setDefaultStrategy()` | void | 使用第一个注册的策略（备选，一般用 setStrategy） |
+| `setDefaultStrategy()` | void | 使用最后一个注册的策略（备选，一般用 setStrategy） |
 | `getStrategyNames()` | `vector<string>` | 给 `INSTANTIATE_TEST_SUITE_P` 的 `ValuesIn(...)` 用 |
 | `getSolution()` | `Func` | **公开方法里必须用它调度**：`return getSolution()(args...);` |
 | `getMetaInfo()` | `const MetaInfo&` | 一般不需要 |
@@ -202,16 +213,17 @@ SolutionBase<Func> 公开 API 速查（照单抄，别发明新名字）：
      会提示你检查 SelfAuthored expected（这只是二级怀疑，主因通常是本地覆盖不够）
 
 3b. 多策略标注（仅当你写的某个策略**确实预期 LeetCode 会 TLE** 才标；不预期就别写）：
-   - 行尾和上一行两种位置都认，下面任一写法都等价：
+   - 用结构化元数据表达预期 verdict、复杂度和标签：
      ```cpp
-     registerStrategy("BruteForce", solution1);  // @expected: TLE
+     registerStrategy({.name = "BruteForce",
+                       .expected = "Time Limit Exceeded",
+                       .time_complexity = "O(nq)",
+                       .space_complexity = "O(n)",
+                       .tags = {"brute-force", "oracle"}},
+                      solution1);
      ```
-     或
-     ```cpp
-     // @expected: TLE
-     registerStrategy("BruteForce", solution1);
-     ```
-   - 支持缩写 AC / TLE / WA / RE / MLE / CE，也支持全称 `Time Limit Exceeded` 等
+   - 只需要 verdict 时可以只写 `.name` 和 `.expected`
+   - `.expected` 支持缩写 AC / TLE / WA / RE / MLE / CE，也支持全称 `Time Limit Exceeded` 等
    - 不写 = 默认 Accepted；`--verify-all-strategies` 时预期 TLE 真 TLE 视为通过
    - 原则：只在 **n 约束明显超过你这解复杂度上限** 时才标（例如 O(n²) 解遇到 n ≤ 10^5）。
      TwoSum 那种 n ≤ 10^4 的题，即使是暴力也会 AC，**不要标 TLE**

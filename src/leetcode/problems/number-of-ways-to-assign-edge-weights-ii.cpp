@@ -8,8 +8,8 @@ const int MOD = 1e9 + 7;
 // 朴素 LCA：逐级向上爬，每查询 O(n)
 // 时间复杂度 O(n * q)，n,q ≤ 1e5 时会 TLE
 // 展示最直接思路：先建树，对每个查询爬到同深度再一起爬
-// @expected: TLE
-static vector<int> solution1(vector<vector<int>>& edges, vector<vector<int>>& queries) {
+static vector<int> solution1(vector<vector<int>>& edges,
+                             vector<vector<int>>& queries) {
   int n = edges.size() + 1;
   vector<vector<int>> adj(n + 1);
   for (auto& e : edges) {
@@ -65,7 +65,8 @@ static vector<int> solution1(vector<vector<int>>& edges, vector<vector<int>>& qu
 // 二进制提升 LCA：最优解
 // 预处理 O(n log n)，每次查询 O(log n)，总复杂度 O((n + q) log n)
 // 利用数学结论：路径长度 L 时答案 = 2^(L-1) mod MOD
-static vector<int> solution2(vector<vector<int>>& edges, vector<vector<int>>& queries) {
+static vector<int> solution2(vector<vector<int>>& edges,
+                             vector<vector<int>>& queries) {
   int n = edges.size() + 1;
   vector<vector<int>> adj(n + 1);
   for (auto& e : edges) {
@@ -132,12 +133,28 @@ static vector<int> solution2(vector<vector<int>>& edges, vector<vector<int>>& qu
   return ans;
 }
 
-NumberOfWaysToAssignEdgeWeightsIiSolution::NumberOfWaysToAssignEdgeWeightsIiSolution() {
+NumberOfWaysToAssignEdgeWeightsIiSolution::
+    NumberOfWaysToAssignEdgeWeightsIiSolution() {
   setMetaInfo({.id = 3559,
                .title = "Number of Ways to Assign Edge Weights II",
-               .url = "https://leetcode.com/problems/number-of-ways-to-assign-edge-weights-ii/"});
-  registerStrategy("Brute Force LCA", solution1);  // @expected: TLE
-  registerStrategy("Binary Lifting LCA", solution2);
+               .url = "https://leetcode.com/problems/"
+                      "number-of-ways-to-assign-edge-weights-ii/"});
+  registerStrategy(
+      {.name = "Brute Force LCA",
+       .expected = "Time Limit Exceeded",
+       .time_complexity = "O(nq)",
+       .space_complexity = "O(n)",
+       .tags = {"tree", "lca", "oracle"},
+       .notes = "Small-input oracle; expected to TLE on full constraints."},
+      solution1);
+  registerStrategy(
+      {.name = "Binary Lifting LCA",
+       .expected = "Accepted",
+       .time_complexity = "O((n+q)logn)",
+       .space_complexity = "O(nlogn)",
+       .tags = {"tree", "lca", "binary-lifting", "combinatorics"},
+       .notes = "Use distance(u,v) and 2^(dist-1) for non-empty paths."},
+      solution2);
 }
 
 vector<int> NumberOfWaysToAssignEdgeWeightsIiSolution::assignEdgeWeights(

@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <string>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
 template <typename Func>
@@ -16,7 +17,24 @@ class SolutionBase {
     std::string url;
   } info;
 
-  std::unordered_map<std::string, Func> strategies;
+ public:
+  struct StrategyMetadata {
+    std::string name;
+    std::string expected = "Accepted";
+    std::string time_complexity;
+    std::string space_complexity;
+    std::vector<std::string> tags;
+    std::string notes;
+  };
+
+ private:
+  struct StrategyEntry {
+    StrategyMetadata metadata;
+    Func func;
+  };
+
+  std::vector<StrategyEntry> strategies;
+  std::unordered_map<std::string, size_t> strategyIndex;
   Func solutionFunc = {nullptr};
 
  public:
@@ -30,41 +48,58 @@ class SolutionBase {
   const MetaInfo& getMetaInfo() const { return info; }
 
   void registerStrategy(const std::string& name, Func func) {
-    if (strategies.find(name) == strategies.end()) {
-      strategies[name] = func;
-    } else {
+    registerStrategy(StrategyMetadata{.name = name}, std::move(func));
+  }
+
+  void registerStrategy(const StrategyMetadata& metadata, Func func) {
+    if (metadata.name.empty()) {
+      throw std::invalid_argument("Strategy name cannot be empty");
+    }
+    if (strategyIndex.find(metadata.name) != strategyIndex.end()) {
       std::ostringstream oss;
-      oss << "Strategy name {" << name << "} has already been registered.\n"
+      oss << "Strategy name {" << metadata.name
+          << "} has already been registered.\n"
           << "Meta Information: \n"
           << "  id: " << info.id << "\n"
           << "  title: " << info.title << "\n"
           << "  url: " << info.url << "\n";
       throw std::invalid_argument(oss.str());
     }
+    strategyIndex[metadata.name] = strategies.size();
+    strategies.push_back({metadata, std::move(func)});
   }
 
   std::vector<std::string> getStrategyNames() const {
     std::vector<std::string> keys;
     keys.reserve(strategies.size());
-    for (const auto& [name, _] : strategies) {
-      keys.push_back(name);
+    for (const auto& entry : strategies) {
+      keys.push_back(entry.metadata.name);
     }
     return keys;
   }
 
+  std::vector<StrategyMetadata> getStrategyMetadata() const {
+    std::vector<StrategyMetadata> metadata;
+    metadata.reserve(strategies.size());
+    for (const auto& entry : strategies) {
+      metadata.push_back(entry.metadata);
+    }
+    return metadata;
+  }
+
   void setStrategy(const std::string& name) {
-    auto it = strategies.find(name);
-    if (it != strategies.end()) {
-      solutionFunc = it->second;
+    auto it = strategyIndex.find(name);
+    if (it != strategyIndex.end()) {
+      solutionFunc = strategies[it->second].func;
     } else {
       std::ostringstream oss;
       oss << "Invalid strategy name: " << name << "\n"
           << "Problem: [" << info.id << "] " << info.title << "\n"
           << "Available strategies: ";
       bool first = true;
-      for (const auto& [strategy_name, _] : strategies) {
+      for (const auto& entry : strategies) {
         if (!first) oss << ", ";
-        oss << strategy_name;
+        oss << entry.metadata.name;
         first = false;
       }
       throw std::invalid_argument(oss.str());
@@ -73,7 +108,7 @@ class SolutionBase {
 
   void setDefaultStrategy() {
     if (!strategies.empty()) {
-      solutionFunc = strategies.begin()->second;
+      solutionFunc = strategies.back().func;
     } else {
       throw std::runtime_error("No strategies registered");
     }
