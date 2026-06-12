@@ -41,6 +41,37 @@ class TestCompilePassedTracking(unittest.TestCase):
         update_summary(summary, "create_or_update_file", {"is_successful": True})
         self.assertFalse(summary.get("compile_passed", False))
 
+    def test_compile_failure_exhaustion_is_recorded(self) -> None:
+        from unittest.mock import patch
+
+        from script.leetcode.ai.messages import ToolCall
+        from script.leetcode.ai.tool_round import ToolRoundProcessor
+        from script.leetcode.config import AIConfig
+
+        class _Executor:
+            def execute(self, name, args):
+                return {"is_successful": False, "error_type": "编译错误", "error_message": "boom"}
+
+        processor = ToolRoundProcessor(_Executor())
+        calls = [
+            ToolCall(
+                id="call_1",
+                type="function",
+                function_name="compile_and_test",
+                function_arguments="{}",
+            ),
+            ToolCall(
+                id="call_2",
+                type="function",
+                function_name="compile_and_test",
+                function_arguments="{}",
+            ),
+        ]
+        with patch.object(AIConfig, "MAX_COMPILE_FIX_ATTEMPTS", 2):
+            summary = processor.run(calls, problem_id=42, messages=[])
+
+        self.assertTrue(summary.get("compile_fix_exhausted"))
+
 
 if __name__ == "__main__":
     unittest.main()

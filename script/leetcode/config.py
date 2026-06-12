@@ -51,27 +51,27 @@ class CacheConfig:
 class AIConfig:
     """AI 解题配置"""
     # 主解题循环最大轮数（包含代码生成、编译、本地测试）
-    MAX_ITERATIONS = 20
+    MAX_ITERATIONS = int(os.getenv("AI_SOLVER_MAX_ITERATIONS", "12"))
 
     # LeetCode 提交相关配置
     LEETCODE_SUBMIT_MAX_RETRIES = 5  # LeetCode 提交失败后的最大重试次数
     LEETCODE_SUBMIT_TIMEOUT = 60     # 等待 LeetCode 判题结果的超时时间（秒）
 
     # 编译和测试超时
-    BUILD_TIMEOUT = 120
-    TEST_TIMEOUT = 60
+    BUILD_TIMEOUT = int(os.getenv("AI_SOLVER_BUILD_TIMEOUT", "90"))
+    TEST_TIMEOUT = int(os.getenv("AI_SOLVER_TEST_TIMEOUT", "30"))
+    COMPILE_AND_TEST_TIMEOUT = int(os.getenv("AI_SOLVER_COMPILE_AND_TEST_TIMEOUT", "90"))
 
     # 修复策略
-    MAX_COMPILE_FIX_ATTEMPTS = 5  # 连续编译错误的最大修复次数，超过则放弃
+    MAX_COMPILE_FIX_ATTEMPTS = int(os.getenv("AI_SOLVER_MAX_COMPILE_FIX_ATTEMPTS", "3"))
     MAX_LEETCODE_FIX_ATTEMPTS = 3  # LeetCode 验证失败后的最大修复次数，超过则放弃
 
     # 对话守卫策略（防止无效循环和成本失控）
-    # 时间层面不设"总 wall clock 上限",因为那是外部度量,和模型是否在工作无关 ——
-    # pro+thinking 可能单轮推 10 分钟但一直在输出 token,硬斩会扔掉真·劳动。
-    # 活性通过 STREAM_TIMEOUT_SECONDS(每次 API 调用)和 MAX_NO_FILE_CHANGE_ROUNDS
-    # (整体进度)来保证;MAX_ITERATIONS 作为 hard cap 防止无限轮次。
+    # 随机批量解题必须快失败：如果单题已经烧掉大量 token 或迟迟没有通过本地验证，
+    # 继续补洞通常是在扩大成本而不是提高成功率。需要实验时可用 env 覆盖。
+    MAX_TOTAL_TOKENS = int(os.getenv("AI_SOLVER_MAX_TOTAL_TOKENS", "50000"))
     MAX_REPEAT_ERROR_SIGNATURE = 3  # 同类错误签名连续出现上限
-    MAX_NO_FILE_CHANGE_ROUNDS = 6   # 连续无文件修改轮次上限(真·空转信号)
+    MAX_NO_FILE_CHANGE_ROUNDS = int(os.getenv("AI_SOLVER_MAX_NO_FILE_CHANGE_ROUNDS", "4"))
 
     # 流式响应守卫
     STREAM_TIMEOUT_SECONDS = 60     # 多少秒无新 chunk 判定为超时
@@ -99,6 +99,9 @@ class AIProvider:
         "deepseek": frozenset({"deepseek-v4-flash", "deepseek-v4-pro"}),
         "moonshot": frozenset({"kimi-k2.6"}),
     }
+    DEEPSEEK_REASONING_EFFORTS: ClassVar[FrozenSet[str]] = frozenset(
+        {"low", "medium", "high", "max"}
+    )
 
     def __post_init__(self) -> None:
         known = self.KNOWN_MODELS.get(self.name)
@@ -122,7 +125,7 @@ class AIProvider:
         return cls(
             name="deepseek",
             base_url="https://api.deepseek.com",
-            model=os.getenv("DEEPSEEK_MODEL", "deepseek-v4-flash"),
+            model=os.getenv("DEEPSEEK_MODEL", "deepseek-v4-pro"),
             use_reasoner=os.getenv("DEEPSEEK_THINKING", "enabled").lower() == "enabled",
         )
 
@@ -151,6 +154,17 @@ class AIProvider:
         }
         return env_var_map.get(self.name, f"{self.name.upper()}_API_KEY")
 
+    @classmethod
+    def deepseek_reasoning_effort(cls) -> str:
+        """DeepSeek thinking 模式下的推理强度。"""
+        effort = os.getenv("DEEPSEEK_REASONING_EFFORT", "max").lower()
+        if effort not in cls.DEEPSEEK_REASONING_EFFORTS:
+            raise ValueError(
+                "未知的 DeepSeek reasoning effort: "
+                f"{effort!r}（已知: {sorted(cls.DEEPSEEK_REASONING_EFFORTS)}）。"
+            )
+        return effort
+
     def build_request_kwargs(self, allow_temperature: bool = False) -> Dict[str, Any]:
         """构造给 chat.completions.create 的 provider-specific 请求参数。
 
@@ -167,7 +181,7 @@ class AIProvider:
         if self.name == "deepseek":
             # DeepSeek v4 系列：通过 extra_body 显式控制 thinking；未显式设置时默认 enabled
             if self.use_reasoner:
-                kwargs["reasoning_effort"] = "high"
+                kwargs["reasoning_effort"] = self.deepseek_reasoning_effort()
                 kwargs["extra_body"] = {"thinking": {"type": "enabled"}}
             else:
                 kwargs["extra_body"] = {"thinking": {"type": "disabled"}}

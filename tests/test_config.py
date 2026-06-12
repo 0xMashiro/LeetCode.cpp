@@ -19,7 +19,7 @@ class TestAIProviderFromEnv(unittest.TestCase):
         with patch.dict(os.environ, {"AI_PROVIDER": "deepseek"}, clear=True):
             provider = AIProvider.from_env()
         self.assertEqual(provider.name, "deepseek")
-        self.assertEqual(provider.model, "deepseek-v4-flash")
+        self.assertEqual(provider.model, "deepseek-v4-pro")
         self.assertTrue(provider.use_reasoner)
 
     def test_deepseek_thinking_disabled(self) -> None:
@@ -43,11 +43,32 @@ class TestProviderBuildRequestKwargs(unittest.TestCase):
     """provider-specific 请求参数集中构造，消除 solver / submit 里的 if 硬分支"""
 
     def test_deepseek_thinking_on(self) -> None:
-        provider = AIProvider(name="deepseek", base_url="", model="deepseek-v4-pro", use_reasoner=True)
-        kwargs = provider.build_request_kwargs()
+        provider = AIProvider(
+            name="deepseek", base_url="", model="deepseek-v4-pro", use_reasoner=True
+        )
+        with patch.dict(os.environ, {}, clear=True):
+            kwargs = provider.build_request_kwargs()
+        self.assertEqual(kwargs.get("reasoning_effort"), "max")
+        self.assertEqual(kwargs.get("extra_body"), {"thinking": {"type": "enabled"}})
+        self.assertNotIn("temperature", kwargs)
+
+    def test_deepseek_thinking_effort_can_be_overridden(self) -> None:
+        provider = AIProvider(
+            name="deepseek", base_url="", model="deepseek-v4-pro", use_reasoner=True
+        )
+        with patch.dict(os.environ, {"DEEPSEEK_REASONING_EFFORT": "high"}, clear=True):
+            kwargs = provider.build_request_kwargs()
         self.assertEqual(kwargs.get("reasoning_effort"), "high")
         self.assertEqual(kwargs.get("extra_body"), {"thinking": {"type": "enabled"}})
         self.assertNotIn("temperature", kwargs)
+
+    def test_deepseek_thinking_effort_rejects_unknown_value(self) -> None:
+        provider = AIProvider(
+            name="deepseek", base_url="", model="deepseek-v4-pro", use_reasoner=True
+        )
+        with patch.dict(os.environ, {"DEEPSEEK_REASONING_EFFORT": "turbo"}, clear=True):
+            with self.assertRaises(ValueError):
+                provider.build_request_kwargs()
 
     def test_deepseek_thinking_off_no_temperature(self) -> None:
         provider = AIProvider(name="deepseek", base_url="", model="deepseek-v4-flash", use_reasoner=False)

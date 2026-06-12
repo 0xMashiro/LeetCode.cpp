@@ -18,7 +18,7 @@ import sys
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Set
 
 from script.leetcode.utils import ColorCode, color_text
 
@@ -53,6 +53,7 @@ class AutoSolver:
         self.success_count = 0
         self.fail_streak = 0
         self.success_streak = 0
+        self.failed_problem_ids: Set[int] = set()
     
     @staticmethod
     def _log(message: str, level: str = "INFO"):
@@ -97,12 +98,12 @@ class AutoSolver:
                 return fail_type
         return "unknown"
     
-    def _build_solve_cmd(self) -> list:
+    def _build_solve_cmd(self, problem_id: int) -> list:
         """构建解题命令"""
         # 直接使用 Python 调用，避免 just 的缓冲问题
         import sys
         python_exe = sys.executable
-        cmd = [python_exe, "-m", "script.leetcode.ai.solver", "--random"]
+        cmd = [python_exe, "-m", "script.leetcode.ai.solver", str(problem_id)]
         if self.report:
             cmd.append("--report")
         if self.require_leetcode is True:
@@ -110,6 +111,22 @@ class AutoSolver:
         elif self.require_leetcode is False:
             cmd.append("--no-leetcode")
         return cmd
+
+    def _pick_problem(self) -> Optional[int]:
+        """选择一个本轮尚未失败过的未解决题目。"""
+        from script.leetcode.problem_pool import ProblemPool
+
+        return ProblemPool().get_random(exclude_ids=self.failed_problem_ids)
+
+    def _mark_problem_failed(
+        self, problem_id: int, error_type: str
+    ) -> tuple[bool, str]:
+        self.failed_problem_ids.add(problem_id)
+        self._log(
+            f"⏭️ 题目 {problem_id} 本轮失败（{error_type}），后续跳过并继续下一题",
+            "WARNING",
+        )
+        return False, error_type
     
     def run_once(self) -> tuple[bool, Optional[str]]:
         """
@@ -118,11 +135,25 @@ class AutoSolver:
         Returns:
             (success, error_type): 是否成功，错误类型（None表示成功）
         """
-        cmd = self._build_solve_cmd()
+        problem_id = self._pick_problem()
+        if problem_id is None:
+            if self.failed_problem_ids:
+                self._log(
+                    f"本轮剩余未解决题目都已失败并跳过（{len(self.failed_problem_ids)} 题）",
+                    "WARNING",
+                )
+            else:
+                self._log("没有未解决的题目", "SUCCESS")
+            return True, "ALL_SOLVED"
+
+        cmd = self._build_solve_cmd(problem_id)
         start_count = self._get_solved_count()
         
         for attempt in range(self.max_retries):
-            self._log(f"开始执行: {' '.join(cmd)} (尝试 {attempt + 1}/{self.max_retries})")
+            self._log(
+                f"开始执行题目 {problem_id}: {' '.join(cmd)} "
+                f"(尝试 {attempt + 1}/{self.max_retries})"
+            )
             print("-" * 60)
             self._log("⏳ 正在启动 AI 解题流程，首次启动可能需要 10-20 秒...")
             self._log("💡 提示: AI 解题平均需要 1-3 分钟，请耐心等待，不要中断")
@@ -175,7 +206,9 @@ class AutoSolver:
                 elif end_count > start_count and leetcode_fix_exhausted:
                     # 文件创建了但 LeetCode 验证最终未能通过（已尝试修复但次数耗尽）
                     self._log("⚠️ 本地文件已生成，但 LeetCode 验证最终未能通过（已尝试多次修复）", "WARNING")
-                    return False, "leetcode_verification_failed_after_retries"
+                    return self._mark_problem_failed(
+                        problem_id, "leetcode_verification_failed_after_retries"
+                    )
                 elif end_count > start_count and not leetcode_passed:
                     # 文件创建了但 LeetCode 验证失败（可能是没有 Cookie 跳过验证）
                     self._log("⚠️ 本地文件已生成，LeetCode 验证未进行或失败", "WARNING")
@@ -195,7 +228,7 @@ class AutoSolver:
                     self._log(f"等待 {self.retry_delay} 秒后重试...", "INFO")
                     time.sleep(self.retry_delay)
                 else:
-                    return False, fail_type
+                    return self._mark_problem_failed(problem_id, fail_type)
                     
             except subprocess.TimeoutExpired:
                 process.kill()
@@ -206,8 +239,8 @@ class AutoSolver:
                 self._log(f"💥 异常: {e}", "ERROR")
                 if attempt < self.max_retries - 1:
                     time.sleep(self.retry_delay)
-        
-        return False, "max_retries_exceeded"
+
+        return self._mark_problem_failed(problem_id, "max_retries_exceeded")
     
     def run(self):
         """主循环"""
@@ -218,6 +251,7 @@ class AutoSolver:
         self._log(f"📊 当前已解决题目: {solved_count_start}")
         self._log(f"📝 生成报告: {'是' if self.report else '否'}")
         self._log(f"🔄 最大重试: {self.max_retries} 次")
+        self._log("🔁 失败策略: 单题失败后本轮跳过，继续下一题")
         self._log(f"⏸️  连续失败{self.fail_streak_limit}次后暂停: {self.fail_streak_pause} 秒")
         self._log("=" * 60)
         self._log("按 Ctrl+C 停止")
@@ -277,6 +311,7 @@ class AutoSolver:
         self._log(f"🎯 尝试次数: {self.total_attempts}")
         self._log(f"✅ 成功次数: {self.success_count}")
         self._log(f"❌ 失败次数: {self.total_attempts - self.success_count}")
+        self._log(f"⏭️  本轮跳过失败题目: {len(self.failed_problem_ids)}")
         self._log(f"📚 新增题目: {final_solved - solved_count_start}")
         self._log(f"📦 总题目数: {final_solved}")
         self._log("=" * 60)

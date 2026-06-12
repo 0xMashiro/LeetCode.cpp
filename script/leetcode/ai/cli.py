@@ -29,6 +29,7 @@ def _build_parser() -> argparse.ArgumentParser:
   # 随机挑选未解决的题目（用于测试增量编译）
   python -m script.leetcode.ai.solver --random
   python -m script.leetcode.ai.solver --random --difficulty Easy
+  python -m script.leetcode.ai.solver --random --random-count 10 --no-leetcode
 
   # 自动循环模式（持续解决未完成的题目）
   python -m script.leetcode.ai.solver --auto
@@ -37,6 +38,12 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("id", nargs="?", type=int, help="指定要解决的题目 ID")
     parser.add_argument("--random", action="store_true", help="随机挑选未解决的题目")
+    parser.add_argument(
+        "--random-count",
+        type=int,
+        default=1,
+        help="配合 --random 使用，连续随机解题数量（默认 1；任一题失败即停止）",
+    )
     parser.add_argument("--auto", action="store_true", help="自动循环模式：持续解决未完成的题目")
     parser.add_argument("--difficulty", choices=["Easy", "Medium", "Hard"], help="配合 --random 使用")
     parser.add_argument("--api-key", help="AI Provider 的 API Key（不传则按 provider 从环境变量读取）")
@@ -73,6 +80,12 @@ def _build_parser() -> argparse.ArgumentParser:
         default=None,
         help="一题多解时把每个 registerStrategy 都提交 LeetCode 验证（走翻译缓存；会把提交次数 ×N）",
     )
+    parser.add_argument(
+        "--prefer-multiple-strategies",
+        action="store_true",
+        default=None,
+        help="提示 AI 尽量生成多个不同算法且都预期 Accepted 的策略（本地 TEST_P 会覆盖所有策略）",
+    )
     parser.add_argument("--max-retries", type=int, default=3, help="自动模式最大重试次数（默认 3）")
     parser.add_argument("--retry-delay", type=int, default=60, help="自动模式重试间隔秒数（默认 60）")
     parser.add_argument(
@@ -100,12 +113,13 @@ def main() -> None:
             force_new_solution=True if args.force_new_solution else None,
             require_leetcode=args.require_leetcode,
             verify_all_strategies=True if args.verify_all_strategies else None,
+            prefer_multiple_strategies=True if args.prefer_multiple_strategies else None,
         )
 
         if args.id:
             solver.solve_problem(args.id)
         elif args.random:
-            _solve_random(solver, args.difficulty)
+            _solve_random(solver, args.difficulty, args.random_count)
         else:
             solver.solve_daily_challenge()
     except KeyboardInterrupt:
@@ -139,16 +153,23 @@ def _run_auto(args: argparse.Namespace) -> None:
         sys.exit(130)
 
 
-def _solve_random(solver: AISolver, difficulty: str) -> None:
+def _solve_random(solver: AISolver, difficulty: str, count: int = 1) -> None:
     from script.leetcode.problem_pool import ProblemPool
 
+    if count < 1:
+        raise ValueError("--random-count 必须大于等于 1")
+
     pool = ProblemPool()
-    problem_id = pool.get_random(difficulty)
-    if problem_id:
-        log_with_time(f"🎲 Randomly selected problem: {problem_id}", ColorCode.CYAN)
+    for index in range(count):
+        problem_id = pool.get_random(difficulty)
+        if not problem_id:
+            log_with_time("No unsolved problems found", ColorCode.YELLOW)
+            return
+        if count > 1:
+            log_with_time(f"🎲 Random run {index + 1}/{count}: selected problem {problem_id}", ColorCode.CYAN)
+        else:
+            log_with_time(f"🎲 Randomly selected problem: {problem_id}", ColorCode.CYAN)
         solver.solve_problem(problem_id)
-    else:
-        log_with_time("No unsolved problems found", ColorCode.YELLOW)
 
 
 if __name__ == "__main__":

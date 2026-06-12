@@ -57,7 +57,7 @@ class BuildRunner:
             result = subprocess.run(
                 ["just", "single", str(problem_id)],
                 capture_output=True, text=True,
-                timeout=AIConfig.BUILD_TIMEOUT + AIConfig.TEST_TIMEOUT,
+                timeout=AIConfig.COMPILE_AND_TEST_TIMEOUT,
             )
             output = result.stdout + result.stderr
             excerpt = result_utils.truncate_output(output)

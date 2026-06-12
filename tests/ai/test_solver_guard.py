@@ -9,11 +9,13 @@
   3. 同类错误签名连续 M 次出现 → 终止
 """
 
+import types
 import unittest
 from contextlib import ExitStack, contextmanager
 from unittest.mock import patch
 
 from script.leetcode.ai.guard import GuardState, should_abort
+from script.leetcode.ai.solver import AISolver
 from script.leetcode.config import AIConfig
 
 
@@ -74,6 +76,28 @@ class TestGuardStateMachine(unittest.TestCase):
                     {"file_mutated": False, "error_signatures": [sig]}, state
                 )
                 self.assertFalse(terminate, f"错误签名变化不应触发终止，当前 sig={sig}")
+
+
+class TestBudgetGuard(unittest.TestCase):
+    def test_budget_guard_allows_under_limit(self) -> None:
+        journal = types.SimpleNamespace(
+            metrics=types.SimpleNamespace(total_tokens=99),
+            set_failure_reason=lambda reason: None,
+        )
+        state = types.SimpleNamespace(_journal=journal)
+        with patch.object(AIConfig, "MAX_TOTAL_TOKENS", 100):
+            self.assertFalse(AISolver._budget_exhausted(state))
+
+    def test_budget_guard_stops_at_limit(self) -> None:
+        recorded = []
+        journal = types.SimpleNamespace(
+            metrics=types.SimpleNamespace(total_tokens=100),
+            set_failure_reason=lambda reason: recorded.append(reason),
+        )
+        state = types.SimpleNamespace(_journal=journal)
+        with patch.object(AIConfig, "MAX_TOTAL_TOKENS", 100):
+            self.assertTrue(AISolver._budget_exhausted(state))
+        self.assertEqual(recorded, ["token_budget_exhausted"])
 
 
 if __name__ == "__main__":

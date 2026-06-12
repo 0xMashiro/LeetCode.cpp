@@ -28,6 +28,8 @@ def should_short_circuit(summary: Dict[str, Any]) -> bool:
 def update_summary(summary: Dict[str, Any], tool_name: str, result: Dict[str, Any]) -> None:
     """把单次工具结果反映到本轮摘要（file_mutated / error_signatures / compile_passed）。"""
     success = result_utils.is_success(result)
+    if tool_name in COMPILE_TOOLS:
+        summary["compile_called"] = True
     if success and tool_name in FILE_MUTATION_TOOLS:
         summary["file_mutated"] = True
     if not success and tool_name in RUNTIME_FAILURE_TOOLS:
@@ -88,7 +90,8 @@ class ToolRoundProcessor:
             self._append_error(tc, f"工具调用异常: {e}", messages, summary)
             return
 
-        self._update_compile_counter(tc.function_name, result)
+        if self._update_compile_counter(tc.function_name, result):
+            summary["compile_fix_exhausted"] = True
         update_summary(summary, tc.function_name, result)
         _print_result(result)
         messages.append({
@@ -97,21 +100,27 @@ class ToolRoundProcessor:
             "content": json.dumps(result_utils.compact(result), ensure_ascii=False),
         })
 
-    def _update_compile_counter(self, tool_name: str, result: Dict[str, Any]) -> None:
+    def _update_compile_counter(self, tool_name: str, result: Dict[str, Any]) -> bool:
+        """Update the compile/test failure streak.
+
+        Returns True when the streak has reached the configured hard limit.
+        """
         if tool_name not in COMPILE_TOOLS:
-            return
+            return False
         if result_utils.is_success(result):
             self._compile_fix_count = 0
-            return
+            return False
         self._compile_fix_count += 1
         if self._compile_fix_count >= AIConfig.MAX_COMPILE_FIX_ATTEMPTS:
             print(color_text(
-                f"⚠️ 警告：已连续 {self._compile_fix_count} 次编译失败。建议：\n"
+                f"⚠️ 已连续 {self._compile_fix_count} 次编译/测试失败，达到解题流程上限。\n"
                 "1. 仔细检查代码结构和语法\n"
                 "2. 使用 retrieve_file_content 查看完整代码\n"
                 "3. 考虑简化实现或检查头文件包含",
                 ColorCode.YELLOW.value,
             ))
+            return True
+        return False
 
     @staticmethod
     def _append_error(

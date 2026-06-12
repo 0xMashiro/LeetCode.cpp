@@ -67,7 +67,7 @@ jobs:
         env:
           AI_PROVIDER: deepseek
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
-          DEEPSEEK_MODEL: deepseek-v4-flash
+          DEEPSEEK_MODEL: deepseek-v4-pro
           DEEPSEEK_THINKING: enabled
           AI_SOLVER_GENERATE_REPORT: 'true'
           AI_SOLVER_METRICS_DIR: ai-metrics

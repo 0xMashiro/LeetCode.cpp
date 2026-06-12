@@ -6,6 +6,10 @@ scaffold 模式下先生成三文件模板（空 body 可编译），再把题�
 翻译成 TEST_P body 注入 test 文件，模型只需专注 source 的算法实现。
 """
 
+import json
+import re
+import shutil
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -60,6 +64,50 @@ class ScaffoldManager:
                 log_with_time(f"🧹 已清理 {len(removed)} 个生成的文件", ColorCode.YELLOW)
         except Exception as e:
             log_with_time(f"⚠️ 清理文件时出错: {e}", ColorCode.YELLOW)
+
+    def snapshot_failed_run(
+        self,
+        problem_id: int,
+        *,
+        reason: str,
+        metrics: Optional[Dict[str, Any]] = None,
+    ) -> Optional[Path]:
+        """Copy generated files and metrics before cleanup.
+
+        Failed AI runs are useful training data. We keep the snapshot outside
+        tracked source paths so cleanup can still leave the working tree clean.
+        """
+        try:
+            problem_info = self._repo.get_by_id(problem_id)
+            generator = FileGenerator(problem_info)
+            paths = generator._get_file_paths()
+            existing = [p for p in paths if p.exists()]
+            if not existing and not metrics:
+                return None
+
+            timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+            safe_reason = re.sub(r"[^A-Za-z0-9_.-]+", "-", reason).strip("-") or "failed"
+            snapshot_dir = (
+                Path(".leetcode-cache")
+                / "failed-runs"
+                / f"p{problem_id}_{timestamp}_{safe_reason[:48]}"
+            )
+            snapshot_dir.mkdir(parents=True, exist_ok=True)
+
+            for path in existing:
+                destination = snapshot_dir / path
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(path, destination)
+            if metrics is not None:
+                (snapshot_dir / "metrics.json").write_text(
+                    json.dumps(metrics, ensure_ascii=False, indent=2),
+                    encoding="utf-8",
+                )
+            log_with_time(f"🧾 失败快照已保存: {snapshot_dir}", ColorCode.CYAN)
+            return snapshot_dir
+        except Exception as e:
+            log_with_time(f"⚠️ 保存失败快照时出错: {e}", ColorCode.YELLOW)
+            return None
 
     def prepare(self, problem_id: int) -> None:
         """scaffold 模式入口：若三文件不存在则生成模板并注入官方 examples。"""

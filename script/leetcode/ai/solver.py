@@ -8,17 +8,17 @@ import traceback
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from script.leetcode.ai import settings
+from script.leetcode.ai import result_utils, settings
 from script.leetcode.ai.api_client import AIApiClient
 from script.leetcode.ai.guard import GuardState, should_abort
 from script.leetcode.ai.journal import SolveJournal
 from script.leetcode.ai.leetcode_gate import LeetCodeGate
 from script.leetcode.ai.messages import Message, ToolCall
 from script.leetcode.ai.problem_context import ProblemContext
-from script.leetcode.ai.prompts import SYSTEM_PROMPT
+from script.leetcode.ai.prompts import get_system_prompt
 from script.leetcode.ai.report_generator import ReportGenerator
 from script.leetcode.ai.scaffold import ScaffoldManager
-from script.leetcode.ai.tool_round import ToolRoundProcessor, should_short_circuit
+from script.leetcode.ai.tool_round import ToolRoundProcessor, should_short_circuit, update_summary
 from script.leetcode.ai.tools import ToolDefinition, ToolExecutor
 from script.leetcode.api import ProblemRepository
 from script.leetcode.config import AIConfig, AIProvider
@@ -41,6 +41,7 @@ class AISolver:
         force_new_solution: Optional[bool] = None,
         require_leetcode: Optional[bool] = None,
         verify_all_strategies: Optional[bool] = None,
+        prefer_multiple_strategies: Optional[bool] = None,
     ):
         settings.load_project_env()
 
@@ -62,6 +63,11 @@ class AISolver:
         # 默认 False：多解验证把 LeetCode 提交次数 ×N，可能顶上限流。想验再开。
         self.verify_all_strategies = settings.resolve_bool_flag(
             verify_all_strategies, "AI_SOLVER_VERIFY_ALL_STRATEGIES", default=False
+        )
+        self.prefer_multiple_strategies = settings.resolve_bool_flag(
+            prefer_multiple_strategies,
+            "AI_SOLVER_PREFER_MULTIPLE_STRATEGIES",
+            default=False,
         )
 
         self._api_client = AIApiClient(self.provider, self.api_key, self.base_url)
@@ -209,6 +215,11 @@ class AISolver:
             log_with_time(f"❌ 解题失败 ({solve_elapsed:.1f}s): {reason}", ColorCode.RED)
             self._journal.emit_summary()
             self._journal.persist_if_enabled(self.problem_id)
+            self._scaffold.snapshot_failed_run(
+                problem_id,
+                reason=reason,
+                metrics=self._journal.metrics.to_dict(),
+            )
             self._scaffold.cleanup_files(problem_id)
             raise RuntimeError(f"解题失败（{reason}），未能完成题目 {problem_id}")
 
@@ -259,10 +270,15 @@ class AISolver:
 获取后按阶段 0（算法范式选型）+ 阶段 1（复述题意）要求输出，再开始写代码。"""
 
         self.messages = [
-            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "system", "content": get_system_prompt(
+                self.problem_difficulty,
+                scaffold_mode=self.scaffold_mode,
+                prefer_multiple_strategies=self.prefer_multiple_strategies,
+            )},
             {"role": "user", "content": user_message}
         ]
         self._tool_round.reset()
+        self._guard.reset()
         self._leetcode_fix_count = 0
 
     def _run_conversation_loop(self) -> bool:
@@ -286,6 +302,8 @@ class AISolver:
                     return False
                 # compile_and_test 刚过 → 直接走完成路径，省下一轮"模型说完成"的空转
                 if should_short_circuit(tool_summary):
+                    if not self._multi_strategy_requirement_met():
+                        continue
                     log_with_time(
                         "⚡ compile_and_test 已通过，跳过下一轮 API 调用直接走完成流程",
                         ColorCode.CYAN,
@@ -295,6 +313,8 @@ class AISolver:
                         return True
                     if outcome is False:
                         return False
+                if self._budget_exhausted():
+                    return False
                 continue
 
             if not (message.content or message.reasoning_content):
@@ -302,6 +322,8 @@ class AISolver:
                     "empty_response_no_tool_calls",
                     message="❌ 模型返回空响应且无工具调用，视为失败",
                 )
+                return False
+            if self._budget_exhausted():
                 return False
 
             outcome = self._handle_completion(iteration, round_start)
@@ -361,12 +383,97 @@ class AISolver:
             problem_id=self.problem_id or 0,
             messages=self.messages,
         )
+        self._auto_compile_after_mutation(tool_summary)
         log_with_time(f"🛠️  工具执行完成 ({time.time() - handle_start:.1f}s)", ColorCode.CYAN)
 
         if should_abort(tool_summary, self._guard):
             self._journal.set_failure_reason("guard_terminated")
             return False, tool_summary
+        if tool_summary.get("compile_fix_exhausted"):
+            self._journal.set_failure_reason("compile_or_test_fix_exhausted")
+            return False, tool_summary
         return True, tool_summary
+
+    def _auto_compile_after_mutation(self, tool_summary: Dict[str, Any]) -> None:
+        """Run local validation immediately after file edits.
+
+        The model otherwise spends a whole extra API round just to call
+        compile_and_test. Running it here gives faster feedback and prevents the
+        token budget guard from stopping before validation.
+        """
+        if not self.problem_id:
+            return
+        if not tool_summary.get("file_mutated") or tool_summary.get("compile_called"):
+            return
+
+        log_with_time("🧪 文件已修改，自动执行 compile_and_test", ColorCode.CYAN)
+        result = self.tool_executor.execute(
+            "compile_and_test", {"problem_id": self.problem_id}
+        )
+        update_summary(tool_summary, "compile_and_test", result)
+        compact = result_utils.compact(result)
+        self.messages.append({
+            "role": "user",
+            "content": (
+                "系统已在文件修改后自动执行 compile_and_test，结果如下。"
+                "如果失败，下一步必须先修复文件，再等待自动验证：\n"
+                f"{compact}"
+            ),
+        })
+        if result_utils.is_success(result):
+            msg = result.get("message") or result.get("status_message") or "编译测试通过"
+            log_with_time(f"   ✓ {msg}", ColorCode.GREEN)
+        else:
+            error = result.get("message") or result.get("error_message") or "编译测试失败"
+            log_with_time(f"   ✗ {error}", ColorCode.RED)
+
+    def _budget_exhausted(self) -> bool:
+        max_tokens = getattr(AIConfig, "MAX_TOTAL_TOKENS", 0)
+        if max_tokens <= 0:
+            return False
+        used = self._journal.metrics.total_tokens
+        if used < max_tokens:
+            return False
+        log_with_time(
+            f"⚠️ Token 用量达到上限 ({used}/{max_tokens})，停止本题避免成本失控",
+            ColorCode.YELLOW,
+        )
+        self._journal.set_failure_reason("token_budget_exhausted")
+        return True
+
+    def _multi_strategy_requirement_met(self) -> bool:
+        if not self.prefer_multiple_strategies or not self.problem_id:
+            return True
+        from script.leetcode.services import FileGenerator
+
+        try:
+            problem_info = self.repository.get_by_id(self.problem_id)
+            _, source_path, _ = FileGenerator(problem_info)._get_file_paths()
+            content = source_path.read_text(encoding="utf-8")
+        except Exception as e:
+            log_with_time(f"⚠️ 无法检查多策略数量: {e}", ColorCode.YELLOW)
+            return True
+
+        count = content.count("register" + "Strategy(")
+        if count >= 2:
+            return True
+
+        log_with_time(
+            "⚠️ 多策略验证模式要求至少 2 个 registerStrategy，本次只有 "
+            f"{count} 个，继续要求模型补齐",
+            ColorCode.YELLOW,
+        )
+        self.messages.append({
+            "role": "user",
+            "content": (
+                "本地 compile_and_test 已通过，但当前是多策略验证模式。"
+                f"source 文件中只检测到 {count} 个 registerStrategy。"
+                "请新增第二个算法范式不同、同样预期 Accepted 的策略，并用 "
+                "create_or_update_file(overwrite_existing=true) 更新 source。"
+                "不要新增预期 TLE 的教学策略；测试会自动覆盖所有策略。"
+            ),
+        })
+        return False
 
     def _handle_completion(self, iteration: int, round_start: float) -> Optional[bool]:
         """True=通过；False=放弃；None=可重试（fix 提示已写入 messages）。"""

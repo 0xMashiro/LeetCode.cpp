@@ -101,8 +101,12 @@ class ProblemPool:
             and not p.get("isPaidOnly", False)  # 排除付费题
         ]
     
-    def get_random(self, difficulty: Optional[str] = None, 
-                   max_attempts: int = 10) -> Optional[int]:
+    def get_random(
+        self,
+        difficulty: Optional[str] = None,
+        max_attempts: int = 10,
+        exclude_ids: Optional[Set[int]] = None,
+    ) -> Optional[int]:
         """随机获取一个未解决的题目 ID，确保支持 C++
         
         Args:
@@ -115,12 +119,21 @@ class ProblemPool:
         import time
         start_time = time.time()
         
+        exclude_ids = exclude_ids or set()
         candidates = self._get_unsolved()
         
         if difficulty:
             candidates = [
                 p for p in candidates 
                 if p.get("difficulty") == difficulty
+            ]
+
+        if exclude_ids:
+            candidates = [
+                p
+                for p in candidates
+                if int(p.get("questionFrontendId", p.get("questionId", 0)))
+                not in exclude_ids
             ]
         
         if not candidates:
