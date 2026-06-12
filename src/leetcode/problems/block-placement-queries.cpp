@@ -147,8 +147,8 @@ BlockPlacementQueriesSolution::BlockPlacementQueriesSolution() {
   setMetaInfo({.id = 3161,
                .title = "Block Placement Queries",
                .url = "https://leetcode.com/problems/block-placement-queries/"});
-  registerStrategy("Brute Force", solution1);  // @expected: TLE
-  registerStrategy("Segment Tree", solution2);
+  registerStrategy({.name = "Brute Force", .expected = "TLE"}, solution1);
+  registerStrategy({.name = "Segment Tree"}, solution2);
 }
 
 vector<bool> BlockPlacementQueriesSolution::getResults(
