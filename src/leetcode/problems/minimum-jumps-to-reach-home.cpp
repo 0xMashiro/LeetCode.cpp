@@ -64,7 +64,7 @@ MinimumJumpsToReachHomeSolution::MinimumJumpsToReachHomeSolution() {
   setMetaInfo({.id = 1654,
                .title = "Minimum Jumps to Reach Home",
                .url = "https://leetcode.com/problems/minimum-jumps-to-reach-home/"});
-  registerStrategy("BFS", solution1);
+  registerStrategy({.name = "BFS"}, solution1);
 }
 
 int MinimumJumpsToReachHomeSolution::minimumJumps(vector<int>& forbidden, int a, int b, int x) {

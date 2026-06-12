@@ -82,8 +82,8 @@ SearchA2dMatrixIiSolution::SearchA2dMatrixIiSolution() {
     .title = "Search a 2D Matrix II",
     .url = "https://leetcode.com/problems/search-a-2d-matrix-ii/"
   });
-  registerStrategy("Bottom-Left Start", solution1);
-  registerStrategy("Top-Right Start", solution2);
+  registerStrategy({.name = "Bottom-Left Start"}, solution1);
+  registerStrategy({.name = "Top-Right Start"}, solution2);
 }
 
 bool SearchA2dMatrixIiSolution::searchMatrix(vector<vector<int>>& matrix, int target) {

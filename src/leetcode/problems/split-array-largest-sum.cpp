@@ -58,7 +58,7 @@ SplitArrayLargestSumSolution::SplitArrayLargestSumSolution() {
   setMetaInfo({.id = 410,
                .title = "Split Array Largest Sum",
                .url = "https://leetcode.com/problems/split-array-largest-sum/"});
-  registerStrategy("Binary Search", solution1);
+  registerStrategy({.name = "Binary Search"}, solution1);
 }
 
 int SplitArrayLargestSumSolution::splitArray(vector<int>& nums, int k) {

@@ -76,7 +76,7 @@ CanYouEatYourFavoriteCandyOnYourFavoriteDaySolution::CanYouEatYourFavoriteCandyO
     .title = "Can You Eat Your Favorite Candy on Your Favorite Day?",
     .url = "https://leetcode.com/problems/can-you-eeat-your-favorite-candy-on-your-favorite-day/"
   });
-  registerStrategy("Prefix Sum", solution1);
+  registerStrategy({.name = "Prefix Sum"}, solution1);
 }
 
 vector<bool> CanYouEatYourFavoriteCandyOnYourFavoriteDaySolution::canEat(

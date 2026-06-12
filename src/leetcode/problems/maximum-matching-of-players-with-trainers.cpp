@@ -37,7 +37,7 @@ MaximumMatchingOfPlayersWithTrainersSolution::MaximumMatchingOfPlayersWithTraine
   setMetaInfo({.id = 2410,
                .title = "Maximum Matching of Players With Trainers",
                .url = "https://leetcode.com/problems/maximum-matching-of-players-with-trainers/"});
-  registerStrategy("Greedy Sorting", solution1);
+  registerStrategy({.name = "Greedy Sorting"}, solution1);
 }
 
 int MaximumMatchingOfPlayersWithTrainersSolution::matchPlayersAndTrainers(vector<int>& players, vector<int>& trainers) {

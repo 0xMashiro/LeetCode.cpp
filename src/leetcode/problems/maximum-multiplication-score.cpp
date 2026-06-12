@@ -38,7 +38,7 @@ MaximumMultiplicationScoreSolution::MaximumMultiplicationScoreSolution() {
   setMetaInfo({.id = 3290,
                .title = "Maximum Multiplication Score",
                .url = "https://leetcode.com/problems/maximum-multiplication-score/"});
-  registerStrategy("Dynamic Programming", solution1);
+  registerStrategy({.name = "Dynamic Programming"}, solution1);
 }
 
 long long MaximumMultiplicationScoreSolution::maxScore(vector<int>& a, vector<int>& b) {

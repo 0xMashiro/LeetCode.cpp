@@ -26,7 +26,7 @@ SubarraysDistinctElementSumOfSquaresISolution::SubarraysDistinctElementSumOfSqua
   setMetaInfo({.id = 2913,
                .title = "Subarrays Distinct Element Sum of Squares I",
                .url = "https://leetcode.com/problems/subarrays-distinct-element-sum-of-squares-i/"});
-  registerStrategy("Brute Force", solution1);
+  registerStrategy({.name = "Brute Force"}, solution1);
 }
 
 int SubarraysDistinctElementSumOfSquaresISolution::sumCounts(vector<int>& nums) {

@@ -125,8 +125,8 @@ MinimumCostToConvertStringISolution::MinimumCostToConvertStringISolution() {
   setMetaInfo({.id = 2976,
                .title = "Minimum Cost to Convert String I",
                .url = "https://leetcode.com/problems/minimum-cost-to-convert-string-i/"});
-  registerStrategy("Floyd-Warshall", solution1);
-  registerStrategy("Dijkstra per character", solution2);
+  registerStrategy({.name = "Floyd-Warshall"}, solution1);
+  registerStrategy({.name = "Dijkstra per character"}, solution2);
 }
 
 long long MinimumCostToConvertStringISolution::minimumCost(

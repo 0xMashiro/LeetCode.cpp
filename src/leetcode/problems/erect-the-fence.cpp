@@ -74,7 +74,7 @@ ErectTheFenceSolution::ErectTheFenceSolution() {
   setMetaInfo({.id = 587,
                .title = "Erect the Fence",
                .url = "https://leetcode.com/problems/erect-the-fence/"});
-  registerStrategy("Monotone Chain", convexHull);
+  registerStrategy({.name = "Monotone Chain"}, convexHull);
 }
 
 vector<vector<int>> ErectTheFenceSolution::outerTrees(vector<vector<int>>& trees) {

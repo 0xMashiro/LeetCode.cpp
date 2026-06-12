@@ -58,8 +58,8 @@ BitwiseOrsOfSubarraysSolution::BitwiseOrsOfSubarraysSolution() {
   setMetaInfo({.id = 898,
                .title = "Bitwise ORs of Subarrays",
                .url = "https://leetcode.com/problems/bitwise-ors-of-subarrays/"});
-  registerStrategy("DP with HashSet", solution1);
-  registerStrategy("DP with Vector Optimization", solution2);
+  registerStrategy({.name = "DP with HashSet"}, solution1);
+  registerStrategy({.name = "DP with Vector Optimization"}, solution2);
 }
 
 int BitwiseOrsOfSubarraysSolution::subarrayBitwiseORs(vector<int>& arr) {

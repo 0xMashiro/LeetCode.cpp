@@ -78,7 +78,7 @@ CountPalindromicSubsequencesSolution::CountPalindromicSubsequencesSolution() {
   setMetaInfo({.id = 2484,
                .title = "Count Palindromic Subsequences",
                .url = "https://leetcode.com/problems/count-palindromic-subsequences/"});
-  registerStrategy("DP with Prefix/Suffix", solution1);
+  registerStrategy({.name = "DP with Prefix/Suffix"}, solution1);
 }
 
 int CountPalindromicSubsequencesSolution::countPalindromes(string s) {

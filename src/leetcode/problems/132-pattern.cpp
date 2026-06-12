@@ -81,8 +81,8 @@ Pattern132Solution::Pattern132Solution() {
   setMetaInfo({.id = 456,
                .title = "132 Pattern",
                .url = "https://leetcode.com/problems/132-pattern/"});
-  registerStrategy("Monotonic Stack", solution1);
-  registerStrategy("Optimized Stack", solution2);
+  registerStrategy({.name = "Monotonic Stack"}, solution1);
+  registerStrategy({.name = "Optimized Stack"}, solution2);
 }
 
 bool Pattern132Solution::find132pattern(vector<int>& nums) {

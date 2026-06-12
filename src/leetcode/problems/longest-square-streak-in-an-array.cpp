@@ -39,7 +39,7 @@ LongestSquareStreakInAnArraySolution::LongestSquareStreakInAnArraySolution() {
   setMetaInfo({.id = 2501,
                .title = "Longest Square Streak in an Array",
                .url = "https://leetcode.com/problems/longest-square-streak-in-an-array/"});
-  registerStrategy("DP + HashMap", solution1);
+  registerStrategy({.name = "DP + HashMap"}, solution1);
 }
 
 int LongestSquareStreakInAnArraySolution::longestSquareStreak(vector<int>& nums) {

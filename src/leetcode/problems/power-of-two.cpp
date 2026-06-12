@@ -15,7 +15,7 @@ PowerOfTwoSolution::PowerOfTwoSolution() {
       .title = "Power of Two",
       .url = "https://leetcode.com/problems/power-of-two"
   });
-  registerStrategy("Brute Force", solution1);
+  registerStrategy({.name = "Brute Force"}, solution1);
 }
 
 bool PowerOfTwoSolution::isPowerOfTwo(int n) {

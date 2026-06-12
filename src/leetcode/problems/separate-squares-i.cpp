@@ -45,7 +45,7 @@ SeparateSquaresISolution::SeparateSquaresISolution() {
     setMetaInfo({.id = 3453,
                  .title = "Separate Squares I",
                  .url = "https://leetcode.com/problems/separate-squares-i/"});
-    registerStrategy("Binary Search", solution1);
+    registerStrategy({.name = "Binary Search"}, solution1);
 }
 
 double SeparateSquaresISolution::separateSquares(vector<vector<int>>& squares) {

@@ -65,8 +65,8 @@ MinimumAdditionToMakeIntegerBeautifulSolution::MinimumAdditionToMakeIntegerBeaut
   setMetaInfo({.id = 2457,
                .title = "Minimum Addition to Make Integer Beautiful",
                .url = "https://leetcode.com/problems/minimum-addition-to-make-integer-beautiful/"});
-  registerStrategy("Greedy - Round Up", solution1);
-  registerStrategy("Greedy - Direct Simulation", solution2);
+  registerStrategy({.name = "Greedy - Round Up"}, solution1);
+  registerStrategy({.name = "Greedy - Direct Simulation"}, solution2);
 }
 
 long long MinimumAdditionToMakeIntegerBeautifulSolution::makeIntegerBeautiful(long long n, int target) {

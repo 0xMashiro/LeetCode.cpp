@@ -79,7 +79,7 @@ CountTheNumberOfInfectionSequencesSolution::CountTheNumberOfInfectionSequencesSo
   setMetaInfo({.id = 2954,
                .title = "Count the Number of Infection Sequences",
                .url = "https://leetcode.com/problems/count-the-number-of-infection-sequences/"});
-  registerStrategy("Combinatorics", solution1);
+  registerStrategy({.name = "Combinatorics"}, solution1);
 }
 
 int CountTheNumberOfInfectionSequencesSolution::numberOfSequence(int n, vector<int>& sick) {

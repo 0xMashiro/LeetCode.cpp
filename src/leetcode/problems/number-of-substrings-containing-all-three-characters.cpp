@@ -51,8 +51,8 @@ NumberOfSubstringsContainingAllThreeCharactersSolution::NumberOfSubstringsContai
     .title = "Number of Substrings Containing All Three Characters",
     .url = "https://leetcode.com/problems/number-of-substrings-containing-all-three-characters/"
   });
-  registerStrategy("Sliding Window (Variables)", solution1);
-  registerStrategy("Sliding Window (Array)", solution2);
+  registerStrategy({.name = "Sliding Window (Variables)"}, solution1);
+  registerStrategy({.name = "Sliding Window (Array)"}, solution2);
 }
 
 int NumberOfSubstringsContainingAllThreeCharactersSolution::numberOfSubstrings(string s) {

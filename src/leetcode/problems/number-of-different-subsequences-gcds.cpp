@@ -52,7 +52,7 @@ NumberOfDifferentSubsequencesGcdsSolution::NumberOfDifferentSubsequencesGcdsSolu
   setMetaInfo({.id = 1819,
                .title = "Number of Different Subsequences GCDs",
                .url = "https://leetcode.com/problems/number-of-different-subsequences-gcds/"});
-  registerStrategy("Enumerate GCD", solution);
+  registerStrategy({.name = "Enumerate GCD"}, solution);
 }
 
 int NumberOfDifferentSubsequencesGcdsSolution::countDifferentSubsequenceGCDs(vector<int>& nums) {

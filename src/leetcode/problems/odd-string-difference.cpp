@@ -41,7 +41,7 @@ OddStringDifferenceSolution::OddStringDifferenceSolution() {
   setMetaInfo({.id = 2451,
                .title = "Odd String Difference",
                .url = "https://leetcode.com/problems/odd-string-difference"});
-  registerStrategy("Compare First Three", solution1);
+  registerStrategy({.name = "Compare First Three"}, solution1);
 }
 
 string OddStringDifferenceSolution::oddString(vector<string>& words) {

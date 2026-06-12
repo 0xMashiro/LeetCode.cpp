@@ -60,7 +60,7 @@ CreateMaximumNumberSolution::CreateMaximumNumberSolution() {
       .title = "Create Maximum Number",
       .url = "https://leetcode.com/problems/create-maximum-number"
   });
-  registerStrategy("Brute Force", solution1);
+  registerStrategy({.name = "Brute Force"}, solution1);
 }
 
 vector<int> CreateMaximumNumberSolution::maxNumber(vector<int>& nums1, vector<int>& nums2, int k) {

@@ -66,7 +66,7 @@ MagicSquaresInGridSolution::MagicSquaresInGridSolution() {
   setMetaInfo({.id = 840,
                .title = "Magic Squares In Grid",
                .url = "https://leetcode.com/problems/magic-squares-in-grid/"});
-  registerStrategy("Brute Force with Pruning", solution1);
+  registerStrategy({.name = "Brute Force with Pruning"}, solution1);
 }
 
 int MagicSquaresInGridSolution::numMagicSquaresInside(vector<vector<int>>& grid) {

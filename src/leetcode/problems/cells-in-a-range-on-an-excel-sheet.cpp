@@ -27,7 +27,7 @@ CellsInARangeOnAnExcelSheetSolution::CellsInARangeOnAnExcelSheetSolution() {
   setMetaInfo({.id = 2194,
                .title = "Cells in a Range on an Excel Sheet",
                .url = "https://leetcode.com/problems/cells-in-a-range-on-an-excel-sheet/"});
-  registerStrategy("Direct Simulation", solution1);
+  registerStrategy({.name = "Direct Simulation"}, solution1);
 }
 
 vector<string> CellsInARangeOnAnExcelSheetSolution::cellsInRange(string s) {

@@ -68,8 +68,8 @@ AppleRedistributionIntoBoxesSolution::AppleRedistributionIntoBoxesSolution() {
   setMetaInfo({.id = 3074,
                .title = "Apple Redistribution into Boxes",
                .url = "https://leetcode.com/problems/apple-redistribution-into-boxes/"});
-  registerStrategy("Sorting Greedy", solution1);
-  registerStrategy("Counting Sort Greedy", solution2);
+  registerStrategy({.name = "Sorting Greedy"}, solution1);
+  registerStrategy({.name = "Counting Sort Greedy"}, solution2);
 }
 
 int AppleRedistributionIntoBoxesSolution::minimumBoxes(vector<int>& apple, vector<int>& capacity) {

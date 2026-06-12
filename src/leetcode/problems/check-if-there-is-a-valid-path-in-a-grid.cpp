@@ -143,8 +143,8 @@ CheckIfThereIsAValidPathInAGridSolution::CheckIfThereIsAValidPathInAGridSolution
     .title = "Check if There is a Valid Path in a Grid",
     .url = "https://leetcode.com/problems/check-if-there-is-a-valid-path-in-a-grid/"
   });
-  registerStrategy("BFS", solution1);
-  registerStrategy("DFS", solution2);
+  registerStrategy({.name = "BFS"}, solution1);
+  registerStrategy({.name = "DFS"}, solution2);
 }
 
 bool CheckIfThereIsAValidPathInAGridSolution::hasValidPath(vector<vector<int>>& grid) {

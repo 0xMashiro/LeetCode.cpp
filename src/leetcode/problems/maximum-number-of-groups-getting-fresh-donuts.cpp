@@ -105,7 +105,7 @@ MaximumNumberOfGroupsGettingFreshDonutsSolution::MaximumNumberOfGroupsGettingFre
   setMetaInfo({.id = 1815,
                .title = "Maximum Number of Groups Getting Fresh Donuts",
                .url = "https://leetcode.com/problems/maximum-number-of-groups-getting-fresh-donuts/"});
-  registerStrategy("Memoization Search", solution1);
+  registerStrategy({.name = "Memoization Search"}, solution1);
 }
 
 int MaximumNumberOfGroupsGettingFreshDonutsSolution::maxHappyGroups(int batchSize, vector<int>& groups) {

@@ -66,7 +66,7 @@ ShortestPathInAGridWithObstaclesEliminationSolution::ShortestPathInAGridWithObst
       .title = "Shortest Path in a Grid with Obstacles Elimination",
       .url = "https://leetcode.com/problems/shortest-path-in-a-grid-with-obstacles-elimination"
   });
-  registerStrategy("Brute Force", solution1);
+  registerStrategy({.name = "Brute Force"}, solution1);
 }
 
 int ShortestPathInAGridWithObstaclesEliminationSolution::shortestPath(vector<vector<int>>& grid, int k) {

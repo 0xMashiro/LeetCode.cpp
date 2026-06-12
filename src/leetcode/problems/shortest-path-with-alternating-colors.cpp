@@ -56,7 +56,7 @@ ShortestPathWithAlternatingColorsSolution::ShortestPathWithAlternatingColorsSolu
   setMetaInfo({.id = 1129,
                .title = "Shortest Path with Alternating Colors",
                .url = "https://leetcode.com/problems/shortest-path-with-alternating-colors/"});
-  registerStrategy("BFS", solution1);
+  registerStrategy({.name = "BFS"}, solution1);
 }
 
 vector<int> ShortestPathWithAlternatingColorsSolution::shortestAlternatingPaths(

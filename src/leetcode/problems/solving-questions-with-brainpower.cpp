@@ -57,8 +57,8 @@ SolvingQuestionsWithBrainpowerSolution::SolvingQuestionsWithBrainpowerSolution()
   setMetaInfo({.id = 2140,
                .title = "Solving Questions With Brainpower",
                .url = "https://leetcode.com/problems/solving-questions-with-brainpower/"});
-  registerStrategy("DP Bottom-up", solution1);
-  registerStrategy("DP Optimized", solution2);
+  registerStrategy({.name = "DP Bottom-up"}, solution1);
+  registerStrategy({.name = "DP Optimized"}, solution2);
 }
 
 long long SolvingQuestionsWithBrainpowerSolution::mostPoints(vector<vector<int>>& questions) {

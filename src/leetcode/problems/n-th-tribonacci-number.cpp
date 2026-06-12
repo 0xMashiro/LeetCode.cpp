@@ -42,8 +42,8 @@ NThTribonacciNumberSolution::NThTribonacciNumberSolution() {
                .title = "N-th Tribonacci Number",
                .url = "https://leetcode.com/problems/n-th-tribonacci-number/"});
   // 按面试思考顺序：先展示直观的记忆化解法，再给出最优的迭代 DP
-  registerStrategy("Memoization", solution1);
-  registerStrategy("Iterative DP", solution2);
+  registerStrategy({.name = "Memoization"}, solution1);
+  registerStrategy({.name = "Iterative DP"}, solution2);
 }
 
 int NThTribonacciNumberSolution::tribonacci(int n) {

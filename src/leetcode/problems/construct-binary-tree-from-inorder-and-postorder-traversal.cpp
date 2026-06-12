@@ -71,7 +71,7 @@ ConstructBinaryTreeFromInorderAndPostorderTraversalSolution::ConstructBinaryTree
   setMetaInfo({.id = 106,
                .title = "Construct Binary Tree from Inorder and Postorder Traversal",
                .url = "https://leetcode.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/"});
-  registerStrategy("Recursive with HashMap", solution1);
+  registerStrategy({.name = "Recursive with HashMap"}, solution1);
 }
 
 TreeNode* ConstructBinaryTreeFromInorderAndPostorderTraversalSolution::buildTree(vector<int>& inorder, vector<int>& postorder) {

@@ -72,7 +72,7 @@ MinimumCostPathWithEdgeReversalsSolution::MinimumCostPathWithEdgeReversalsSoluti
   setMetaInfo({.id = 3650,
                .title = "Minimum Cost Path with Edge Reversals",
                .url = "https://leetcode.com/problems/minimum-cost-path-with-edge-reversals/"});
-  registerStrategy("State Graph + Dijkstra (up to 100 switches)", solution1);
+  registerStrategy({.name = "State Graph + Dijkstra (up to 100 switches)"}, solution1);
 }
 
 int MinimumCostPathWithEdgeReversalsSolution::minCost(int n, vector<vector<int>>& edges) {

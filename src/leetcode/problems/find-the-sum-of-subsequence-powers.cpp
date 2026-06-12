@@ -89,7 +89,7 @@ FindTheSumOfSubsequencePowersSolution::FindTheSumOfSubsequencePowersSolution() {
   setMetaInfo({.id = 3098,
                .title = "Find the Sum of Subsequence Powers",
                .url = "https://leetcode.com/problems/find-the-sum-of-subsequence-powers/"});
-  registerStrategy("DP + Enumeration", solution);
+  registerStrategy({.name = "DP + Enumeration"}, solution);
 }
 
 int FindTheSumOfSubsequencePowersSolution::sumOfPowers(vector<int>& nums, int k) {

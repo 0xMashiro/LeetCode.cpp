@@ -123,8 +123,8 @@ MaximumSumOfEdgeValuesInAGraphSolution::MaximumSumOfEdgeValuesInAGraphSolution()
   setMetaInfo({.id = 3547,
                .title = "Maximum Sum of Edge Values in a Graph",
                .url = "https://leetcode.com/problems/maximum-sum-of-edge-values-in-a-graph/"});
-  registerStrategy("Deque Greedy Construction", solution1);
-  registerStrategy("Parity Grouping Formula", solution2);
+  registerStrategy({.name = "Deque Greedy Construction"}, solution1);
+  registerStrategy({.name = "Parity Grouping Formula"}, solution2);
 }
 
 long long MaximumSumOfEdgeValuesInAGraphSolution::maxScore(int n, vector<vector<int>>& edges) {

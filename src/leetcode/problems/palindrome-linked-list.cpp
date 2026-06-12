@@ -51,7 +51,7 @@ PalindromeLinkedListSolution::PalindromeLinkedListSolution() {
   setMetaInfo({.id = 234,
                .title = "Palindrome Linked List",
                .url = "https://leetcode.com/problems/palindrome-linked-list/"});
-  registerStrategy("Fast Slow Pointer + Reverse", solution1);
+  registerStrategy({.name = "Fast Slow Pointer + Reverse"}, solution1);
 }
 
 bool PalindromeLinkedListSolution::isPalindrome(ListNode* head) {

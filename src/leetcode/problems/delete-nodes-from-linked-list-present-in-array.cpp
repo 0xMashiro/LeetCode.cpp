@@ -35,7 +35,7 @@ DeleteNodesFromLinkedListPresentInArraySolution::DeleteNodesFromLinkedListPresen
   setMetaInfo({.id = 3217,
                .title = "Delete Nodes From Linked List Present in Array",
                .url = "https://leetcode.com/problems/delete-nodes-from-linked-list-present-in-array/"});
-  registerStrategy("Hash Set + Dummy Node", solution1);
+  registerStrategy({.name = "Hash Set + Dummy Node"}, solution1);
 }
 
 ListNode* DeleteNodesFromLinkedListPresentInArraySolution::modifiedList(vector<int>& nums, ListNode* head) {

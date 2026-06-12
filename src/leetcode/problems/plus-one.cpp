@@ -43,8 +43,8 @@ PlusOneSolution::PlusOneSolution() {
   setMetaInfo({.id = 66,
                .title = "Plus One",
                .url = "https://leetcode.com/problems/plus-one"});
-  registerStrategy("Simulation", solution1);
-  registerStrategy("Carry Flag", solution2);
+  registerStrategy({.name = "Simulation"}, solution1);
+  registerStrategy({.name = "Carry Flag"}, solution2);
 }
 
 vector<int> PlusOneSolution::plusOne(vector<int>& digits) {

@@ -120,8 +120,8 @@ LastDayWhereYouCanStillCrossSolution::LastDayWhereYouCanStillCrossSolution() {
     setMetaInfo({.id = 1970,
                  .title = "Last Day Where You Can Still Cross",
                  .url = "https://leetcode.com/problems/last-day-where-you-can-still-cross"});
-    registerStrategy("Binary Search + BFS", solution1);
-    registerStrategy("Binary Search + Union Find", solution2);
+    registerStrategy({.name = "Binary Search + BFS"}, solution1);
+    registerStrategy({.name = "Binary Search + Union Find"}, solution2);
 }
 
 int LastDayWhereYouCanStillCrossSolution::latestDayToCross(int row, int col, vector<vector<int>>& cells) {

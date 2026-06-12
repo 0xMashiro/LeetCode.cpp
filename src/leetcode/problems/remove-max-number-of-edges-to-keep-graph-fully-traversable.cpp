@@ -103,7 +103,7 @@ RemoveMaxNumberOfEdgesToKeepGraphFullyTraversableSolution::RemoveMaxNumberOfEdge
   setMetaInfo({.id = 1579,
                .title = "Remove Max Number of Edges to Keep Graph Fully Traversable",
                .url = "https://leetcode.com/problems/remove-max-number-of-edges-to-keep-graph-fully-traversable/"});
-  registerStrategy("Union-Find", solution1);
+  registerStrategy({.name = "Union-Find"}, solution1);
 }
 
 int RemoveMaxNumberOfEdgesToKeepGraphFullyTraversableSolution::maxNumEdgesToRemove(int n, vector<vector<int>>& edges) {

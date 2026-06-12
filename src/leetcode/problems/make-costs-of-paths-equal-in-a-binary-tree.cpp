@@ -49,7 +49,7 @@ MakeCostsOfPathsEqualInABinaryTreeSolution::MakeCostsOfPathsEqualInABinaryTreeSo
   setMetaInfo({.id = 2673,
                .title = "Make Costs of Paths Equal in a Binary Tree",
                .url = "https://leetcode.com/problems/make-costs-of-paths-equal-in-a-binary-tree/"});
-  registerStrategy("Bottom-up Greedy", solution1);
+  registerStrategy({.name = "Bottom-up Greedy"}, solution1);
 }
 
 int MakeCostsOfPathsEqualInABinaryTreeSolution::minIncrements(int n, vector<int>& cost) {

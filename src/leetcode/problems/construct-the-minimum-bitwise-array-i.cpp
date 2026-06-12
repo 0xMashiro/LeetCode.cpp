@@ -62,8 +62,8 @@ ConstructTheMinimumBitwiseArrayISolution::ConstructTheMinimumBitwiseArrayISoluti
   setMetaInfo({.id = 3314,
                .title = "Construct the Minimum Bitwise Array I",
                .url = "https://leetcode.com/problems/construct-the-minimum-bitwise-array-i/"});
-  registerStrategy("Brute Force", solution1);
-  registerStrategy("Mathematical", solution2);
+  registerStrategy({.name = "Brute Force"}, solution1);
+  registerStrategy({.name = "Mathematical"}, solution2);
 }
 
 std::vector<int> ConstructTheMinimumBitwiseArrayISolution::minBitwiseArray(std::vector<int>& nums) {

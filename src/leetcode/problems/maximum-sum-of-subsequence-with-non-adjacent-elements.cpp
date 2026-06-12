@@ -131,7 +131,7 @@ MaximumSumOfSubsequenceWithNonAdjacentElementsSolution::MaximumSumOfSubsequenceW
     .title = "Maximum Sum of Subsequence With Non-adjacent Elements",
     .url = "https://leetcode.com/problems/maximum-sum-of-subsequence-with-non-adjacent-elements/"
   });
-  registerStrategy("Segment Tree", solution);
+  registerStrategy({.name = "Segment Tree"}, solution);
 }
 
 int MaximumSumOfSubsequenceWithNonAdjacentElementsSolution::maximumSumSubsequence(

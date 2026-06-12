@@ -83,8 +83,8 @@ InterleavingStringSolution::InterleavingStringSolution() {
   setMetaInfo({.id = 97,
                .title = "Interleaving String",
                .url = "https://leetcode.com/problems/interleaving-string/"});
-  registerStrategy("DP 2D", solution1);
-  registerStrategy("DP 1D", solution2);
+  registerStrategy({.name = "DP 2D"}, solution1);
+  registerStrategy({.name = "DP 1D"}, solution2);
 }
 
 bool InterleavingStringSolution::isInterleave(string s1, string s2, string s3) {

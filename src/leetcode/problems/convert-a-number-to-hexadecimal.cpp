@@ -33,7 +33,7 @@ ConvertANumberToHexadecimalSolution::ConvertANumberToHexadecimalSolution() {
   setMetaInfo({.id = 405,
                .title = "Convert a Number to Hexadecimal",
                .url = "https://leetcode.com/problems/convert-a-number-to-hexadecimal/"});
-  registerStrategy("Bit Manipulation", solution1);
+  registerStrategy({.name = "Bit Manipulation"}, solution1);
 }
 
 string ConvertANumberToHexadecimalSolution::toHex(int num) {

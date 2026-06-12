@@ -34,7 +34,7 @@ LexicographicallySmallestStringAfterReverseSolution::LexicographicallySmallestSt
   setMetaInfo({.id = 3722,
                .title = "Lexicographically Smallest String After Reverse",
                .url = "https://leetcode.com/problems/lexicographically-smallest-string-after-reverse/"});
-  registerStrategy("Brute Force", solution1);
+  registerStrategy({.name = "Brute Force"}, solution1);
 }
 
 string LexicographicallySmallestStringAfterReverseSolution::lexSmallest(string s) {

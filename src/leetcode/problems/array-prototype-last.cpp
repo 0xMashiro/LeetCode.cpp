@@ -16,7 +16,7 @@ ArrayPrototypeLastSolution::ArrayPrototypeLastSolution() {
   setMetaInfo({.id = 2619,
                .title = "Array Prototype Last",
                .url = "https://leetcode.com/problems/array-prototype-last/"});
-  registerStrategy("Simple", solution1);
+  registerStrategy({.name = "Simple"}, solution1);
 }
 
 int ArrayPrototypeLastSolution::last(vector<int>& nums) {

@@ -34,7 +34,7 @@ SmallestSubtreeWithAllTheDeepestNodesSolution::
                .title = "Smallest Subtree with all the Deepest Nodes",
                .url = "https://leetcode.com/problems/"
                       "smallest-subtree-with-all-the-deepest-nodes/"});
-  registerStrategy("Recursive One-Pass", solution1);
+  registerStrategy({.name = "Recursive One-Pass"}, solution1);
 }
 
 TreeNode* SmallestSubtreeWithAllTheDeepestNodesSolution::subtreeWithAllDeepest(

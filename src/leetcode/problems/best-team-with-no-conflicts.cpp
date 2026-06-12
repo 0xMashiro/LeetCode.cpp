@@ -42,7 +42,7 @@ BestTeamWithNoConflictsSolution::BestTeamWithNoConflictsSolution() {
   setMetaInfo({.id = 1626,
                .title = "Best Team With No Conflicts",
                .url = "https://leetcode.com/problems/best-team-with-no-conflicts/"});
-  registerStrategy("DP with Sorting", solution1);
+  registerStrategy({.name = "DP with Sorting"}, solution1);
 }
 
 int BestTeamWithNoConflictsSolution::bestTeamScore(vector<int>& scores, vector<int>& ages) {

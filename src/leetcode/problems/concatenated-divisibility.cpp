@@ -76,7 +76,7 @@ ConcatenatedDivisibilitySolution::ConcatenatedDivisibilitySolution() {
   setMetaInfo({.id = 3533,
                .title = "Concatenated Divisibility",
                .url = "https://leetcode.com/problems/concatenated-divisibility/"});
-  registerStrategy("State Compression DP", solution);
+  registerStrategy({.name = "State Compression DP"}, solution);
 }
 
 vector<int> ConcatenatedDivisibilitySolution::concatenatedDivisibility(vector<int>& nums, int k) {

@@ -37,7 +37,7 @@ ProfitableSchemesSolution::ProfitableSchemesSolution() {
       .title = "Profitable Schemes",
       .url = "https://leetcode.com/problems/profitable-schemes"
   });
-  registerStrategy("Brute Force", solution1);
+  registerStrategy({.name = "Brute Force"}, solution1);
 }
 
 int ProfitableSchemesSolution::profitableSchemes(int n, int minProfit, vector<int>& group, vector<int>& profit) {

@@ -91,8 +91,8 @@ CourseScheduleIiSolution::CourseScheduleIiSolution() {
   setMetaInfo({.id = 210,
                .title = "Course Schedule II",
                .url = "https://leetcode.com/problems/course-schedule-ii/"});
-  registerStrategy("Kahn BFS", solution1);
-  registerStrategy("DFS Post-order", solution2);
+  registerStrategy({.name = "Kahn BFS"}, solution1);
+  registerStrategy({.name = "DFS Post-order"}, solution2);
 }
 
 vector<int> CourseScheduleIiSolution::findOrder(int numCourses, vector<vector<int>>& prerequisites) {

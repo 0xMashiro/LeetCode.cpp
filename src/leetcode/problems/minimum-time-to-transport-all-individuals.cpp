@@ -110,7 +110,7 @@ MinimumTimeToTransportAllIndividualsSolution::
          .url = "https://leetcode.com/problems/"
                 "minimum-time-to-transport-all-individuals/"});
     // 本题结构唯一合理解为 Dijkstra 状态图最短路，无明显多解
-    registerStrategy("Dijkstra State DP", solution1);
+    registerStrategy({.name = "Dijkstra State DP"}, solution1);
 }
 
 double MinimumTimeToTransportAllIndividualsSolution::minTime(

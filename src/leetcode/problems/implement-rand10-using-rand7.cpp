@@ -54,10 +54,10 @@ ImplementRand10UsingRand7Solution::ImplementRand10UsingRand7Solution()
                .url = "https://leetcode.com/problems/implement-rand10-using-rand7/"});
   
   // 注册策略：使用 lambda 捕获 this 来调用 rand7_
-  registerStrategy("Rejection Sampling", [this]() {
+  registerStrategy({.name = "Rejection Sampling"}, [this]() {
     return rejectionSampling(rand7_);
   });
-  registerStrategy("Optimized Rejection", [this]() {
+  registerStrategy({.name = "Optimized Rejection"}, [this]() {
     return optimizedRejection(rand7_);
   });
 }

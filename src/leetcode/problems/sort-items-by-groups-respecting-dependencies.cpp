@@ -157,7 +157,7 @@ SortItemsByGroupsRespectingDependenciesSolution::SortItemsByGroupsRespectingDepe
     .title = "Sort Items by Groups Respecting Dependencies",
     .url = "https://leetcode.com/problems/sort-items-by-groups-respecting-dependencies/"
   });
-  registerStrategy("Topological Sort", topologicalSortSolution);
+  registerStrategy({.name = "Topological Sort"}, topologicalSortSolution);
 }
 
 vector<int> SortItemsByGroupsRespectingDependenciesSolution::sortItems(

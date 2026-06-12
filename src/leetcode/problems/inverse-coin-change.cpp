@@ -70,7 +70,7 @@ InverseCoinChangeSolution::InverseCoinChangeSolution() {
   setMetaInfo({.id = 3592,
                .title = "Inverse Coin Change",
                .url = "https://leetcode.com/problems/inverse-coin-change/"});
-  registerStrategy("DP Inverse", solution);
+  registerStrategy({.name = "DP Inverse"}, solution);
 }
 
 vector<int> InverseCoinChangeSolution::findCoins(vector<int>& numWays) {

@@ -103,8 +103,8 @@ FindMaximumBalancedXorSubarrayLengthSolution::FindMaximumBalancedXorSubarrayLeng
   setMetaInfo({.id = 3755,
                .title = "Find Maximum Balanced XOR Subarray Length",
                .url = "https://leetcode.com/problems/find-maximum-balanced-xor-subarray-length/"});
-  registerStrategy("Prefix XOR + Hash Map (Encoded)", solution1);
-  registerStrategy("Prefix XOR + Hash Map (Pair)", solution2);
+  registerStrategy({.name = "Prefix XOR + Hash Map (Encoded)"}, solution1);
+  registerStrategy({.name = "Prefix XOR + Hash Map (Pair)"}, solution2);
 }
 
 int FindMaximumBalancedXorSubarrayLengthSolution::maxBalancedSubarray(vector<int>& nums) {

@@ -61,8 +61,8 @@ RotatedDigitsSolution::RotatedDigitsSolution() {
   setMetaInfo({.id = 788,
                .title = "Rotated Digits",
                .url = "https://leetcode.com/problems/rotated-digits"});
-  registerStrategy("Brute Force", solution1);
-  registerStrategy("Digit DP", solution2);
+  registerStrategy({.name = "Brute Force"}, solution1);
+  registerStrategy({.name = "Digit DP"}, solution2);
 }
 
 int RotatedDigitsSolution::rotatedDigits(int n) {

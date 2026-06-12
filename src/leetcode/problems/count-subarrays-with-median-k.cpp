@@ -72,7 +72,7 @@ CountSubarraysWithMedianKSolution::CountSubarraysWithMedianKSolution() {
   setMetaInfo({.id = 2488,
                .title = "Count Subarrays With Median K",
                .url = "https://leetcode.com/problems/count-subarrays-with-median-k/"});
-  registerStrategy("Prefix Sum + Hash", solution);
+  registerStrategy({.name = "Prefix Sum + Hash"}, solution);
 }
 
 int CountSubarraysWithMedianKSolution::countSubarrays(vector<int>& nums, int k) {

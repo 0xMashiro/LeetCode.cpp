@@ -67,7 +67,7 @@ CanIWinSolution::CanIWinSolution() {
   setMetaInfo({.id = 464,
                .title = "Can I Win",
                .url = "https://leetcode.com/problems/can-i-win/"});
-  registerStrategy("Memoization DFS", solution1);
+  registerStrategy({.name = "Memoization DFS"}, solution1);
 }
 
 bool CanIWinSolution::canIWin(int maxChoosableInteger, int desiredTotal) {

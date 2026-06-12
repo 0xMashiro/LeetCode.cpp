@@ -44,8 +44,8 @@ DefangingAnIpAddressSolution::DefangingAnIpAddressSolution() {
   setMetaInfo({.id = 1108,
                .title = "Defanging an IP Address",
                .url = "https://leetcode.com/problems/defanging-an-ip-address/"});
-  registerStrategy("Iterate & Replace", solution1);
-  registerStrategy("Pre-allocate Space", solution2);
+  registerStrategy({.name = "Iterate & Replace"}, solution1);
+  registerStrategy({.name = "Pre-allocate Space"}, solution2);
 }
 
 string DefangingAnIpAddressSolution::defangIPaddr(string address) {

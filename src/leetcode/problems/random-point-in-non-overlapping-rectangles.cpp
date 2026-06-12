@@ -27,7 +27,7 @@ RandomPointInNonOverlappingRectanglesSolution::RandomPointInNonOverlappingRectan
   });
 
   // 策略：前缀和 + 二分查找
-  registerStrategy("Prefix Sum + Binary Search", [this]() {
+  registerStrategy({.name = "Prefix Sum + Binary Search"}, [this]() {
     // 生成 [0, total_points_ - 1] 范围内的随机数
     long long target = rand() % total_points_;
 

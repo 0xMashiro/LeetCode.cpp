@@ -88,7 +88,7 @@ CutOffTreesForGolfEventSolution::CutOffTreesForGolfEventSolution() {
   setMetaInfo({.id = 675,
                .title = "Cut Off Trees for Golf Event",
                .url = "https://leetcode.com/problems/cut-off-trees-for-golf-event/"});
-  registerStrategy("BFS", solution1);
+  registerStrategy({.name = "BFS"}, solution1);
 }
 
 int CutOffTreesForGolfEventSolution::cutOffTree(vector<vector<int>> &forest) {

@@ -23,7 +23,7 @@ MinimumDifferenceBetweenHighestAndLowestOfKScoresSolution::MinimumDifferenceBetw
   setMetaInfo({.id = 1984,
                .title = "Minimum Difference Between Highest and Lowest of K Scores",
                .url = "https://leetcode.com/problems/minimum-difference-between-highest-and-lowest-of-k-scores/"});
-  registerStrategy("Sorting + Sliding Window", solution1);
+  registerStrategy({.name = "Sorting + Sliding Window"}, solution1);
 }
 
 int MinimumDifferenceBetweenHighestAndLowestOfKScoresSolution::minimumDifference(vector<int>& nums, int k) {

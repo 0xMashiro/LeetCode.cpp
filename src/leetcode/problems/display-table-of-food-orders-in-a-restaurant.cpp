@@ -51,7 +51,7 @@ DisplayTableOfFoodOrdersInARestaurantSolution::DisplayTableOfFoodOrdersInARestau
   setMetaInfo({.id = 1418,
                .title = "Display Table of Food Orders in a Restaurant",
                .url = "https://leetcode.com/problems/display-table-of-food-orders-in-a-restaurant/"});
-  registerStrategy("Hash Map", solution);
+  registerStrategy({.name = "Hash Map"}, solution);
 }
 
 vector<vector<string>> DisplayTableOfFoodOrdersInARestaurantSolution::displayTable(vector<vector<string>>& orders) {

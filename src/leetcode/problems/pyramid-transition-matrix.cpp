@@ -120,8 +120,8 @@ PyramidTransitionMatrixSolution::PyramidTransitionMatrixSolution() {
   setMetaInfo({.id = 756,
                .title = "Pyramid Transition Matrix",
                .url = "https://leetcode.com/problems/pyramid-transition-matrix"});
-  registerStrategy("Backtracking with memoization", solution1);
-  registerStrategy("DFS with immediate building", solution2);
+  registerStrategy({.name = "Backtracking with memoization"}, solution1);
+  registerStrategy({.name = "DFS with immediate building"}, solution2);
 }
 
 bool PyramidTransitionMatrixSolution::pyramidTransition(string bottom, vector<string>& allowed) {

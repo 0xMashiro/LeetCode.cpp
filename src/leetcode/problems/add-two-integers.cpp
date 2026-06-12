@@ -14,7 +14,7 @@ AddTwoIntegersSolution::AddTwoIntegersSolution() {
   setMetaInfo({.id = 2235,
                .title = "Add Two Integers",
                .url = "https://leetcode.com/problems/add-two-integers/"});
-  registerStrategy("Simple Addition", solution1);
+  registerStrategy({.name = "Simple Addition"}, solution1);
 }
 
 int AddTwoIntegersSolution::sum(int num1, int num2) {

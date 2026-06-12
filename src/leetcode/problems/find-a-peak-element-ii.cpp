@@ -87,8 +87,8 @@ FindAPeakElementIiSolution::FindAPeakElementIiSolution() {
   setMetaInfo({.id = 1901,
                .title = "Find a Peak Element II",
                .url = "https://leetcode.com/problems/find-a-peak-element-ii/"});
-  registerStrategy("Binary Search on Rows", solution1);
-  registerStrategy("Binary Search on Columns", solution2);
+  registerStrategy({.name = "Binary Search on Rows"}, solution1);
+  registerStrategy({.name = "Binary Search on Columns"}, solution2);
 }
 
 vector<int> FindAPeakElementIiSolution::findPeakGrid(vector<vector<int>>& mat) {

@@ -33,7 +33,7 @@ ChampagneTowerSolution::ChampagneTowerSolution() {
   setMetaInfo({.id = 799,
                .title = "Champagne Tower",
                .url = "https://leetcode.com/problems/champagne-tower/"});
-  registerStrategy("Simulation", solution1);
+  registerStrategy({.name = "Simulation"}, solution1);
 }
 
 double ChampagneTowerSolution::champagneTower(int poured, int query_row, int query_glass) {

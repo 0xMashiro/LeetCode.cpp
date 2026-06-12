@@ -173,7 +173,7 @@ MinimumCostToConvertStringIiSolution::MinimumCostToConvertStringIiSolution() {
   setMetaInfo({.id = 2977,
                .title = "Minimum Cost to Convert String II",
                .url = "https://leetcode.com/problems/minimum-cost-to-convert-string-ii/"});
-  registerStrategy("DP with Shortest Path and Rolling Hash", solution1);
+  registerStrategy({.name = "DP with Shortest Path and Rolling Hash"}, solution1);
 }
 
 long long MinimumCostToConvertStringIiSolution::minimumCost(

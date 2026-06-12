@@ -75,8 +75,8 @@ DecodeWaysSolution::DecodeWaysSolution() {
   setMetaInfo({.id = 91,
                .title = "Decode Ways",
                .url = "https://leetcode.com/problems/decode-ways/"});
-  registerStrategy("DP", solution_dp);
-  registerStrategy("DP Optimized", solution_dp_optimized);
+  registerStrategy({.name = "DP"}, solution_dp);
+  registerStrategy({.name = "DP Optimized"}, solution_dp_optimized);
 }
 
 int DecodeWaysSolution::numDecodings(string s) {

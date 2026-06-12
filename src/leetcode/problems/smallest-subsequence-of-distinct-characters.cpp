@@ -45,7 +45,7 @@ SmallestSubsequenceOfDistinctCharactersSolution::SmallestSubsequenceOfDistinctCh
   setMetaInfo({.id = 1081,
                .title = "Smallest Subsequence of Distinct Characters",
                .url = "https://leetcode.com/problems/smallest-subsequence-of-distinct-characters/"});
-  registerStrategy("Monotonic Stack", solution1);
+  registerStrategy({.name = "Monotonic Stack"}, solution1);
 }
 
 string SmallestSubsequenceOfDistinctCharactersSolution::smallestSubsequence(string s) {

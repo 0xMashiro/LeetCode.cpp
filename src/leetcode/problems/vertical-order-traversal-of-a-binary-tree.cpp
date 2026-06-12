@@ -78,8 +78,8 @@ VerticalOrderTraversalOfABinaryTreeSolution::VerticalOrderTraversalOfABinaryTree
   setMetaInfo({.id = 987,
                .title = "Vertical Order Traversal of a Binary Tree",
                .url = "https://leetcode.com/problems/vertical-order-traversal-of-a-binary-tree/"});
-  registerStrategy("BFS + Sorting", solution1);
-  registerStrategy("DFS + Sorting", solution2);
+  registerStrategy({.name = "BFS + Sorting"}, solution1);
+  registerStrategy({.name = "DFS + Sorting"}, solution2);
 }
 
 vector<vector<int>> VerticalOrderTraversalOfABinaryTreeSolution::verticalTraversal(TreeNode* root) {

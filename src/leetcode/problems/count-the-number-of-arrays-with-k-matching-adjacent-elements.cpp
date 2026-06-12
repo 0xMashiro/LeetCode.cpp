@@ -71,7 +71,7 @@ CountTheNumberOfArraysWithKMatchingAdjacentElementsSolution() {
     .title = "Count the Number of Arrays with K Matching Adjacent Elements",
     .url = "https://leetcode.com/problems/count-the-number-of-arrays-with-k-matching-adjacent-elements/"
   });
-  registerStrategy("Combinatorics", solution);
+  registerStrategy({.name = "Combinatorics"}, solution);
 }
 
 int CountTheNumberOfArraysWithKMatchingAdjacentElementsSolution::countGoodArrays(

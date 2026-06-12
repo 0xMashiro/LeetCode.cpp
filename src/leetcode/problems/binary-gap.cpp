@@ -30,7 +30,7 @@ BinaryGapSolution::BinaryGapSolution() {
   setMetaInfo({.id = 868,
                .title = "Binary Gap",
                .url = "https://leetcode.com/problems/binary-gap/"});
-  registerStrategy("Bit Scan", solution);
+  registerStrategy({.name = "Bit Scan"}, solution);
 }
 
 int BinaryGapSolution::binaryGap(int n) {

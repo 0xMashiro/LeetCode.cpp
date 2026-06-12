@@ -35,7 +35,7 @@ TransformedArraySolution::TransformedArraySolution() {
   setMetaInfo({.id = 3379,
                .title = "Transformed Array",
                .url = "https://leetcode.com/problems/transformed-array/"});
-  registerStrategy("Simulation", solution1);
+  registerStrategy({.name = "Simulation"}, solution1);
 }
 
 vector<int> TransformedArraySolution::constructTransformedArray(vector<int>& nums) {

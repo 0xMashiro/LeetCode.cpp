@@ -29,7 +29,7 @@ MinimumNumberOfOperationsToMakeArrayEmptySolution::MinimumNumberOfOperationsToMa
   setMetaInfo({.id = 2870,
                .title = "Minimum Number of Operations to Make Array Empty",
                .url = "https://leetcode.com/problems/minimum-number-of-operations-to-make-array-empty/"});
-  registerStrategy("Hash Count + Greedy", solution1);
+  registerStrategy({.name = "Hash Count + Greedy"}, solution1);
 }
 
 int MinimumNumberOfOperationsToMakeArrayEmptySolution::minOperations(vector<int>& nums) {

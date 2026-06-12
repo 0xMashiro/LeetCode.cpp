@@ -66,7 +66,7 @@ LongestSubsequenceWithDecreasingAdjacentDifferenceSolution::LongestSubsequenceWi
     .title = "Longest Subsequence With Decreasing Adjacent Difference",
     .url = "https://leetcode.com/problems/longest-subsequence-with-decreasing-adjacent-difference/"
   });
-  registerStrategy("DP Optimized", solution);
+  registerStrategy({.name = "DP Optimized"}, solution);
 }
 
 int LongestSubsequenceWithDecreasingAdjacentDifferenceSolution::longestSubsequence(vector<int>& nums) {

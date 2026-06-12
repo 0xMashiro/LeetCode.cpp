@@ -57,7 +57,7 @@ FindTheMinimumAndMaximumNumberOfNodesBetweenCriticalPointsSolution::FindTheMinim
   setMetaInfo({.id = 2058,
                .title = "Find the Minimum and Maximum Number of Nodes Between Critical Points",
                .url = "https://leetcode.com/problems/find-the-minimum-and-maximum-number-of-nodes-between-critical-points/"});
-  registerStrategy("Single Pass", solution1);
+  registerStrategy({.name = "Single Pass"}, solution1);
 }
 
 vector<int> FindTheMinimumAndMaximumNumberOfNodesBetweenCriticalPointsSolution::nodesBetweenCriticalPoints(ListNode* head) {

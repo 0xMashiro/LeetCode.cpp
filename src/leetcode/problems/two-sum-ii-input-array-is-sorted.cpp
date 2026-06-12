@@ -69,8 +69,8 @@ TwoSumIiInputArrayIsSortedSolution::TwoSumIiInputArrayIsSortedSolution() {
   setMetaInfo({.id = 167,
                .title = "Two Sum II - Input Array Is Sorted",
                .url = "https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/"});
-  registerStrategy("Two Pointers", solution1);
-  registerStrategy("Binary Search", solution2);
+  registerStrategy({.name = "Two Pointers"}, solution1);
+  registerStrategy({.name = "Binary Search"}, solution2);
 }
 
 vector<int> TwoSumIiInputArrayIsSortedSolution::twoSum(vector<int>& numbers, int target) {

@@ -37,7 +37,7 @@ SplitAStringIntoTheMaxNumberOfUniqueSubstringsSolution::SplitAStringIntoTheMaxNu
   setMetaInfo({.id = 1593,
                .title = "Split a String Into the Max Number of Unique Substrings",
                .url = "https://leetcode.com/problems/split-a-string-into-the-max-number-of-unique-substrings/"});
-  registerStrategy("Backtracking", solution1);
+  registerStrategy({.name = "Backtracking"}, solution1);
 }
 
 int SplitAStringIntoTheMaxNumberOfUniqueSubstringsSolution::maxUniqueSplit(string s) {

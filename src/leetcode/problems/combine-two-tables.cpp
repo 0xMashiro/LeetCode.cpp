@@ -73,8 +73,8 @@ CombineTwoTablesSolution::CombineTwoTablesSolution() {
   setMetaInfo({.id = 175,
                .title = "Combine Two Tables",
                .url = "https://leetcode.com/problems/combine-two-tables/"});
-  registerStrategy("Hash Map (LEFT JOIN)", solution1);
-  registerStrategy("Sort + Two Pointer", solution2);
+  registerStrategy({.name = "Hash Map (LEFT JOIN)"}, solution1);
+  registerStrategy({.name = "Sort + Two Pointer"}, solution2);
 }
 
 vector<ResultRow> CombineTwoTablesSolution::combineTwoTables(vector<Person>& person, vector<Address>& address) {

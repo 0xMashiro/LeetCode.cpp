@@ -60,7 +60,7 @@ FindASafeWalkThroughAGridSolution::FindASafeWalkThroughAGridSolution() {
   setMetaInfo({.id = 3286,
                .title = "Find a Safe Walk Through a Grid",
                .url = "https://leetcode.com/problems/find-a-safe-walk-through-a-grid/"});
-  registerStrategy("Dijkstra", solution1);
+  registerStrategy({.name = "Dijkstra"}, solution1);
 }
 
 bool FindASafeWalkThroughAGridSolution::findSafeWalk(vector<vector<int>>& grid, int health) {

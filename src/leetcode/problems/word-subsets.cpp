@@ -59,7 +59,7 @@ WordSubsetsSolution::WordSubsetsSolution() {
   setMetaInfo({.id = 916,
                .title = "Word Subsets",
                .url = "https://leetcode.com/problems/word-subsets/"});
-  registerStrategy("Merge Requirements", solution);
+  registerStrategy({.name = "Merge Requirements"}, solution);
 }
 
 vector<string> WordSubsetsSolution::wordSubsets(vector<string>& words1, vector<string>& words2) {

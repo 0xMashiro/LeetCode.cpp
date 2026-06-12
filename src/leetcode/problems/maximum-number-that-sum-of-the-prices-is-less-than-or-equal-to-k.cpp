@@ -68,7 +68,7 @@ MaximumNumberThatSumOfThePricesIsLessThanOrEqualToKSolution::MaximumNumberThatSu
     .title = "Maximum Number That Sum of the Prices Is Less Than or Equal to K",
     .url = "https://leetcode.com/problems/maximum-number-that-sum-of-the-prices-is-less-than-or-equal-to-k/"
   });
-  registerStrategy("Binary Search + Digit DP", solution1);
+  registerStrategy({.name = "Binary Search + Digit DP"}, solution1);
 }
 
 long long MaximumNumberThatSumOfThePricesIsLessThanOrEqualToKSolution::findMaximumNumber(long long k, int x) {

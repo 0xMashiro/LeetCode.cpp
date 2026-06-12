@@ -106,8 +106,8 @@ New21GameSolution::New21GameSolution() {
   setMetaInfo({.id = 837,
                .title = "New 21 Game",
                .url = "https://leetcode.com/problems/new-21-game/"});
-  registerStrategy("DP Sliding Window", solution1);
-  registerStrategy("DP Prefix Sum", solution2);
+  registerStrategy({.name = "DP Sliding Window"}, solution1);
+  registerStrategy({.name = "DP Prefix Sum"}, solution2);
 }
 
 double New21GameSolution::new21Game(int n, int k, int maxPts) {

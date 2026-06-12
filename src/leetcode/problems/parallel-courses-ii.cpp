@@ -65,7 +65,7 @@ ParallelCoursesIiSolution::ParallelCoursesIiSolution() {
       .title = "Parallel Courses II",
       .url = "https://leetcode.com/problems/parallel-courses-ii"
   });
-  registerStrategy("Brute Force", solution1);
+  registerStrategy({.name = "Brute Force"}, solution1);
 }
 
 int ParallelCoursesIiSolution::minNumberOfSemesters(int n, vector<vector<int>>& relations, int k) {

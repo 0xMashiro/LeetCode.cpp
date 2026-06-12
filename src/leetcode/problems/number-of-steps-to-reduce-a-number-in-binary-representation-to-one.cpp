@@ -41,7 +41,7 @@ NumberOfStepsToReduceANumberInBinaryRepresentationToOneSolution::NumberOfStepsTo
   setMetaInfo({.id = 1404,
                .title = "Number of Steps to Reduce a Number in Binary Representation to One",
                .url = "https://leetcode.com/problems/number-of-steps-to-reduce-a-number-in-binary-representation-to-one/"});
-  registerStrategy("Simulation", solution1);
+  registerStrategy({.name = "Simulation"}, solution1);
 }
 
 int NumberOfStepsToReduceANumberInBinaryRepresentationToOneSolution::numSteps(string s) {

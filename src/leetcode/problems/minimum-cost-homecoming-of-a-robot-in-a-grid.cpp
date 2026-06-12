@@ -55,7 +55,7 @@ MinimumCostHomecomingOfARobotInAGridSolution::MinimumCostHomecomingOfARobotInAGr
   setMetaInfo({.id = 2087,
                .title = "Minimum Cost Homecoming of a Robot in a Grid",
                .url = "https://leetcode.com/problems/minimum-cost-homecoming-of-a-robot-in-a-grid/"});
-  registerStrategy("Greedy Direct Path", solution1);
+  registerStrategy({.name = "Greedy Direct Path"}, solution1);
 }
 
 int MinimumCostHomecomingOfARobotInAGridSolution::minCost(

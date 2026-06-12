@@ -191,8 +191,8 @@ LargestMagicSquareSolution::LargestMagicSquareSolution() {
   setMetaInfo({.id = 1895,
                .title = "Largest Magic Square",
                .url = "https://leetcode.com/problems/largest-magic-square/"});
-  registerStrategy("Brute Force with Prefix Sum", solution1);
-  registerStrategy("Optimized with Diagonal Prefix Sum", solution2);
+  registerStrategy({.name = "Brute Force with Prefix Sum"}, solution1);
+  registerStrategy({.name = "Optimized with Diagonal Prefix Sum"}, solution2);
 }
 
 int LargestMagicSquareSolution::largestMagicSquare(vector<vector<int>>& grid) {

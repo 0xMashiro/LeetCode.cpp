@@ -36,7 +36,7 @@ AddBinarySolution::AddBinarySolution() {
   setMetaInfo({.id = 67,
                .title = "Add Binary",
                .url = "https://leetcode.com/problems/add-binary/"});
-  registerStrategy("Simulation", solution1);
+  registerStrategy({.name = "Simulation"}, solution1);
 }
 
 string AddBinarySolution::addBinary(string a, string b) {

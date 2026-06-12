@@ -123,8 +123,8 @@ WaysToSplitArrayIntoThreeSubarraysSolution::WaysToSplitArrayIntoThreeSubarraysSo
   setMetaInfo({.id = 1712,
                .title = "Ways to Split Array Into Three Subarrays",
                .url = "https://leetcode.com/problems/ways-to-split-array-into-three-subarrays/"});
-  registerStrategy("Prefix Sum + Binary Search", solution1);
-  registerStrategy("Prefix Sum + Two Pointers", solution2);
+  registerStrategy({.name = "Prefix Sum + Binary Search"}, solution1);
+  registerStrategy({.name = "Prefix Sum + Two Pointers"}, solution2);
 }
 
 int WaysToSplitArrayIntoThreeSubarraysSolution::waysToSplit(vector<int>& nums) {

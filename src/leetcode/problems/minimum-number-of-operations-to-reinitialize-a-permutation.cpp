@@ -89,8 +89,8 @@ MinimumNumberOfOperationsToReinitializeAPermutationSolution::MinimumNumberOfOper
   setMetaInfo({.id = 1806,
                .title = "Minimum Number of Operations to Reinitialize a Permutation",
                .url = "https://leetcode.com/problems/minimum-number-of-operations-to-reinitialize-a-permutation/"});
-  registerStrategy("Position Tracking", solution1);
-  registerStrategy("Full Simulation", solution2);
+  registerStrategy({.name = "Position Tracking"}, solution1);
+  registerStrategy({.name = "Full Simulation"}, solution2);
 }
 
 int MinimumNumberOfOperationsToReinitializeAPermutationSolution::reinitializePermutation(int n) {

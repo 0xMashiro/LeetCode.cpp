@@ -47,7 +47,7 @@ NumberOfNodesInTheSubTreeWithTheSameLabelSolution::NumberOfNodesInTheSubTreeWith
   setMetaInfo({.id = 1519,
                .title = "Number of Nodes in the Sub-Tree With the Same Label",
                .url = "https://leetcode.com/problems/number-of-nodes-in-the-sub-tree-with-the-same-label/"});
-  registerStrategy("DFS + Count Array", solution1);
+  registerStrategy({.name = "DFS + Count Array"}, solution1);
 }
 
 vector<int> NumberOfNodesInTheSubTreeWithTheSameLabelSolution::countSubTrees(

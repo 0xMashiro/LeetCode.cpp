@@ -51,7 +51,7 @@ ReformatTheStringSolution::ReformatTheStringSolution() {
   setMetaInfo({.id = 1417,
                .title = "Reformat The String",
                .url = "https://leetcode.com/problems/reformat-the-string/"});
-  registerStrategy("Separate & Merge", solution1);
+  registerStrategy({.name = "Separate & Merge"}, solution1);
 }
 
 std::string ReformatTheStringSolution::reformat(std::string s) {

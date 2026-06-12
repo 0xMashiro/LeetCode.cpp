@@ -29,7 +29,7 @@ MinimumConsecutiveCardsToPickUpSolution::MinimumConsecutiveCardsToPickUpSolution
   setMetaInfo({.id = 2260,
                .title = "Minimum Consecutive Cards to Pick Up",
                .url = "https://leetcode.com/problems/minimum-consecutive-cards-to-pick-up/"});
-  registerStrategy("Hash Table", solution1);
+  registerStrategy({.name = "Hash Table"}, solution1);
 }
 
 int MinimumConsecutiveCardsToPickUpSolution::minimumCardPickup(vector<int>& cards) {

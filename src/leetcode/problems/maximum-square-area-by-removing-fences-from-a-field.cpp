@@ -52,7 +52,7 @@ MaximumSquareAreaByRemovingFencesFromAFieldSolution::MaximumSquareAreaByRemoving
   setMetaInfo({.id = 2975,
                .title = "Maximum Square Area by Removing Fences From a Field",
                .url = "https://leetcode.com/problems/maximum-square-area-by-removing-fences-from-a-field/"});
-  registerStrategy("Set Intersection", solution1);
+  registerStrategy({.name = "Set Intersection"}, solution1);
 }
 
 int MaximumSquareAreaByRemovingFencesFromAFieldSolution::maximizeSquareArea(int m, int n, vector<int>& hFences, vector<int>& vFences) {

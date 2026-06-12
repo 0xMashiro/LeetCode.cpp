@@ -41,7 +41,7 @@ CountWaysToBuildGoodStringsSolution::CountWaysToBuildGoodStringsSolution() {
   setMetaInfo({.id = 2466,
                .title = "Count Ways To Build Good Strings",
                .url = "https://leetcode.com/problems/count-ways-to-build-good-strings/"});
-  registerStrategy("Dynamic Programming", solution1);
+  registerStrategy({.name = "Dynamic Programming"}, solution1);
 }
 
 int CountWaysToBuildGoodStringsSolution::countGoodStrings(int low, int high, int zero, int one) {

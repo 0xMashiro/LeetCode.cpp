@@ -144,9 +144,9 @@ MaximumSideLengthOfASquareWithSumLessThanOrEqualToThresholdSolution() {
   setMetaInfo({.id = 1292,
                .title = "Maximum Side Length of a Square with Sum Less than or Equal to Threshold",
                .url = "https://leetcode.com/problems/maximum-side-length-of-a-square-with-sum-less-than-or-equal-to-threshold/"});
-  registerStrategy("Binary Search on Side Length (Global)", solution1);
-  registerStrategy("Binary Search per Position", solution2);
-  registerStrategy("Incremental Expansion", solution3);
+  registerStrategy({.name = "Binary Search on Side Length (Global)"}, solution1);
+  registerStrategy({.name = "Binary Search per Position"}, solution2);
+  registerStrategy({.name = "Incremental Expansion"}, solution3);
 }
 
 int MaximumSideLengthOfASquareWithSumLessThanOrEqualToThresholdSolution::

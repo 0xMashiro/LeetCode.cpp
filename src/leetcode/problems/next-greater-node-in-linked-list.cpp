@@ -35,7 +35,7 @@ NextGreaterNodeInLinkedListSolution::NextGreaterNodeInLinkedListSolution() {
   setMetaInfo({.id = 1019,
                .title = "Next Greater Node In Linked List",
                .url = "https://leetcode.com/problems/next-greater-node-in-linked-list/"});
-  registerStrategy("Monotonic Stack", solution1);
+  registerStrategy({.name = "Monotonic Stack"}, solution1);
 }
 
 vector<int> NextGreaterNodeInLinkedListSolution::nextLargerNodes(ListNode* head) {

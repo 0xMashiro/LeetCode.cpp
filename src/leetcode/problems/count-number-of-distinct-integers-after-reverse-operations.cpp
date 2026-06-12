@@ -40,7 +40,7 @@ CountNumberOfDistinctIntegersAfterReverseOperationsSolution::CountNumberOfDistin
   setMetaInfo({.id = 2442,
                .title = "Count Number of Distinct Integers After Reverse Operations",
                .url = "https://leetcode.com/problems/count-number-of-distinct-integers-after-reverse-operations/"});
-  registerStrategy("Hash Set", solution);
+  registerStrategy({.name = "Hash Set"}, solution);
 }
 
 int CountNumberOfDistinctIntegersAfterReverseOperationsSolution::countDistinctIntegers(vector<int>& nums) {

@@ -49,7 +49,7 @@ class TestSubmitAllAndClassify(unittest.TestCase):
         self.assertIsNone(outcome.result)
 
     def test_expected_tle_actual_tle_counts_as_pass(self) -> None:
-        """暴力解标了 @expected: TLE，真 TLE → 符合预期，整体视为通过。"""
+        """暴力解标了 `.expected = TLE`，真 TLE → 符合预期，整体视为通过。"""
         results = [
             _triple(1, "Time Limit Exceeded", expected="Time Limit Exceeded"),
             _triple(2, "Accepted"),
@@ -59,7 +59,7 @@ class TestSubmitAllAndClassify(unittest.TestCase):
         self.assertTrue(outcome.accepted)
 
     def test_expected_tle_actual_accepted_is_mismatch(self) -> None:
-        """标了预期 TLE 但真 AC → mismatch，失败归类（模型可能需要移除 @expected 标记）。"""
+        """标了预期 TLE 但真 AC → mismatch，失败归类（模型可能需要移除 expected 标记）。"""
         results = [_triple(1, "Accepted", expected="Time Limit Exceeded")]
         svc = SubmissionClassifier(submitter_factory=lambda: _fake_submitter(results))
         outcome = svc.submit_all_and_classify(42)

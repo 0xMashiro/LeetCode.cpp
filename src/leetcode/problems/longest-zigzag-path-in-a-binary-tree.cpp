@@ -80,7 +80,7 @@ LongestZigzagPathInABinaryTreeSolution::LongestZigzagPathInABinaryTreeSolution()
     .title = "Longest ZigZag Path in a Binary Tree",
     .url = "https://leetcode.com/problems/longest-zigzag-path-in-a-binary-tree/"
   });
-  registerStrategy("DFS", solution1);
+  registerStrategy({.name = "DFS"}, solution1);
 }
 
 int LongestZigzagPathInABinaryTreeSolution::longestZigZag(TreeNode* root) {

@@ -76,8 +76,8 @@ MinimumDeletionsToMakeStringBalancedSolution::MinimumDeletionsToMakeStringBalanc
     .title = "Minimum Deletions to Make String Balanced",
     .url = "https://leetcode.com/problems/minimum-deletions-to-make-string-balanced/"
   });
-  registerStrategy("Prefix Sum", solution1);
-  registerStrategy("Optimized O(1) Space", solution2);
+  registerStrategy({.name = "Prefix Sum"}, solution1);
+  registerStrategy({.name = "Optimized O(1) Space"}, solution2);
 }
 
 int MinimumDeletionsToMakeStringBalancedSolution::minimumDeletions(string s) {

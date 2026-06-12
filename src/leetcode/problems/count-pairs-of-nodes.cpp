@@ -68,7 +68,7 @@ CountPairsOfNodesSolution::CountPairsOfNodesSolution() {
   setMetaInfo({.id = 1782,
                .title = "Count Pairs Of Nodes",
                .url = "https://leetcode.com/problems/count-pairs-of-nodes/"});
-  registerStrategy("Two Pointers + Hash Map", solution1);
+  registerStrategy({.name = "Two Pointers + Hash Map"}, solution1);
 }
 
 vector<int> CountPairsOfNodesSolution::countPairs(int n, vector<vector<int>>& edges, vector<int>& queries) {

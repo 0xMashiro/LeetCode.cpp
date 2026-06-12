@@ -88,8 +88,8 @@ MaximalRectangleSolution::MaximalRectangleSolution() {
   setMetaInfo({.id = 85,
                .title = "Maximal Rectangle",
                .url = "https://leetcode.com/problems/maximal-rectangle/"});
-  registerStrategy("Monotonic Stack", solution1);
-  registerStrategy("Dynamic Programming", solution2);
+  registerStrategy({.name = "Monotonic Stack"}, solution1);
+  registerStrategy({.name = "Dynamic Programming"}, solution2);
 }
 
 int MaximalRectangleSolution::maximalRectangle(vector<vector<char>>& matrix) {

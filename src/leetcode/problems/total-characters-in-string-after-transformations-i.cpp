@@ -100,8 +100,8 @@ TotalCharactersInStringAfterTransformationsISolution::TotalCharactersInStringAft
   setMetaInfo({.id = 3335,
                .title = "Total Characters in String After Transformations I",
                .url = "https://leetcode.com/problems/total-characters-in-string-after-transformations-i/"});
-  registerStrategy("Counting", solution1);
-  registerStrategy("Optimized Counting", solution2);
+  registerStrategy({.name = "Counting"}, solution1);
+  registerStrategy({.name = "Optimized Counting"}, solution2);
 }
 
 int TotalCharactersInStringAfterTransformationsISolution::lengthAfterTransformations(string s, int t) {

@@ -54,7 +54,7 @@ AddOneRowToTreeSolution::AddOneRowToTreeSolution() {
   setMetaInfo({.id = 623,
                .title = "Add One Row to Tree",
                .url = "https://leetcode.com/problems/add-one-row-to-tree/"});
-  registerStrategy("BFS", solution1);
+  registerStrategy({.name = "BFS"}, solution1);
 }
 
 TreeNode* AddOneRowToTreeSolution::addOneRow(TreeNode* root, int val, int depth) {

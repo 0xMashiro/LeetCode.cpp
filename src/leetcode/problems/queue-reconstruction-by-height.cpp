@@ -39,7 +39,7 @@ QueueReconstructionByHeightSolution::QueueReconstructionByHeightSolution() {
   setMetaInfo({.id = 406,
                .title = "Queue Reconstruction by Height",
                .url = "https://leetcode.com/problems/queue-reconstruction-by-height/"});
-  registerStrategy("Greedy Sort & Insert", solution1);
+  registerStrategy({.name = "Greedy Sort & Insert"}, solution1);
 }
 
 vector<vector<int>> QueueReconstructionByHeightSolution::reconstructQueue(vector<vector<int>>& people) {

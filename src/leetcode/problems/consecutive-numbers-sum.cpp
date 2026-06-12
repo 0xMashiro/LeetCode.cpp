@@ -26,7 +26,7 @@ ConsecutiveNumbersSumSolution::ConsecutiveNumbersSumSolution() {
   setMetaInfo({.id = 829,
                .title = "Consecutive Numbers Sum",
                .url = "https://leetcode.com/problems/consecutive-numbers-sum/"});
-  registerStrategy("Math - Enum k", solution1);
+  registerStrategy({.name = "Math - Enum k"}, solution1);
 }
 
 int ConsecutiveNumbersSumSolution::consecutiveNumbersSum(int n) {

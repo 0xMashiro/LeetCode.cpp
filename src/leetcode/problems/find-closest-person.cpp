@@ -22,7 +22,7 @@ FindClosestPersonSolution::FindClosestPersonSolution() {
   setMetaInfo({.id = 3516,
                .title = "Find Closest Person",
                .url = "https://leetcode.com/problems/find-closest-person/"});
-  registerStrategy("Direct Compare", solution1);
+  registerStrategy({.name = "Direct Compare"}, solution1);
 }
 
 int FindClosestPersonSolution::findClosest(int x, int y, int z) {

@@ -75,7 +75,7 @@ SolveTheEquationSolution::SolveTheEquationSolution() {
   setMetaInfo({.id = 640,
                .title = "Solve the Equation",
                .url = "https://leetcode.com/problems/solve-the-equation/"});
-  registerStrategy("Linear Equation Parse", solution1);
+  registerStrategy({.name = "Linear Equation Parse"}, solution1);
 }
 
 string SolveTheEquationSolution::solveEquation(string equation) {

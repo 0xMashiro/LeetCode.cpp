@@ -40,7 +40,7 @@ MinimumProcessingTimeSolution::MinimumProcessingTimeSolution() {
     .title = "Minimum Processing Time",
     .url = "https://leetcode.com/problems/minimum-processing-time/"
   });
-  registerStrategy("Greedy Sort", solution1);
+  registerStrategy({.name = "Greedy Sort"}, solution1);
 }
 
 int MinimumProcessingTimeSolution::minProcessingTime(vector<int>& processorTime, vector<int>& tasks) {

@@ -25,7 +25,7 @@ MinimumCostToMakeAllCharactersEqualSolution::MinimumCostToMakeAllCharactersEqual
   setMetaInfo({.id = 2712,
                .title = "Minimum Cost to Make All Characters Equal",
                .url = "https://leetcode.com/problems/minimum-cost-to-make-all-characters-equal/"});
-  registerStrategy("Greedy", solution1);
+  registerStrategy({.name = "Greedy"}, solution1);
 }
 
 long long MinimumCostToMakeAllCharactersEqualSolution::minimumCost(string s) {

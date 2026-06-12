@@ -81,8 +81,8 @@ MaximizeScoreAfterNOperationsSolution::MaximizeScoreAfterNOperationsSolution() {
   setMetaInfo({.id = 1799,
                .title = "Maximize Score After N Operations",
                .url = "https://leetcode.com/problems/maximize-score-after-n-operations/"});
-  registerStrategy("DFS + Memoization", solution1);
-  registerStrategy("Iterative DP", solution2);
+  registerStrategy({.name = "DFS + Memoization"}, solution1);
+  registerStrategy({.name = "Iterative DP"}, solution2);
 }
 
 int MaximizeScoreAfterNOperationsSolution::maxScore(vector<int>& nums) {

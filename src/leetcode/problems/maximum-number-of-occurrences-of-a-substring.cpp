@@ -71,7 +71,7 @@ MaximumNumberOfOccurrencesOfASubstringSolution::MaximumNumberOfOccurrencesOfASub
     .title = "Maximum Number of Occurrences of a Substring",
     .url = "https://leetcode.com/problems/maximum-number-of-occurrences-of-a-substring/"
   });
-  registerStrategy("Sliding Window + HashMap", solution1);
+  registerStrategy({.name = "Sliding Window + HashMap"}, solution1);
 }
 
 int MaximumNumberOfOccurrencesOfASubstringSolution::maxFreq(string s, int maxLetters, int minSize, int maxSize) {

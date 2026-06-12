@@ -30,7 +30,7 @@ ConvertIntegerToTheSumOfTwoNoZeroIntegersSolution::ConvertIntegerToTheSumOfTwoNo
   setMetaInfo({.id = 1317,
                .title = "Convert Integer to the Sum of Two No-Zero Integers",
                .url = "https://leetcode.com/problems/convert-integer-to-the-sum-of-two-no-zero-integers/"});
-  registerStrategy("Enumeration", solution1);
+  registerStrategy({.name = "Enumeration"}, solution1);
 }
 
 vector<int> ConvertIntegerToTheSumOfTwoNoZeroIntegersSolution::getNoZeroIntegers(int n) {

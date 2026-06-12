@@ -37,7 +37,7 @@ DeleteColumnsToMakeSortedIiiSolution::DeleteColumnsToMakeSortedIiiSolution() {
   setMetaInfo({.id = 960,
                .title = "Delete Columns to Make Sorted III",
                .url = "https://leetcode.com/problems/delete-columns-to-make-sorted-iii/"});
-  registerStrategy("Dynamic Programming", solution1);
+  registerStrategy({.name = "Dynamic Programming"}, solution1);
 }
 
 int DeleteColumnsToMakeSortedIiiSolution::minDeletionSize(vector<string>& strs) {

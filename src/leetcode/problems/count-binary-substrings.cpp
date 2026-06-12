@@ -38,7 +38,7 @@ CountBinarySubstringsSolution::CountBinarySubstringsSolution() {
   setMetaInfo({.id = 696,
                .title = "Count Binary Substrings",
                .url = "https://leetcode.com/problems/count-binary-substrings/"});
-  registerStrategy("Group Count", solution1);
+  registerStrategy({.name = "Group Count"}, solution1);
 }
 
 int CountBinarySubstringsSolution::countBinarySubstrings(string s) {

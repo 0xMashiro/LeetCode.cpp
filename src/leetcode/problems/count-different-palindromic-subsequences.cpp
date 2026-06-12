@@ -68,7 +68,7 @@ CountDifferentPalindromicSubsequencesSolution::CountDifferentPalindromicSubseque
   setMetaInfo({.id = 730,
                .title = "Count Different Palindromic Subsequences",
                .url = "https://leetcode.com/problems/count-different-palindromic-subsequences/"});
-  registerStrategy("DP with Interval", solution1);
+  registerStrategy({.name = "DP with Interval"}, solution1);
 }
 
 int CountDifferentPalindromicSubsequencesSolution::countPalindromicSubsequences(string s) {

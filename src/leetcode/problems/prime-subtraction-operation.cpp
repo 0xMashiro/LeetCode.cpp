@@ -75,7 +75,7 @@ PrimeSubtractionOperationSolution::PrimeSubtractionOperationSolution() {
   setMetaInfo({.id = 2601,
                .title = "Prime Subtraction Operation",
                .url = "https://leetcode.com/problems/prime-subtraction-operation/"});
-  registerStrategy("Greedy", solution1);
+  registerStrategy({.name = "Greedy"}, solution1);
 }
 
 bool PrimeSubtractionOperationSolution::primeSubOperation(vector<int>& nums) {

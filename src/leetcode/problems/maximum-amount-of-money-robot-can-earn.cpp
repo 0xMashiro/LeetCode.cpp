@@ -102,7 +102,7 @@ MaximumAmountOfMoneyRobotCanEarnSolution::MaximumAmountOfMoneyRobotCanEarnSoluti
     .title = "Maximum Amount of Money Robot Can Earn",
     .url = "https://leetcode.com/problems/maximum-amount-of-money-robot-can-earn/"
   });
-  registerStrategy("DP with Rolling Array", solution1);
+  registerStrategy({.name = "DP with Rolling Array"}, solution1);
 }
 
 int MaximumAmountOfMoneyRobotCanEarnSolution::maximumAmount(vector<vector<int>>& coins) {

@@ -146,7 +146,7 @@ ZeroArrayTransformationIiiSolution::ZeroArrayTransformationIiiSolution() {
   setMetaInfo({.id = 3362,
                .title = "Zero Array Transformation III",
                .url = "https://leetcode.com/problems/zero-array-transformation-iii/"});
-  registerStrategy("Binary Search + Greedy", solution);
+  registerStrategy({.name = "Binary Search + Greedy"}, solution);
 }
 
 int ZeroArrayTransformationIiiSolution::maxRemoval(vector<int>& nums, vector<vector<int>>& queries) {

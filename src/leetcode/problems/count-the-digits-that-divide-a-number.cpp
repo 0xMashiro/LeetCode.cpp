@@ -23,7 +23,7 @@ CountTheDigitsThatDivideANumberSolution::CountTheDigitsThatDivideANumberSolution
   setMetaInfo({.id = 2520,
                .title = "Count the Digits That Divide a Number",
                .url = "https://leetcode.com/problems/count-the-digits-that-divide-a-number/"});
-  registerStrategy("Direct Count", solution);
+  registerStrategy({.name = "Direct Count"}, solution);
 }
 
 int CountTheDigitsThatDivideANumberSolution::countDigits(int num) {

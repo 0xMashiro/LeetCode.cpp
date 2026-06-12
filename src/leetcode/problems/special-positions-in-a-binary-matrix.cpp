@@ -40,7 +40,7 @@ SpecialPositionsInABinaryMatrixSolution::SpecialPositionsInABinaryMatrixSolution
   setMetaInfo({.id = 1582,
                .title = "Special Positions in a Binary Matrix",
                .url = "https://leetcode.com/problems/special-positions-in-a-binary-matrix/"});
-  registerStrategy("Preprocessing", solution1);
+  registerStrategy({.name = "Preprocessing"}, solution1);
 }
 
 int SpecialPositionsInABinaryMatrixSolution::numSpecial(vector<vector<int>>& mat) {

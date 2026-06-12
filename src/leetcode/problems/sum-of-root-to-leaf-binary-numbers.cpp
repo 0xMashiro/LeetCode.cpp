@@ -29,7 +29,7 @@ SumOfRootToLeafBinaryNumbersSolution::SumOfRootToLeafBinaryNumbersSolution() {
   setMetaInfo({.id = 1022,
                .title = "Sum of Root To Leaf Binary Numbers",
                .url = "https://leetcode.com/problems/sum-of-root-to-leaf-binary-numbers/"});
-  registerStrategy("DFS Recursive", solution1);
+  registerStrategy({.name = "DFS Recursive"}, solution1);
 }
 
 int SumOfRootToLeafBinaryNumbersSolution::sumRootToLeaf(TreeNode* root) {

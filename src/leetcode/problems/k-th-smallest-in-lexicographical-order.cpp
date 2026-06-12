@@ -47,7 +47,7 @@ KThSmallestInLexicographicalOrderSolution::KThSmallestInLexicographicalOrderSolu
   setMetaInfo({.id = 440,
                .title = "K-th Smallest in Lexicographical Order",
                .url = "https://leetcode.com/problems/k-th-smallest-in-lexicographical-order/"});
-  registerStrategy("Prefix Tree", solution1);
+  registerStrategy({.name = "Prefix Tree"}, solution1);
 }
 
 int KThSmallestInLexicographicalOrderSolution::findKthNumber(int n, int k) {

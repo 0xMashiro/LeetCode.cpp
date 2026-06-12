@@ -77,8 +77,8 @@ TwoBestNonOverlappingEventsSolution::TwoBestNonOverlappingEventsSolution() {
   setMetaInfo({.id = 2054,
                .title = "Two Best Non-Overlapping Events",
                .url = "https://leetcode.com/problems/two-best-non-overlapping-events/"});
-  registerStrategy("Brute Force", bruteForce);
-  registerStrategy("Sorting + Suffix Max + Binary Search", optimized);
+  registerStrategy({.name = "Brute Force"}, bruteForce);
+  registerStrategy({.name = "Sorting + Suffix Max + Binary Search"}, optimized);
 }
 
 int TwoBestNonOverlappingEventsSolution::maxTwoEvents(vector<vector<int>>& events) {

@@ -26,7 +26,7 @@ SumOfTwoIntegersSolution::SumOfTwoIntegersSolution() {
   setMetaInfo({.id = 371,
                .title = "Sum of Two Integers",
                .url = "https://leetcode.com/problems/sum-of-two-integers/"});
-  registerStrategy("Bit Manipulation", solution1);
+  registerStrategy({.name = "Bit Manipulation"}, solution1);
 }
 
 int SumOfTwoIntegersSolution::getSum(int a, int b) {

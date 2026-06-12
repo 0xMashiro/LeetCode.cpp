@@ -57,7 +57,7 @@ SumOfPrefixScoresOfStringsSolution::SumOfPrefixScoresOfStringsSolution() {
       .title = "Sum of Prefix Scores of Strings",
       .url = "https://leetcode.com/problems/sum-of-prefix-scores-of-strings/"
   });
-  registerStrategy("Trie", solution1);
+  registerStrategy({.name = "Trie"}, solution1);
 }
 
 vector<int> SumOfPrefixScoresOfStringsSolution::sumPrefixScores(vector<string>& words) {

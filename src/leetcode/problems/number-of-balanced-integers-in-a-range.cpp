@@ -95,7 +95,7 @@ NumberOfBalancedIntegersInARangeSolution::NumberOfBalancedIntegersInARangeSoluti
   setMetaInfo({.id = 3791,
                .title = "Number of Balanced Integers in a Range",
                .url = "https://leetcode.com/problems/number-of-balanced-integers-in-a-range/"});
-  registerStrategy("Digit DP", solution1);
+  registerStrategy({.name = "Digit DP"}, solution1);
 }
 
 long long NumberOfBalancedIntegersInARangeSolution::countBalanced(long long low, long long high) {

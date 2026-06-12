@@ -146,8 +146,8 @@ CountDistinctSubarraysDivisibleByKInSortedArraySolution::CountDistinctSubarraysD
     .title = "Count Distinct Subarrays Divisible by K in Sorted Array",
     .url = "https://leetcode.com/problems/count-distinct-subarrays-divisible-by-k-in-sorted-array/"
   });
-  registerStrategy("Rolling Hash", solution1);
-  registerStrategy("Optimized", solution2);
+  registerStrategy({.name = "Rolling Hash"}, solution1);
+  registerStrategy({.name = "Optimized"}, solution2);
 }
 
 long long CountDistinctSubarraysDivisibleByKInSortedArraySolution::numGoodSubarrays(vector<int>& nums, int k) {

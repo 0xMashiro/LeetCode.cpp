@@ -31,7 +31,7 @@ MatrixDiagonalSumSolution::MatrixDiagonalSumSolution() {
   setMetaInfo({.id = 1572,
                .title = "Matrix Diagonal Sum",
                .url = "https://leetcode.com/problems/matrix-diagonal-sum/"});
-  registerStrategy("Linear Scan", solution);
+  registerStrategy({.name = "Linear Scan"}, solution);
 }
 
 int MatrixDiagonalSumSolution::diagonalSum(vector<vector<int>>& mat) {

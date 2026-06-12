@@ -32,7 +32,7 @@ NeighboringBitwiseXorSolution::NeighboringBitwiseXorSolution() {
   setMetaInfo({.id = 2683,
                .title = "Neighboring Bitwise XOR",
                .url = "https://leetcode.com/problems/neighboring-bitwise-xor/"});
-  registerStrategy("XOR Sum Check", solution1);
+  registerStrategy({.name = "XOR Sum Check"}, solution1);
 }
 
 bool NeighboringBitwiseXorSolution::doesValidArrayExist(vector<int>& derived) {

@@ -190,7 +190,7 @@ SeparateSquaresIiSolution::SeparateSquaresIiSolution() {
   setMetaInfo({.id = 3454,
                .title = "Separate Squares II",
                .url = "https://leetcode.com/problems/separate-squares-ii/"});
-  registerStrategy("Sweep Line + Segment Tree", solution1);
+  registerStrategy({.name = "Sweep Line + Segment Tree"}, solution1);
 }
 
 double SeparateSquaresIiSolution::separateSquares(vector<vector<int>>& squares) {

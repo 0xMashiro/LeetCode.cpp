@@ -34,7 +34,7 @@ LongestBalancedSubarrayISolution::LongestBalancedSubarrayISolution() {
   setMetaInfo({.id = 3719,
                .title = "Longest Balanced Subarray I",
                .url = "https://leetcode.com/problems/longest-balanced-subarray-i/"});
-  registerStrategy("Enumerate + HashSet", solution1);
+  registerStrategy({.name = "Enumerate + HashSet"}, solution1);
 }
 
 int LongestBalancedSubarrayISolution::longestBalanced(vector<int>& nums) {

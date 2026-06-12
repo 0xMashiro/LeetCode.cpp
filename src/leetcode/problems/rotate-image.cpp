@@ -36,8 +36,8 @@ RotateImageSolution::RotateImageSolution() {
   setMetaInfo({.id = 48,
                .title = "Rotate Image",
                .url = "https://leetcode.com/problems/rotate-image/"});
-  registerStrategy("Transpose + Reverse", solution1);
-  registerStrategy("Layer Rotation", solution2);
+  registerStrategy({.name = "Transpose + Reverse"}, solution1);
+  registerStrategy({.name = "Layer Rotation"}, solution2);
 }
 
 void RotateImageSolution::rotate(vector<vector<int>>& matrix) {

@@ -92,7 +92,7 @@ EscapeALargeMazeSolution::EscapeALargeMazeSolution() {
   setMetaInfo({.id = 1036,
                .title = "Escape a Large Maze",
                .url = "https://leetcode.com/problems/escape-a-large-maze/"});
-  registerStrategy("BFS with Bounded Search", solution1);
+  registerStrategy({.name = "BFS with Bounded Search"}, solution1);
 }
 
 bool EscapeALargeMazeSolution::isEscapePossible(vector<vector<int>>& blocked,

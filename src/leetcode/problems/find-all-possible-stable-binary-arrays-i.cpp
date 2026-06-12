@@ -101,8 +101,8 @@ FindAllPossibleStableBinaryArraysISolution::FindAllPossibleStableBinaryArraysISo
   setMetaInfo({.id = 3129,
                .title = "Find All Possible Stable Binary Arrays I",
                .url = "https://leetcode.com/problems/find-all-possible-stable-binary-arrays-i/"});
-  registerStrategy("3D DP", solution1);
-  registerStrategy("Prefix Sum DP", solution2);
+  registerStrategy({.name = "3D DP"}, solution1);
+  registerStrategy({.name = "Prefix Sum DP"}, solution2);
 }
 
 int FindAllPossibleStableBinaryArraysISolution::numberOfStableArrays(int zero, int one, int limit) {

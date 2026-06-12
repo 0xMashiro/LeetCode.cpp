@@ -20,7 +20,7 @@ FindWordsContainingCharacterSolution::FindWordsContainingCharacterSolution() {
   setMetaInfo({.id = 2942,
                .title = "Find Words Containing Character",
                .url = "https://leetcode.com/problems/find-words-containing-character/"});
-  registerStrategy("Linear Scan", solution1);
+  registerStrategy({.name = "Linear Scan"}, solution1);
 }
 
 vector<int> FindWordsContainingCharacterSolution::findWordsContaining(vector<string>& words, char x) {

@@ -27,7 +27,7 @@ DeleteColumnsToMakeSortedSolution::DeleteColumnsToMakeSortedSolution() {
   setMetaInfo({.id = 944,
                .title = "Delete Columns to Make Sorted",
                .url = "https://leetcode.com/problems/delete-columns-to-make-sorted/"});
-  registerStrategy("Column-wise Check", solution1);
+  registerStrategy({.name = "Column-wise Check"}, solution1);
 }
 
 int DeleteColumnsToMakeSortedSolution::minDeletionSize(vector<string>& strs) {

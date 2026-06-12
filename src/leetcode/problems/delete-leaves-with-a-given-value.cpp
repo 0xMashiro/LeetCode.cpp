@@ -37,7 +37,7 @@ DeleteLeavesWithAGivenValueSolution::DeleteLeavesWithAGivenValueSolution() {
   setMetaInfo({.id = 1325,
                .title = "Delete Leaves With a Given Value",
                .url = "https://leetcode.com/problems/delete-leaves-with-a-given-value/"});
-  registerStrategy("Postorder DFS", solution1);
+  registerStrategy({.name = "Postorder DFS"}, solution1);
 }
 
 TreeNode* DeleteLeavesWithAGivenValueSolution::removeLeafNodes(TreeNode* root, int target) {

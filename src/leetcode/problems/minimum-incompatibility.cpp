@@ -142,8 +142,8 @@ MinimumIncompatibilitySolution::MinimumIncompatibilitySolution() {
   setMetaInfo({.id = 1681,
                .title = "Minimum Incompatibility",
                .url = "https://leetcode.com/problems/minimum-incompatibility/"});
-  registerStrategy("DP Basic", solution1);
-  registerStrategy("DP Optimized", solution2);
+  registerStrategy({.name = "DP Basic"}, solution1);
+  registerStrategy({.name = "DP Optimized"}, solution2);
 }
 
 int MinimumIncompatibilitySolution::minimumIncompatibility(vector<int>& nums, int k) {

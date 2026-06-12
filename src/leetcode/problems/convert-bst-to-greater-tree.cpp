@@ -59,8 +59,8 @@ ConvertBstToGreaterTreeSolution::ConvertBstToGreaterTreeSolution() {
     .title = "Convert BST to Greater Tree",
     .url = "https://leetcode.com/problems/convert-bst-to-greater-tree/"
   });
-  registerStrategy("Recursive Reverse Inorder", solution1);
-  registerStrategy("Iterative Reverse Inorder", solution2);
+  registerStrategy({.name = "Recursive Reverse Inorder"}, solution1);
+  registerStrategy({.name = "Iterative Reverse Inorder"}, solution2);
 }
 
 TreeNode* ConvertBstToGreaterTreeSolution::convertBST(TreeNode* root) {

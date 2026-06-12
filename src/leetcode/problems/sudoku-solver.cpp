@@ -194,9 +194,9 @@ SudokuSolverSolution::SudokuSolverSolution() {
   setMetaInfo({.id = 37,
                .title = "Sudoku Solver",
                .url = "https://leetcode.com/problems/sudoku-solver/"});
-  registerStrategy("Brute Force Backtracking", solution1);
-  registerStrategy("Backtracking with Bitmask", solution2);
-  registerStrategy("Backtracking with Bitmask + MRV", solution3);
+  registerStrategy({.name = "Brute Force Backtracking"}, solution1);
+  registerStrategy({.name = "Backtracking with Bitmask"}, solution2);
+  registerStrategy({.name = "Backtracking with Bitmask + MRV"}, solution3);
 }
 
 // ========== 公开方法调度 ==========

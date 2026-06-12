@@ -31,7 +31,7 @@ MinimumCostToAcquireRequiredItemsSolution::MinimumCostToAcquireRequiredItemsSolu
   setMetaInfo({.id = 3789,
                .title = "Minimum Cost to Acquire Required Items",
                .url = "https://leetcode.com/problems/minimum-cost-to-acquire-required-items/"});
-  registerStrategy("Optimized", solution1);
+  registerStrategy({.name = "Optimized"}, solution1);
 }
 
 long long MinimumCostToAcquireRequiredItemsSolution::minimumCost(int cost1, int cost2, int costBoth, int need1, int need2) {

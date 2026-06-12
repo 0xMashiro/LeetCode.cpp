@@ -42,7 +42,7 @@ MinimumAmountOfTimeToFillCupsSolution::MinimumAmountOfTimeToFillCupsSolution() {
     .title = "Minimum Amount of Time to Fill Cups",
     .url = "https://leetcode.com/problems/minimum-amount-of-time-to-fill-cups/"
   });
-  registerStrategy("Greedy Sort", solution1);
+  registerStrategy({.name = "Greedy Sort"}, solution1);
 }
 
 int MinimumAmountOfTimeToFillCupsSolution::fillCups(vector<int>& amount) {

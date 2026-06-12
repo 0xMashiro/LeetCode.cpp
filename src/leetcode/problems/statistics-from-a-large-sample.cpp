@@ -81,7 +81,7 @@ StatisticsFromALargeSampleSolution::StatisticsFromALargeSampleSolution() {
     .title = "Statistics from a Large Sample",
     .url = "https://leetcode.com/problems/statistics-from-a-large-sample/"
   });
-  registerStrategy("Single Pass", solution1);
+  registerStrategy({.name = "Single Pass"}, solution1);
 }
 
 vector<double> StatisticsFromALargeSampleSolution::sampleStats(vector<int>& count) {

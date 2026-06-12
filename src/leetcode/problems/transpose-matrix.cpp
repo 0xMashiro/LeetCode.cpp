@@ -22,7 +22,7 @@ TransposeMatrixSolution::TransposeMatrixSolution() {
   setMetaInfo({.id = 867,
                .title = "Transpose Matrix",
                .url = "https://leetcode.com/problems/transpose-matrix/"});
-  registerStrategy("Direct Transpose", solution1);
+  registerStrategy({.name = "Direct Transpose"}, solution1);
 }
 
 vector<vector<int>> TransposeMatrixSolution::transpose(vector<vector<int>>& matrix) {

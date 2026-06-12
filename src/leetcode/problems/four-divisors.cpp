@@ -101,8 +101,8 @@ FourDivisorsSolution::FourDivisorsSolution() {
   setMetaInfo({.id = 1390,
                .title = "Four Divisors",
                .url = "https://leetcode.com/problems/four-divisors/"});
-  registerStrategy("Brute Force", solution1);
-  registerStrategy("Mathematical", solution2);
+  registerStrategy({.name = "Brute Force"}, solution1);
+  registerStrategy({.name = "Mathematical"}, solution2);
 }
 
 int FourDivisorsSolution::sumFourDivisors(vector<int>& nums) {

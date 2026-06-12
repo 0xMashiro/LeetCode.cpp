@@ -73,7 +73,7 @@ MaximumNumberOfWaysToPartitionAnArraySolution::MaximumNumberOfWaysToPartitionAnA
     .title = "Maximum Number of Ways to Partition an Array",
     .url = "https://leetcode.com/problems/maximum-number-of-ways-to-partition-an-array/"
   });
-  registerStrategy("Prefix Sum + Hash", solution1);
+  registerStrategy({.name = "Prefix Sum + Hash"}, solution1);
 }
 
 int MaximumNumberOfWaysToPartitionAnArraySolution::waysToPartition(vector<int>& nums, int k) {

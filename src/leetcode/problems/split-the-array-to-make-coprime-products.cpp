@@ -73,7 +73,7 @@ SplitTheArrayToMakeCoprimeProductsSolution::SplitTheArrayToMakeCoprimeProductsSo
       .title = "Split the Array to Make Coprime Products",
       .url = "https://leetcode.com/problems/split-the-array-to-make-coprime-products"
   });
-  registerStrategy("Brute Force", solution1);
+  registerStrategy({.name = "Brute Force"}, solution1);
 }
 
 int SplitTheArrayToMakeCoprimeProductsSolution::findValidSplit(vector<int>& nums) {

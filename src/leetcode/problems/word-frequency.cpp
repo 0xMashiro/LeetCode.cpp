@@ -34,7 +34,7 @@ WordFrequencySolution::WordFrequencySolution() {
   setMetaInfo({.id = 192,
                .title = "Word Frequency",
                .url = "https://leetcode.com/problems/word-frequency/"});
-  registerStrategy("Hash Table + Sort", solution1);
+  registerStrategy({.name = "Hash Table + Sort"}, solution1);
 }
 
 vector<pair<string, int>> WordFrequencySolution::wordFrequency(const string& content) {

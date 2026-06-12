@@ -55,7 +55,7 @@ StampingTheSequenceSolution::StampingTheSequenceSolution() {
       .title = "Stamping The Sequence",
       .url = "https://leetcode.com/problems/stamping-the-sequence"
   });
-  registerStrategy("Brute Force", solution1);
+  registerStrategy({.name = "Brute Force"}, solution1);
 }
 
 vector<int> StampingTheSequenceSolution::movesToStamp(string stamp, string target) {

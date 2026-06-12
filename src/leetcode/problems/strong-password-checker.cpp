@@ -103,7 +103,7 @@ StrongPasswordCheckerSolution::StrongPasswordCheckerSolution() {
   setMetaInfo({.id = 420,
                .title = "Strong Password Checker",
                .url = "https://leetcode.com/problems/strong-password-checker/"});
-  registerStrategy("Greedy", solution1);
+  registerStrategy({.name = "Greedy"}, solution1);
 }
 
 int StrongPasswordCheckerSolution::strongPasswordChecker(string password) {

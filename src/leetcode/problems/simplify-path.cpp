@@ -46,7 +46,7 @@ SimplifyPathSolution::SimplifyPathSolution() {
   setMetaInfo({.id = 71,
                .title = "Simplify Path",
                .url = "https://leetcode.com/problems/simplify-path/"});
-  registerStrategy("Stack", solution1);
+  registerStrategy({.name = "Stack"}, solution1);
 }
 
 string SimplifyPathSolution::simplifyPath(string path) {

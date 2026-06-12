@@ -72,7 +72,7 @@ MaximumAreaRectangleWithPointConstraintsISolution::MaximumAreaRectangleWithPoint
     .title = "Maximum Area Rectangle With Point Constraints I",
     .url = "https://leetcode.com/problems/maximum-area-rectangle-with-point-constraints-i/"
   });
-  registerStrategy("Brute Force", solution1);
+  registerStrategy({.name = "Brute Force"}, solution1);
 }
 
 int MaximumAreaRectangleWithPointConstraintsISolution::maxRectangleArea(vector<vector<int>>& points) {

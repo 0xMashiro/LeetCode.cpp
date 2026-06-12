@@ -38,7 +38,7 @@ FindThePowerOfKSizeSubarraysISolution::FindThePowerOfKSizeSubarraysISolution() {
   setMetaInfo({.id = 3254,
                .title = "Find the Power of K-Size Subarrays I",
                .url = "https://leetcode.com/problems/find-the-power-of-k-size-subarrays-i/"});
-  registerStrategy("Sliding Window", solution1);
+  registerStrategy({.name = "Sliding Window"}, solution1);
 }
 
 vector<int> FindThePowerOfKSizeSubarraysISolution::resultsArray(vector<int>& nums, int k) {

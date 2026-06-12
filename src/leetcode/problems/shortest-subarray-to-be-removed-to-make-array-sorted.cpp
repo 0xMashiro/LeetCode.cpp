@@ -51,7 +51,7 @@ ShortestSubarrayToBeRemovedToMakeArraySortedSolution::ShortestSubarrayToBeRemove
   setMetaInfo({.id = 1574,
                .title = "Shortest Subarray to be Removed to Make Array Sorted",
                .url = "https://leetcode.com/problems/shortest-subarray-to-be-removed-to-make-array-sorted/"});
-  registerStrategy("Two Pointer", solution);
+  registerStrategy({.name = "Two Pointer"}, solution);
 }
 
 int ShortestSubarrayToBeRemovedToMakeArraySortedSolution::findLengthOfShortestSubarray(vector<int>& arr) {

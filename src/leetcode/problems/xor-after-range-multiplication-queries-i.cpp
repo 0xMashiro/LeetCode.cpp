@@ -37,7 +37,7 @@ XorAfterRangeMultiplicationQueriesISolution::XorAfterRangeMultiplicationQueriesI
     .title = "XOR After Range Multiplication Queries I",
     .url = "https://leetcode.com/problems/xor-after-range-multiplication-queries-i/"
   });
-  registerStrategy("Direct Simulation", solution1);
+  registerStrategy({.name = "Direct Simulation"}, solution1);
 }
 
 int XorAfterRangeMultiplicationQueriesISolution::xorAfterQueries(

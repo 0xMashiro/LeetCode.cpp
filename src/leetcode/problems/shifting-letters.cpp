@@ -25,7 +25,7 @@ ShiftingLettersSolution::ShiftingLettersSolution() {
   setMetaInfo({.id = 848,
                .title = "Shifting Letters",
                .url = "https://leetcode.com/problems/shifting-letters/"});
-  registerStrategy("Suffix Sum", solution1);
+  registerStrategy({.name = "Suffix Sum"}, solution1);
 }
 
 string ShiftingLettersSolution::shiftingLetters(string s, vector<int>& shifts) {

@@ -93,7 +93,7 @@ CountWaysToMakeArrayWithProductSolution::CountWaysToMakeArrayWithProductSolution
   setMetaInfo({.id = 1735,
                .title = "Count Ways to Make Array With Product",
                .url = "https://leetcode.com/problems/count-ways-to-make-array-with-product/"});
-  registerStrategy("Prime Factorization + Combination", solution);
+  registerStrategy({.name = "Prime Factorization + Combination"}, solution);
 }
 
 vector<int> CountWaysToMakeArrayWithProductSolution::waysToFillArray(

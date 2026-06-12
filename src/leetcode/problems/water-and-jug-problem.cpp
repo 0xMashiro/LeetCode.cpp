@@ -80,8 +80,8 @@ WaterAndJugProblemSolution::WaterAndJugProblemSolution() {
   setMetaInfo({.id = 365,
                .title = "Water and Jug Problem",
                .url = "https://leetcode.com/problems/water-and-jug-problem/"});
-  registerStrategy("Math (GCD)", solution1);
-  registerStrategy("BFS", solution2);
+  registerStrategy({.name = "Math (GCD)"}, solution1);
+  registerStrategy({.name = "BFS"}, solution2);
 }
 
 bool WaterAndJugProblemSolution::canMeasureWater(int x, int y, int target) {

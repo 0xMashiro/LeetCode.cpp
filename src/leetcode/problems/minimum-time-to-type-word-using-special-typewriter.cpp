@@ -32,7 +32,7 @@ MinimumTimeToTypeWordUsingSpecialTypewriterSolution::MinimumTimeToTypeWordUsingS
   setMetaInfo({.id = 1974,
                .title = "Minimum Time to Type Word Using Special Typewriter",
                .url = "https://leetcode.com/problems/minimum-time-to-type-word-using-special-typewriter/"});
-  registerStrategy("Greedy", solution1);
+  registerStrategy({.name = "Greedy"}, solution1);
 }
 
 int MinimumTimeToTypeWordUsingSpecialTypewriterSolution::minTimeToType(string word) {

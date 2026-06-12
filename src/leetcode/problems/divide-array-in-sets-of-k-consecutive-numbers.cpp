@@ -45,7 +45,7 @@ DivideArrayInSetsOfKConsecutiveNumbersSolution::DivideArrayInSetsOfKConsecutiveN
     .title = "Divide Array in Sets of K Consecutive Numbers",
     .url = "https://leetcode.com/problems/divide-array-in-sets-of-k-consecutive-numbers/"
   });
-  registerStrategy("Greedy + Map", solution);
+  registerStrategy({.name = "Greedy + Map"}, solution);
 }
 
 bool DivideArrayInSetsOfKConsecutiveNumbersSolution::isPossibleDivide(vector<int>& nums, int k) {

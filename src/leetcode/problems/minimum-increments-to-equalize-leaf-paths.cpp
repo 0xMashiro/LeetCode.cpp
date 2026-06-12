@@ -79,7 +79,7 @@ MinimumIncrementsToEqualizeLeafPathsSolution::MinimumIncrementsToEqualizeLeafPat
   setMetaInfo({.id = 3593,
                .title = "Minimum Increments to Equalize Leaf Paths",
                .url = "https://leetcode.com/problems/minimum-increments-to-equalize-leaf-paths/"});
-  registerStrategy("DFS Bottom-up", solution1);
+  registerStrategy({.name = "DFS Bottom-up"}, solution1);
 }
 
 int MinimumIncrementsToEqualizeLeafPathsSolution::minIncrease(int n, vector<vector<int>>& edges, vector<int>& cost) {

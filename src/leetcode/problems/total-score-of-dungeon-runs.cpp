@@ -93,7 +93,7 @@ TotalScoreOfDungeonRunsSolution::TotalScoreOfDungeonRunsSolution() {
   setMetaInfo({.id = 3771,
                .title = "Total Score of Dungeon Runs",
                .url = "https://leetcode.com/problems/total-score-of-dungeon-runs/"});
-  registerStrategy("Fenwick Tree", solution);
+  registerStrategy({.name = "Fenwick Tree"}, solution);
 }
 
 long long TotalScoreOfDungeonRunsSolution::totalScore(int hp, vector<int>& damage, vector<int>& requirement) {

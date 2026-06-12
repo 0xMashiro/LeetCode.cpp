@@ -14,7 +14,7 @@ GetTheSizeOfADataframeSolution::GetTheSizeOfADataframeSolution() {
   setMetaInfo({.id = 2878,
                .title = "Get the Size of a DataFrame",
                .url = "https://leetcode.com/problems/get-the-size-of-a-dataframe/"});
-  registerStrategy("Direct Access", solution1);
+  registerStrategy({.name = "Direct Access"}, solution1);
 }
 
 vector<int> GetTheSizeOfADataframeSolution::getDataFrameSize(DataFrame& players) {

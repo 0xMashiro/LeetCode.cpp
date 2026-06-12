@@ -57,7 +57,7 @@ MaximumScoreOfSplicedArraySolution::MaximumScoreOfSplicedArraySolution() {
   setMetaInfo({.id = 2321,
                .title = "Maximum Score Of Spliced Array",
                .url = "https://leetcode.com/problems/maximum-score-of-spliced-array/"});
-  registerStrategy("Kadane Algorithm", solution);
+  registerStrategy({.name = "Kadane Algorithm"}, solution);
 }
 
 int MaximumScoreOfSplicedArraySolution::maximumsSplicedArray(vector<int>& nums1, vector<int>& nums2) {

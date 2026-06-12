@@ -80,8 +80,8 @@ NAryTreePreorderTraversalSolution::NAryTreePreorderTraversalSolution() {
   setMetaInfo({.id = 589,
                .title = "N-ary Tree Preorder Traversal",
                .url = "https://leetcode.com/problems/n-ary-tree-preorder-traversal/"});
-  registerStrategy("Recursive DFS", solution1);
-  registerStrategy("Iterative Stack", solution2);
+  registerStrategy({.name = "Recursive DFS"}, solution1);
+  registerStrategy({.name = "Iterative Stack"}, solution2);
 }
 
 vector<int> NAryTreePreorderTraversalSolution::preorder(Node* root) {

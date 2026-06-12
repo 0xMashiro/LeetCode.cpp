@@ -49,7 +49,7 @@ MaximumPalindromesAfterOperationsSolution::MaximumPalindromesAfterOperationsSolu
   setMetaInfo({.id = 3035,
                .title = "Maximum Palindromes After Operations",
                .url = "https://leetcode.com/problems/maximum-palindromes-after-operations/"});
-  registerStrategy("Greedy", solution1);
+  registerStrategy({.name = "Greedy"}, solution1);
 }
 
 int MaximumPalindromesAfterOperationsSolution::maxPalindromesAfterOperations(vector<string>& words) {

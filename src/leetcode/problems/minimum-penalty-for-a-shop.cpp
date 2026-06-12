@@ -67,8 +67,8 @@ MinimumPenaltyForAShopSolution::MinimumPenaltyForAShopSolution() {
   setMetaInfo({.id = 2483,
                .title = "Minimum Penalty for a Shop",
                .url = "https://leetcode.com/problems/minimum-penalty-for-a-shop"});
-  registerStrategy("Prefix-Suffix Array", solution1);
-  registerStrategy("One-Pass Optimization", solution2);
+  registerStrategy({.name = "Prefix-Suffix Array"}, solution1);
+  registerStrategy({.name = "One-Pass Optimization"}, solution2);
 }
 
 int MinimumPenaltyForAShopSolution::bestClosingTime(string customers) {

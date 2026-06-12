@@ -33,8 +33,8 @@ NRepeatedElementInSize2nArraySolution::NRepeatedElementInSize2nArraySolution() {
   setMetaInfo({.id = 961,
                .title = "N-Repeated Element in Size 2N Array",
                .url = "https://leetcode.com/problems/n-repeated-element-in-size-2n-array/"});
-  registerStrategy("Hash Table", solution1);
-  registerStrategy("Pigeonhole Principle", solution2);
+  registerStrategy({.name = "Hash Table"}, solution1);
+  registerStrategy({.name = "Pigeonhole Principle"}, solution2);
 }
 
 int NRepeatedElementInSize2nArraySolution::repeatedNTimes(vector<int>& nums) {

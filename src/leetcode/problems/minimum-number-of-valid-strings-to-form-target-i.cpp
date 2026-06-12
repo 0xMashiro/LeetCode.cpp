@@ -66,7 +66,7 @@ MinimumNumberOfValidStringsToFormTargetISolution::MinimumNumberOfValidStringsToF
   setMetaInfo({.id = 3291,
                .title = "Minimum Number of Valid Strings to Form Target I",
                .url = "https://leetcode.com/problems/minimum-number-of-valid-strings-to-form-target-i/"});
-  registerStrategy("Trie + DP", solution1);
+  registerStrategy({.name = "Trie + DP"}, solution1);
 }
 
 int MinimumNumberOfValidStringsToFormTargetISolution::minValidStrings(vector<string>& words, string target) {

@@ -61,8 +61,8 @@ DeleteGreatestValueInEachRowSolution::DeleteGreatestValueInEachRowSolution() {
   setMetaInfo({.id = 2500,
                .title = "Delete Greatest Value in Each Row",
                .url = "https://leetcode.com/problems/delete-greatest-value-in-each-row/"});
-  registerStrategy("Sort Rows", solution1);
-  registerStrategy("Priority Queue", solution2);
+  registerStrategy({.name = "Sort Rows"}, solution1);
+  registerStrategy({.name = "Priority Queue"}, solution2);
 }
 
 int DeleteGreatestValueInEachRowSolution::deleteGreatestValue(vector<vector<int>>& grid) {

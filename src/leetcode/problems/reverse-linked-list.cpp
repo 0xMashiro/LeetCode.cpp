@@ -42,8 +42,8 @@ ReverseLinkedListSolution::ReverseLinkedListSolution() {
   setMetaInfo({.id = 206,
                .title = "Reverse Linked List",
                .url = "https://leetcode.com/problems/reverse-linked-list/"});
-  registerStrategy("Iterative", solution1);
-  registerStrategy("Recursive", solution2);
+  registerStrategy({.name = "Iterative"}, solution1);
+  registerStrategy({.name = "Recursive"}, solution2);
 }
 
 ListNode* ReverseLinkedListSolution::reverseList(ListNode* head) {

@@ -120,8 +120,8 @@ SimilarStringGroupsSolution::SimilarStringGroupsSolution() {
   setMetaInfo({.id = 839,
                .title = "Similar String Groups",
                .url = "https://leetcode.com/problems/similar-string-groups/"});
-  registerStrategy("Union-Find", solutionUnionFind);
-  registerStrategy("DFS", solutionDFS);
+  registerStrategy({.name = "Union-Find"}, solutionUnionFind);
+  registerStrategy({.name = "DFS"}, solutionDFS);
 }
 
 int SimilarStringGroupsSolution::numSimilarGroups(vector<string>& strs) {

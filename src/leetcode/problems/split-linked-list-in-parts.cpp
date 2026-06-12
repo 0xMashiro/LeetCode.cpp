@@ -47,7 +47,7 @@ SplitLinkedListInPartsSolution::SplitLinkedListInPartsSolution() {
   setMetaInfo({.id = 725,
                .title = "Split Linked List in Parts",
                .url = "https://leetcode.com/problems/split-linked-list-in-parts/"});
-  registerStrategy("Count and Split", solution1);
+  registerStrategy({.name = "Count and Split"}, solution1);
 }
 
 vector<ListNode*> SplitLinkedListInPartsSolution::splitListToParts(ListNode* head, int k) {

@@ -29,7 +29,7 @@ ResultingStringAfterAdjacentRemovalsSolution::ResultingStringAfterAdjacentRemova
   setMetaInfo({.id = 3561,
                .title = "Resulting String After Adjacent Removals",
                .url = "https://leetcode.com/problems/resulting-string-after-adjacent-removals/"});
-  registerStrategy("Stack", solution1);
+  registerStrategy({.name = "Stack"}, solution1);
 }
 
 string ResultingStringAfterAdjacentRemovalsSolution::resultingString(string s) {

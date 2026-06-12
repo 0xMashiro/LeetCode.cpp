@@ -51,7 +51,7 @@ AvailableCapturesForRookSolution::AvailableCapturesForRookSolution() {
   setMetaInfo({.id = 999,
                .title = "Available Captures for Rook",
                .url = "https://leetcode.com/problems/available-captures-for-rook/"});
-  registerStrategy("Linear Scan", solution1);
+  registerStrategy({.name = "Linear Scan"}, solution1);
 }
 
 int AvailableCapturesForRookSolution::numRookCaptures(vector<vector<char>>& board) {

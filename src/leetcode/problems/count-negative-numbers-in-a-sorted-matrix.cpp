@@ -77,10 +77,10 @@ CountNegativeNumbersInASortedMatrixSolution::CountNegativeNumbersInASortedMatrix
   setMetaInfo({.id = 1351,
                .title = "Count Negative Numbers in a Sorted Matrix",
                .url = "https://leetcode.com/problems/count-negative-numbers-in-a-sorted-matrix/"});
-  registerStrategy("Brute Force", solution1);
-  registerStrategy("Binary Search per Row", solution2);
-  registerStrategy("Search from Top-Right", solution3);
-  registerStrategy("Search from Bottom-Left", solution4);
+  registerStrategy({.name = "Brute Force"}, solution1);
+  registerStrategy({.name = "Binary Search per Row"}, solution2);
+  registerStrategy({.name = "Search from Top-Right"}, solution3);
+  registerStrategy({.name = "Search from Bottom-Left"}, solution4);
 }
 
 int CountNegativeNumbersInASortedMatrixSolution::countNegatives(vector<vector<int>>& grid) {

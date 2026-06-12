@@ -49,7 +49,7 @@ MaximumStrengthOfKDisjointSubarraysSolution::MaximumStrengthOfKDisjointSubarrays
     .title = "Maximum Strength of K Disjoint Subarrays",
     .url = "https://leetcode.com/problems/maximum-strength-of-k-disjoint-subarrays/"
   });
-  registerStrategy("DP", solution1);
+  registerStrategy({.name = "DP"}, solution1);
 }
 
 long long MaximumStrengthOfKDisjointSubarraysSolution::maximumStrength(vector<int>& nums, int k) {

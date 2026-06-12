@@ -95,7 +95,7 @@ PreviousPermutationWithOneSwapSolution::PreviousPermutationWithOneSwapSolution()
     .title = "Previous Permutation With One Swap",
     .url = "https://leetcode.com/problems/previous-permutation-with-one-swap/"
   });
-  registerStrategy("Greedy", solution1);
+  registerStrategy({.name = "Greedy"}, solution1);
 }
 
 vector<int> PreviousPermutationWithOneSwapSolution::prevPermOpt1(vector<int>& arr) {

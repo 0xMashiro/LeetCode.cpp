@@ -80,7 +80,7 @@ LongestSubsequenceRepeatedKTimesSolution::LongestSubsequenceRepeatedKTimesSoluti
   setMetaInfo({.id = 2014,
                .title = "Longest Subsequence Repeated k Times",
                .url = "https://leetcode.com/problems/longest-subsequence-repeated-k-times/"});
-  registerStrategy("DFS with Pruning", solution1);
+  registerStrategy({.name = "DFS with Pruning"}, solution1);
 }
 
 std::string LongestSubsequenceRepeatedKTimesSolution::longestSubsequenceRepeatedK(

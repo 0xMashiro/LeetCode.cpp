@@ -144,8 +144,8 @@ NumberOfWaysToPaintN3GridSolution::NumberOfWaysToPaintN3GridSolution() {
   setMetaInfo({.id = 1411,
                .title = "Number of Ways to Paint N × 3 Grid",
                .url = "https://leetcode.com/problems/number-of-ways-to-paint-n-3-grid/"});
-  registerStrategy("Dynamic Programming", solution1);
-  registerStrategy("Matrix Exponentiation", solution2);
+  registerStrategy({.name = "Dynamic Programming"}, solution1);
+  registerStrategy({.name = "Matrix Exponentiation"}, solution2);
 }
 
 int NumberOfWaysToPaintN3GridSolution::numOfWays(int n) {

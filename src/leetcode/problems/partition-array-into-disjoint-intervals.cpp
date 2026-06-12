@@ -57,8 +57,8 @@ PartitionArrayIntoDisjointIntervalsSolution::PartitionArrayIntoDisjointIntervals
   setMetaInfo({.id = 915,
                .title = "Partition Array into Disjoin Intervals",
                .url = "https://leetcode.com/problems/partition-array-into-disjoint-intervals/"});
-  registerStrategy("Prefix-Suffix Array", solution1);
-  registerStrategy("One Pass O(1)", solution2);
+  registerStrategy({.name = "Prefix-Suffix Array"}, solution1);
+  registerStrategy({.name = "One Pass O(1)"}, solution2);
 }
 
 int PartitionArrayIntoDisjointIntervalsSolution::partitionDisjoint(vector<int>& nums) {

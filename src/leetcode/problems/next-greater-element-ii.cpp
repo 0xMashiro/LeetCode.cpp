@@ -30,7 +30,7 @@ NextGreaterElementIiSolution::NextGreaterElementIiSolution() {
   setMetaInfo({.id = 503,
                .title = "Next Greater Element II",
                .url = "https://leetcode.com/problems/next-greater-element-ii/"});
-  registerStrategy("Monotonic Stack", solution1);
+  registerStrategy({.name = "Monotonic Stack"}, solution1);
 }
 
 vector<int> NextGreaterElementIiSolution::nextGreaterElements(vector<int>& nums) {

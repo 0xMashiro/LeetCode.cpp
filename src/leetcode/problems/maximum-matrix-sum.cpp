@@ -45,7 +45,7 @@ MaximumMatrixSumSolution::MaximumMatrixSumSolution() {
   setMetaInfo({.id = 1975,
                .title = "Maximum Matrix Sum",
                .url = "https://leetcode.com/problems/maximum-matrix-sum"});
-  registerStrategy("Greedy", solution1);
+  registerStrategy({.name = "Greedy"}, solution1);
 }
 
 long long MaximumMatrixSumSolution::maxMatrixSum(vector<vector<int>>& matrix) {

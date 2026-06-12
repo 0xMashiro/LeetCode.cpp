@@ -51,7 +51,7 @@ CountSubarraysWithFixedBoundsSolution::CountSubarraysWithFixedBoundsSolution() {
   setMetaInfo({.id = 2444,
                .title = "Count Subarrays With Fixed Bounds",
                .url = "https://leetcode.com/problems/count-subarrays-with-fixed-bounds/"});
-  registerStrategy("Linear Scan", solution1);
+  registerStrategy({.name = "Linear Scan"}, solution1);
 }
 
 long long CountSubarraysWithFixedBoundsSolution::countSubarrays(vector<int>& nums, int minK, int maxK) {

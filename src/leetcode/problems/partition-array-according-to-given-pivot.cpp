@@ -71,8 +71,8 @@ PartitionArrayAccordingToGivenPivotSolution::PartitionArrayAccordingToGivenPivot
   setMetaInfo({.id = 2161,
                .title = "Partition Array According to Given Pivot",
                .url = "https://leetcode.com/problems/partition-array-according-to-given-pivot/"});
-  registerStrategy("Three-way Partition", solution1);
-  registerStrategy("Two Pointer", solution2);
+  registerStrategy({.name = "Three-way Partition"}, solution1);
+  registerStrategy({.name = "Two Pointer"}, solution2);
 }
 
 vector<int> PartitionArrayAccordingToGivenPivotSolution::pivotArray(vector<int>& nums, int pivot) {

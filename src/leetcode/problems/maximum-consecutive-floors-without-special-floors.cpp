@@ -39,7 +39,7 @@ MaximumConsecutiveFloorsWithoutSpecialFloorsSolution::MaximumConsecutiveFloorsWi
   setMetaInfo({.id = 2274,
                .title = "Maximum Consecutive Floors Without Special Floors",
                .url = "https://leetcode.com/problems/maximum-consecutive-floors-without-special-floors/"});
-  registerStrategy("Sorting", solution1);
+  registerStrategy({.name = "Sorting"}, solution1);
 }
 
 int MaximumConsecutiveFloorsWithoutSpecialFloorsSolution::maxConsecutive(int bottom, int top, vector<int>& special) {

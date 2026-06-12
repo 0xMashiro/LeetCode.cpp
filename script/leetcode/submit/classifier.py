@@ -71,7 +71,7 @@ class SubmissionClassifier:
         return self._classify_single(result)
 
     def submit_all_and_classify(self, problem_id: Optional[int]) -> SubmissionOutcome:
-        """遍历所有 registerStrategy，按 `@expected` 注释对比预期状态后聚合。
+        """遍历所有 registerStrategy，按结构化 `.expected` 对比预期状态后聚合。
 
         `actual == expected` 即通过（"预期 TLE 真 TLE"也算）；任一不符 → accepted=False，
         把 "solutionN: expected=X actual=Y" 汇总塞进 error_message，模型能看到哪个解挂了。

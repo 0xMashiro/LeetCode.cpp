@@ -93,8 +93,8 @@ MinimumSumOfValuesByDividingArraySolution::MinimumSumOfValuesByDividingArraySolu
   setMetaInfo({.id = 3117,
                .title = "Minimum Sum of Values by Dividing Array",
                .url = "https://leetcode.com/problems/minimum-sum-of-values-by-dividing-array/"});
-  registerStrategy("DP", solve);
-  registerStrategy("DP Optimized", solveOptimized);
+  registerStrategy({.name = "DP"}, solve);
+  registerStrategy({.name = "DP Optimized"}, solveOptimized);
 }
 
 int MinimumSumOfValuesByDividingArraySolution::minimumValueSum(vector<int>& nums, vector<int>& andValues) {

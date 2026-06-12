@@ -78,8 +78,8 @@ DeleteAndEarnSolution::DeleteAndEarnSolution() {
   setMetaInfo({.id = 740,
                .title = "Delete and Earn",
                .url = "https://leetcode.com/problems/delete-and-earn/"});
-  registerStrategy("DP with Rolling Array", solution1);
-  registerStrategy("DP Optimized", solution2);
+  registerStrategy({.name = "DP with Rolling Array"}, solution1);
+  registerStrategy({.name = "DP Optimized"}, solution2);
 }
 
 int DeleteAndEarnSolution::deleteAndEarn(vector<int>& nums) {

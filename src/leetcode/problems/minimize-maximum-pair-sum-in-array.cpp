@@ -56,8 +56,8 @@ MinimizeMaximumPairSumInArraySolution::MinimizeMaximumPairSumInArraySolution() {
   setMetaInfo({.id = 1877,
                .title = "Minimize Maximum Pair Sum in Array",
                .url = "https://leetcode.com/problems/minimize-maximum-pair-sum-in-array/"});
-  registerStrategy("Sorting + Two Pointers", solution1);
-  registerStrategy("Counting Sort + Two Pointers", solution2);
+  registerStrategy({.name = "Sorting + Two Pointers"}, solution1);
+  registerStrategy({.name = "Counting Sort + Two Pointers"}, solution2);
 }
 
 int MinimizeMaximumPairSumInArraySolution::minPairSum(vector<int>& nums) {

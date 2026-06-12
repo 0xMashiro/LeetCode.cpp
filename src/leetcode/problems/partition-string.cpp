@@ -31,7 +31,7 @@ PartitionStringSolution::PartitionStringSolution() {
   setMetaInfo({.id = 3597,
                .title = "Partition String",
                .url = "https://leetcode.com/problems/partition-string/"});
-  registerStrategy("Greedy", solution1);
+  registerStrategy({.name = "Greedy"}, solution1);
 }
 
 vector<string> PartitionStringSolution::partitionString(string s) {

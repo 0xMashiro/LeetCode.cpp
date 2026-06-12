@@ -88,8 +88,8 @@ BestTimeToBuyAndSellStockIiiSolution::BestTimeToBuyAndSellStockIiiSolution() {
     .title = "Best Time to Buy and Sell Stock III",
     .url = "https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iii/"
   });
-  registerStrategy("DP with Variables", solution1);
-  registerStrategy("DP with Array", solution2);
+  registerStrategy({.name = "DP with Variables"}, solution1);
+  registerStrategy({.name = "DP with Array"}, solution2);
 }
 
 int BestTimeToBuyAndSellStockIiiSolution::maxProfit(vector<int>& prices) {

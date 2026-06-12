@@ -56,9 +56,9 @@ UniquePathsSolution::UniquePathsSolution() {
   setMetaInfo({.id = 62,
                .title = "Unique Paths",
                .url = "https://leetcode.com/problems/unique-paths/"});
-  registerStrategy("DP 2D", solution1);
-  registerStrategy("DP 1D", solution2);
-  registerStrategy("Math Combination", solution3);
+  registerStrategy({.name = "DP 2D"}, solution1);
+  registerStrategy({.name = "DP 1D"}, solution2);
+  registerStrategy({.name = "Math Combination"}, solution3);
 }
 
 int UniquePathsSolution::uniquePaths(int m, int n) {

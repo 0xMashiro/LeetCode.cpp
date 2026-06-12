@@ -60,8 +60,8 @@ TotalAppealOfAStringSolution::TotalAppealOfAStringSolution() {
     .title = "Total Appeal of A String",
     .url = "https://leetcode.com/problems/total-appeal-of-a-string/"
   });
-  registerStrategy("Array-based", solution1);
-  registerStrategy("Vector-based", solution2);
+  registerStrategy({.name = "Array-based"}, solution1);
+  registerStrategy({.name = "Vector-based"}, solution2);
 }
 
 long long TotalAppealOfAStringSolution::appealSum(string s) {

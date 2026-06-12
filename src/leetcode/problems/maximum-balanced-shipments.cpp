@@ -195,7 +195,7 @@ MaximumBalancedShipmentsSolution::MaximumBalancedShipmentsSolution() {
   setMetaInfo({.id = 3638,
                .title = "Maximum Balanced Shipments",
                .url = "https://leetcode.com/problems/maximum-balanced-shipments/"});
-  registerStrategy("Greedy with Stack", solution);
+  registerStrategy({.name = "Greedy with Stack"}, solution);
 }
 
 int MaximumBalancedShipmentsSolution::maxBalancedShipments(vector<int>& weight) {

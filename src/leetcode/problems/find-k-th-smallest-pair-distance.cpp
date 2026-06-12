@@ -66,7 +66,7 @@ FindKThSmallestPairDistanceSolution::FindKThSmallestPairDistanceSolution() {
   setMetaInfo({.id = 719,
                .title = "Find K-th Smallest Pair Distance",
                .url = "https://leetcode.com/problems/find-k-th-smallest-pair-distance/"});
-  registerStrategy("Binary Search + Two Pointers", solution);
+  registerStrategy({.name = "Binary Search + Two Pointers"}, solution);
 }
 
 int FindKThSmallestPairDistanceSolution::smallestDistancePair(vector<int>& nums, int k) {

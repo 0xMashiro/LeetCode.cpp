@@ -38,8 +38,8 @@ ThreeConsecutiveOddsSolution::ThreeConsecutiveOddsSolution() {
   setMetaInfo({.id = 1550,
                .title = "Three Consecutive Odds",
                .url = "https://leetcode.com/problems/three-consecutive-odds"});
-  registerStrategy("Direct Check", solution1);
-  registerStrategy("Counter", solution2);
+  registerStrategy({.name = "Direct Check"}, solution1);
+  registerStrategy({.name = "Counter"}, solution2);
 }
 
 bool ThreeConsecutiveOddsSolution::threeConsecutiveOdds(vector<int>& arr) {

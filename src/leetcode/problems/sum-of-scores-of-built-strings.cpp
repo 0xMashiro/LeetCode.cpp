@@ -39,7 +39,7 @@ SumOfScoresOfBuiltStringsSolution::SumOfScoresOfBuiltStringsSolution() {
       .title = "Sum of Scores of Built Strings",
       .url = "https://leetcode.com/problems/sum-of-scores-of-built-strings"
   });
-  registerStrategy("Brute Force", solution1);
+  registerStrategy({.name = "Brute Force"}, solution1);
 }
 
 long SumOfScoresOfBuiltStringsSolution::sumScores(string s) {

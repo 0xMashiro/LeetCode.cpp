@@ -37,7 +37,7 @@ MaximumAlternatingSumOfSquaresSolution::MaximumAlternatingSumOfSquaresSolution()
   setMetaInfo({.id = 3727,
                .title = "Maximum Alternating Sum of Squares",
                .url = "https://leetcode.com/problems/maximum-alternating-sum-of-squares/"});
-  registerStrategy("Greedy Sort", solution1);
+  registerStrategy({.name = "Greedy Sort"}, solution1);
 }
 
 long long MaximumAlternatingSumOfSquaresSolution::maxAlternatingSum(vector<int>& nums) {

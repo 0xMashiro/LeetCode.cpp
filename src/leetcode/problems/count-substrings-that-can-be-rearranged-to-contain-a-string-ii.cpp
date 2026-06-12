@@ -72,7 +72,7 @@ CountSubstringsThatCanBeRearrangedToContainAStringIiSolution::CountSubstringsTha
   setMetaInfo({.id = 3298,
                .title = "Count Substrings That Can Be Rearranged to Contain a String II",
                .url = "https://leetcode.com/problems/count-substrings-that-can-be-rearranged-to-contain-a-string-ii/"});
-  registerStrategy("Sliding Window", solution1);
+  registerStrategy({.name = "Sliding Window"}, solution1);
 }
 
 long long CountSubstringsThatCanBeRearrangedToContainAStringIiSolution::validSubstringCount(

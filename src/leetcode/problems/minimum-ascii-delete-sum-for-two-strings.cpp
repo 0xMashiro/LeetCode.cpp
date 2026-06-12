@@ -105,9 +105,9 @@ MinimumAsciiDeleteSumForTwoStringsSolution::MinimumAsciiDeleteSumForTwoStringsSo
   setMetaInfo({.id = 712,
                .title = "Minimum ASCII Delete Sum for Two Strings",
                .url = "https://leetcode.com/problems/minimum-ascii-delete-sum-for-two-strings/"});
-  registerStrategy("Bottom-up DP (2D table)", solution1);
-  registerStrategy("Space-optimized DP (1D arrays)", solution2);
-  registerStrategy("Top-down memoization", solution3);
+  registerStrategy({.name = "Bottom-up DP (2D table)"}, solution1);
+  registerStrategy({.name = "Space-optimized DP (1D arrays)"}, solution2);
+  registerStrategy({.name = "Top-down memoization"}, solution3);
 }
 
 int MinimumAsciiDeleteSumForTwoStringsSolution::minimumDeleteSum(string s1, string s2) {

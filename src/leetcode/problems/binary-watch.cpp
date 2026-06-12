@@ -38,7 +38,7 @@ BinaryWatchSolution::BinaryWatchSolution() {
   setMetaInfo({.id = 401,
                .title = "Binary Watch",
                .url = "https://leetcode.com/problems/binary-watch/"});
-  registerStrategy("Enumerate", solution1);
+  registerStrategy({.name = "Enumerate"}, solution1);
 }
 
 vector<string> BinaryWatchSolution::readBinaryWatch(int turnedOn) {

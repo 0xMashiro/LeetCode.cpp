@@ -47,7 +47,7 @@ MinimumAdjacentSwapsToReachTheKthSmallestNumberSolution::MinimumAdjacentSwapsToR
   setMetaInfo({.id = 1850,
                .title = "Minimum Adjacent Swaps to Reach the Kth Smallest Number",
                .url = "https://leetcode.com/problems/minimum-adjacent-swaps-to-reach-the-kth-smallest-number/"});
-  registerStrategy("Next Permutation + Greedy", solution);
+  registerStrategy({.name = "Next Permutation + Greedy"}, solution);
 }
 
 int MinimumAdjacentSwapsToReachTheKthSmallestNumberSolution::getMinSwaps(string num, int k) {

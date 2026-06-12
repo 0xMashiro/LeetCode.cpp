@@ -38,7 +38,7 @@ Shift2dGridSolution::Shift2dGridSolution() {
   setMetaInfo({.id = 1260,
                .title = "Shift 2D Grid",
                .url = "https://leetcode.com/problems/shift-2d-grid/"});
-  registerStrategy("1D Conversion", shiftGridImpl);
+  registerStrategy({.name = "1D Conversion"}, shiftGridImpl);
 }
 
 }  // namespace problem_1260

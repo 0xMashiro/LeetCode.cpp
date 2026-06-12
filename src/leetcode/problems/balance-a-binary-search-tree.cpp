@@ -37,7 +37,7 @@ BalanceABinarySearchTreeSolution::BalanceABinarySearchTreeSolution() {
   setMetaInfo({.id = 1382,
                .title = "Balance a Binary Search Tree",
                .url = "https://leetcode.com/problems/balance-a-binary-search-tree/"});
-  registerStrategy("Inorder + Rebuild", solution1);
+  registerStrategy({.name = "Inorder + Rebuild"}, solution1);
 }
 
 TreeNode* BalanceABinarySearchTreeSolution::balanceBST(TreeNode* root) {

@@ -104,7 +104,7 @@ FindInvalidIpAddressesSolution::FindInvalidIpAddressesSolution() {
     .title = "Find Invalid IP Addresses",
     .url = "https://leetcode.com/problems/find-invalid-ip-addresses/"
   });
-  registerStrategy("HashMap + Sort", solution1);
+  registerStrategy({.name = "HashMap + Sort"}, solution1);
 }
 
 vector<string> FindInvalidIpAddressesSolution::findInvalidIpAddresses(vector<string>& ips) {

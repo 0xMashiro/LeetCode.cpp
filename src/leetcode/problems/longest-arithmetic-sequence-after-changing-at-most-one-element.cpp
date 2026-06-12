@@ -143,8 +143,8 @@ LongestArithmeticSequenceAfterChangingAtMostOneElementSolution::LongestArithmeti
   setMetaInfo({.id = 3872,
                .title = "Longest Arithmetic Sequence After Changing At Most One Element",
                .url = "https://leetcode.com/problems/longest-arithmetic-sequence-after-changing-at-most-one-element/"});
-  registerStrategy("Brute Force", solution1);
-  registerStrategy("Diff Array O(n)", solution2);
+  registerStrategy({.name = "Brute Force"}, solution1);
+  registerStrategy({.name = "Diff Array O(n)"}, solution2);
 }
 
 int LongestArithmeticSequenceAfterChangingAtMostOneElementSolution::longestArithmetic(vector<int>& nums) {

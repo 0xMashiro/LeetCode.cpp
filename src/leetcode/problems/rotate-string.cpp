@@ -36,8 +36,8 @@ RotateStringSolution::RotateStringSolution() {
   setMetaInfo({.id = 796,
                .title = "Rotate String",
                .url = "https://leetcode.com/problems/rotate-string/"});
-  registerStrategy("Brute Force", solution1);
-  registerStrategy("Concatenation Check", solution2);
+  registerStrategy({.name = "Brute Force"}, solution1);
+  registerStrategy({.name = "Concatenation Check"}, solution2);
 }
 
 bool RotateStringSolution::rotateString(string s, string goal) {

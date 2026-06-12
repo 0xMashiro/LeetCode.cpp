@@ -65,8 +65,8 @@ CountHillsAndValleysInAnArraySolution::CountHillsAndValleysInAnArraySolution() {
     .title = "Count Hills and Valleys in an Array",
     .url = "https://leetcode.com/problems/count-hills-and-valleys-in-an-array/"
   });
-  registerStrategy("Compressed Array", solution1);
-  registerStrategy("In-place", solution2);
+  registerStrategy({.name = "Compressed Array"}, solution1);
+  registerStrategy({.name = "In-place"}, solution2);
 }
 
 int CountHillsAndValleysInAnArraySolution::countHillValley(vector<int>& nums) {

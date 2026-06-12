@@ -40,7 +40,7 @@ MaximalScoreAfterApplyingKOperationsSolution::MaximalScoreAfterApplyingKOperatio
   setMetaInfo({.id = 2530,
                .title = "Maximal Score After Applying K Operations",
                .url = "https://leetcode.com/problems/maximal-score-after-applying-k-operations/"});
-  registerStrategy("Greedy + Max Heap", solution1);
+  registerStrategy({.name = "Greedy + Max Heap"}, solution1);
 }
 
 long long MaximalScoreAfterApplyingKOperationsSolution::maxKelements(vector<int>& nums, int k) {

@@ -30,8 +30,8 @@ BinaryNumberWithAlternatingBitsSolution::BinaryNumberWithAlternatingBitsSolution
   setMetaInfo({.id = 693,
                .title = "Binary Number with Alternating Bits",
                .url = "https://leetcode.com/problems/binary-number-with-alternating-bits/"});
-  registerStrategy("Bit by Bit Check", solution1);
-  registerStrategy("Math Trick", solution2);
+  registerStrategy({.name = "Bit by Bit Check"}, solution1);
+  registerStrategy({.name = "Math Trick"}, solution2);
 }
 
 bool BinaryNumberWithAlternatingBitsSolution::hasAlternatingBits(int n) {

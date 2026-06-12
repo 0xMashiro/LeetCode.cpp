@@ -58,7 +58,7 @@ UniqueBinarySearchTreesIiSolution::UniqueBinarySearchTreesIiSolution() {
     .title = "Unique Binary Search Trees II",
     .url = "https://leetcode.com/problems/unique-binary-search-trees-ii/"
   });
-  registerStrategy("Divide and Conquer", solution1);
+  registerStrategy({.name = "Divide and Conquer"}, solution1);
 }
 
 vector<TreeNode*> UniqueBinarySearchTreesIiSolution::generateTrees(int n) {

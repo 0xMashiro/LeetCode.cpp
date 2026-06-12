@@ -35,7 +35,7 @@ ReplaceElementsInAnArraySolution::ReplaceElementsInAnArraySolution() {
   setMetaInfo({.id = 2295,
                .title = "Replace Elements in an Array",
                .url = "https://leetcode.com/problems/replace-elements-in-an-array/"});
-  registerStrategy("Hash Map", solution1);
+  registerStrategy({.name = "Hash Map"}, solution1);
 }
 
 vector<int> ReplaceElementsInAnArraySolution::arrayChange(vector<int>& nums, 

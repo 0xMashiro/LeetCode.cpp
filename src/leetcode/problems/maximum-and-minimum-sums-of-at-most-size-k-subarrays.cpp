@@ -218,7 +218,7 @@ MaximumAndMinimumSumsOfAtMostSizeKSubarraysSolution::MaximumAndMinimumSumsOfAtMo
         .title = "Maximum and Minimum Sums of at Most Size K Subarrays",
         .url = "https://leetcode.com/problems/maximum-and-minimum-sums-of-at-most-size-k-subarrays/"
     });
-    registerStrategy("Monotonic Stack + Contribution", solution1);
+    registerStrategy({.name = "Monotonic Stack + Contribution"}, solution1);
 }
 
 long long MaximumAndMinimumSumsOfAtMostSizeKSubarraysSolution::minMaxSubarraySum(vector<int>& nums, int k) {

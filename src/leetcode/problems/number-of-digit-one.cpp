@@ -37,7 +37,7 @@ NumberOfDigitOneSolution::NumberOfDigitOneSolution() {
   setMetaInfo({.id = 233,
                .title = "Number of Digit One",
                .url = "https://leetcode.com/problems/number-of-digit-one/"});
-  registerStrategy("Digit Counting", solution1);
+  registerStrategy({.name = "Digit Counting"}, solution1);
 }
 
 int NumberOfDigitOneSolution::countDigitOne(int n) {

@@ -81,8 +81,8 @@ MaximizeAreaOfSquareHoleInGridSolution::MaximizeAreaOfSquareHoleInGridSolution()
   setMetaInfo({.id = 2943,
                .title = "Maximize Area of Square Hole in Grid",
                .url = "https://leetcode.com/problems/maximize-area-of-square-hole-in-grid/"});
-  registerStrategy("Sorting + Traversal", solution1);
-  registerStrategy("Hash Set", solution2);
+  registerStrategy({.name = "Sorting + Traversal"}, solution1);
+  registerStrategy({.name = "Hash Set"}, solution2);
 }
 
 int MaximizeAreaOfSquareHoleInGridSolution::maximizeSquareHoleArea(

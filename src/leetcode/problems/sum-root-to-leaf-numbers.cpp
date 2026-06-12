@@ -72,8 +72,8 @@ SumRootToLeafNumbersSolution::SumRootToLeafNumbersSolution() {
   setMetaInfo({.id = 129,
                .title = "Sum Root to Leaf Numbers",
                .url = "https://leetcode.com/problems/sum-root-to-leaf-numbers/"});
-  registerStrategy("DFS Recursive", solution1);
-  registerStrategy("DFS Iterative", solution2);
+  registerStrategy({.name = "DFS Recursive"}, solution1);
+  registerStrategy({.name = "DFS Iterative"}, solution2);
 }
 
 int SumRootToLeafNumbersSolution::sumNumbers(TreeNode* root) {

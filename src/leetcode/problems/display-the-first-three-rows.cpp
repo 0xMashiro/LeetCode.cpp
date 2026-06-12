@@ -18,7 +18,7 @@ DisplayTheFirstThreeRowsSolution::DisplayTheFirstThreeRowsSolution() {
     setMetaInfo({.id = 2879,
                  .title = "Display the First Three Rows",
                  .url = "https://leetcode.com/problems/display-the-first-three-rows/"});
-    registerStrategy("Direct Slice", solution1);
+    registerStrategy({.name = "Direct Slice"}, solution1);
 }
 
 vector<Employee> DisplayTheFirstThreeRowsSolution::selectFirstThreeRows(const vector<Employee>& employees) {

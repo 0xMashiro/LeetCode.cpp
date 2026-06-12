@@ -97,8 +97,8 @@ DivideTwoIntegersSolution::DivideTwoIntegersSolution() {
   setMetaInfo({.id = 29,
                .title = "Divide Two Integers",
                .url = "https://leetcode.com/problems/divide-two-integers/"});
-  registerStrategy("Bit Manipulation + Subtraction", solution1);
-  registerStrategy("Long Long Optimization", solution2);
+  registerStrategy({.name = "Bit Manipulation + Subtraction"}, solution1);
+  registerStrategy({.name = "Long Long Optimization"}, solution2);
 }
 
 int DivideTwoIntegersSolution::divide(int dividend, int divisor) {

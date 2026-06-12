@@ -71,7 +71,7 @@ MinimumDivisionOperationsToMakeArrayNonDecreasingSolution::MinimumDivisionOperat
     .title = "Minimum Division Operations to Make Array Non Decreasing",
     .url = "https://leetcode.com/problems/minimum-division-operations-to-make-array-non-decreasing/"
   });
-  registerStrategy("Greedy from right", solution);
+  registerStrategy({.name = "Greedy from right"}, solution);
 }
 
 int MinimumDivisionOperationsToMakeArrayNonDecreasingSolution::minOperations(vector<int>& nums) {

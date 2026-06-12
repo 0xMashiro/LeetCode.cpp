@@ -137,8 +137,8 @@ CountTheNumberOfCompleteComponentsSolution::CountTheNumberOfCompleteComponentsSo
   setMetaInfo({.id = 2685,
                .title = "Count the Number of Complete Components",
                .url = "https://leetcode.com/problems/count-the-number-of-complete-components/"});
-  registerStrategy("Union-Find", solution1);
-  registerStrategy("DFS", solution2);
+  registerStrategy({.name = "Union-Find"}, solution1);
+  registerStrategy({.name = "DFS"}, solution2);
 }
 
 int CountTheNumberOfCompleteComponentsSolution::countCompleteComponents(int n, vector<vector<int>>& edges) {

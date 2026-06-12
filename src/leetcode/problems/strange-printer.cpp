@@ -91,8 +91,8 @@ StrangePrinterSolution::StrangePrinterSolution() {
   setMetaInfo({.id = 664,
                .title = "Strange Printer",
                .url = "https://leetcode.com/problems/strange-printer/"});
-  registerStrategy("Interval DP", solution1);
-  registerStrategy("Optimized DP", solution2);
+  registerStrategy({.name = "Interval DP"}, solution1);
+  registerStrategy({.name = "Optimized DP"}, solution2);
 }
 
 int StrangePrinterSolution::strangePrinter(string s) {

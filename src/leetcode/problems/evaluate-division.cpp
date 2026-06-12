@@ -84,7 +84,7 @@ EvaluateDivisionSolution::EvaluateDivisionSolution() {
     .title = "Evaluate Division",
     .url = "https://leetcode.com/problems/evaluate-division/"
   });
-  registerStrategy("DFS", solution1);
+  registerStrategy({.name = "DFS"}, solution1);
 }
 
 vector<double> EvaluateDivisionSolution::calcEquation(

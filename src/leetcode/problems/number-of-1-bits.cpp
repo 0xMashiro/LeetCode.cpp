@@ -44,9 +44,9 @@ NumberOf1BitsSolution::NumberOf1BitsSolution() {
   setMetaInfo({.id = 191,
                .title = "Number of 1 Bits",
                .url = "https://leetcode.com/problems/number-of-1-bits/"});
-  registerStrategy("Bit by Bit", solution1);
-  registerStrategy("Brian Kernighan", solution2);
-  registerStrategy("Lookup Table", solution3);
+  registerStrategy({.name = "Bit by Bit"}, solution1);
+  registerStrategy({.name = "Brian Kernighan"}, solution2);
+  registerStrategy({.name = "Lookup Table"}, solution3);
 }
 
 int NumberOf1BitsSolution::hammingWeight(int n) {

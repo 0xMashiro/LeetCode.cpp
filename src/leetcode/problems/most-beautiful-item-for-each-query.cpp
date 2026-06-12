@@ -111,8 +111,8 @@ MostBeautifulItemForEachQuerySolution::MostBeautifulItemForEachQuerySolution() {
   setMetaInfo({.id = 2070,
                .title = "Most Beautiful Item for Each Query",
                .url = "https://leetcode.com/problems/most-beautiful-item-for-each-query/"});
-  registerStrategy("Binary Search Manual", solution1);
-  registerStrategy("Binary Search STL", solution2);
+  registerStrategy({.name = "Binary Search Manual"}, solution1);
+  registerStrategy({.name = "Binary Search STL"}, solution2);
 }
 
 vector<int> MostBeautifulItemForEachQuerySolution::maximumBeauty(vector<vector<int>>& items, vector<int>& queries) {

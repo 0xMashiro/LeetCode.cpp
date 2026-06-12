@@ -83,8 +83,8 @@ FindTheFirstPlayerToWinKGamesInARowSolution::FindTheFirstPlayerToWinKGamesInARow
   setMetaInfo({.id = 3175,
                .title = "Find The First Player to win K Games in a Row",
                .url = "https://leetcode.com/problems/find-the-first-player-to-win-k-games-in-a-row/"});
-  registerStrategy("Queue Simulation", solution1);
-  registerStrategy("Linear Scan", solution2);
+  registerStrategy({.name = "Queue Simulation"}, solution1);
+  registerStrategy({.name = "Linear Scan"}, solution2);
 }
 
 int FindTheFirstPlayerToWinKGamesInARowSolution::findWinningPlayer(vector<int>& skills, int k) {

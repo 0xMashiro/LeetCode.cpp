@@ -69,8 +69,8 @@ MinimumAbsoluteDifferenceSolution::MinimumAbsoluteDifferenceSolution() {
   setMetaInfo({.id = 1200,
                .title = "Minimum Absolute Difference",
                .url = "https://leetcode.com/problems/minimum-absolute-difference"});
-  registerStrategy("Brute Force", solution1);
-  registerStrategy("Sorting", solution2);
+  registerStrategy({.name = "Brute Force"}, solution1);
+  registerStrategy({.name = "Sorting"}, solution2);
 }
 
 vector<vector<int>> MinimumAbsoluteDifferenceSolution::minimumAbsDifference(vector<int>& arr) {

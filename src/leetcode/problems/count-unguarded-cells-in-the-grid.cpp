@@ -54,7 +54,7 @@ CountUnguardedCellsInTheGridSolution::CountUnguardedCellsInTheGridSolution() {
   setMetaInfo({.id = 2257,
                .title = "Count Unguarded Cells in the Grid",
                .url = "https://leetcode.com/problems/count-unguarded-cells-in-the-grid/"});
-  registerStrategy("Simulation Marking", solution1);
+  registerStrategy({.name = "Simulation Marking"}, solution1);
 }
 
 int CountUnguardedCellsInTheGridSolution::countUnguarded(int m, int n, vector<vector<int>>& guards, vector<vector<int>>& walls) {

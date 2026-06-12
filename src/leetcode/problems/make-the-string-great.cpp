@@ -33,7 +33,7 @@ MakeTheStringGreatSolution::MakeTheStringGreatSolution() {
   setMetaInfo({.id = 1544,
                .title = "Make The String Great",
                .url = "https://leetcode.com/problems/make-the-string-great/"});
-  registerStrategy("Stack Simulation", solution1);
+  registerStrategy({.name = "Stack Simulation"}, solution1);
 }
 
 std::string MakeTheStringGreatSolution::makeGood(std::string s) {

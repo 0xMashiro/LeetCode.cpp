@@ -47,7 +47,7 @@ KthSmallestElementInASortedMatrixSolution::KthSmallestElementInASortedMatrixSolu
   setMetaInfo({.id = 378,
                .title = "Kth Smallest Element in a Sorted Matrix",
                .url = "https://leetcode.com/problems/kth-smallest-element-in-a-sorted-matrix/"});
-  registerStrategy("Binary Search", solution1);
+  registerStrategy({.name = "Binary Search"}, solution1);
 }
 
 int KthSmallestElementInASortedMatrixSolution::kthSmallest(vector<vector<int>>& matrix, int k) {

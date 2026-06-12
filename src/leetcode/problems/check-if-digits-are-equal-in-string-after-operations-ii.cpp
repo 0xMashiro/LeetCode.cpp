@@ -153,7 +153,7 @@ CheckIfDigitsAreEqualInStringAfterOperationsIiSolution::CheckIfDigitsAreEqualInS
   setMetaInfo({.id = 3463,
                .title = "Check If Digits Are Equal in String After Operations II",
                .url = "https://leetcode.com/problems/check-if-digits-are-equal-in-string-after-operations-ii/"});
-  registerStrategy("Math + CRT", solution);
+  registerStrategy({.name = "Math + CRT"}, solution);
 }
 
 bool CheckIfDigitsAreEqualInStringAfterOperationsIiSolution::hasSameDigits(string s) {

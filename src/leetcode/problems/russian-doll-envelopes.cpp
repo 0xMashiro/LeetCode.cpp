@@ -34,7 +34,7 @@ RussianDollEnvelopesSolution::RussianDollEnvelopesSolution() {
       .title = "Russian Doll Envelopes",
       .url = "https://leetcode.com/problems/russian-doll-envelopes"
   });
-  registerStrategy("Patience Sorting LIS", solution1);
+  registerStrategy({.name = "Patience Sorting LIS"}, solution1);
 }
 
 int RussianDollEnvelopesSolution::maxEnvelopes(vector<vector<int>>& envelopes) {

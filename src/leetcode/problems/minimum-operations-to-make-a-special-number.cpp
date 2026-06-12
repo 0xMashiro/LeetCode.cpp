@@ -55,7 +55,7 @@ MinimumOperationsToMakeASpecialNumberSolution::MinimumOperationsToMakeASpecialNu
     .title = "Minimum Operations to Make a Special Number",
     .url = "https://leetcode.com/problems/minimum-operations-to-make-a-special-number/"
   });
-  registerStrategy("Greedy", solution);
+  registerStrategy({.name = "Greedy"}, solution);
 }
 
 int MinimumOperationsToMakeASpecialNumberSolution::minimumOperations(string num) {

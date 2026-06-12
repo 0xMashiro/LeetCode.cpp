@@ -48,9 +48,9 @@ FindSmallestLetterGreaterThanTargetSolution::FindSmallestLetterGreaterThanTarget
   setMetaInfo({.id = 744,
                .title = "Find Smallest Letter Greater Than Target",
                .url = "https://leetcode.com/problems/find-smallest-letter-greater-than-target/"});
-  registerStrategy("Linear Scan", solution1);
-  registerStrategy("Binary Search", solution2);
-  registerStrategy("STL upper_bound", solution3);
+  registerStrategy({.name = "Linear Scan"}, solution1);
+  registerStrategy({.name = "Binary Search"}, solution2);
+  registerStrategy({.name = "STL upper_bound"}, solution3);
 }
 
 char FindSmallestLetterGreaterThanTargetSolution::nextGreatestLetter(std::vector<char>& letters, char target) {

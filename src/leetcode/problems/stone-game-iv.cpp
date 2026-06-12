@@ -66,8 +66,8 @@ StoneGameIvSolution::StoneGameIvSolution() {
   setMetaInfo({.id = 1510,
                .title = "Stone Game IV",
                .url = "https://leetcode.com/problems/stone-game-iv/"});
-  registerStrategy("DP with Square Check", solution1);
-  registerStrategy("DP with Precomputed Squares", solution2);
+  registerStrategy({.name = "DP with Square Check"}, solution1);
+  registerStrategy({.name = "DP with Precomputed Squares"}, solution2);
 }
 
 bool StoneGameIvSolution::winnerSquareGame(int n) {

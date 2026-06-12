@@ -22,7 +22,7 @@ PartitioningIntoMinimumNumberOfDeciBinaryNumbersSolution::PartitioningIntoMinimu
   setMetaInfo({.id = 1689,
                .title = "Partitioning Into Minimum Number Of Deci-Binary Numbers",
                .url = "https://leetcode.com/problems/partitioning-into-minimum-number-of-deci-binary-numbers/"});
-  registerStrategy("Max Digit", solution1);
+  registerStrategy({.name = "Max Digit"}, solution1);
 }
 
 int PartitioningIntoMinimumNumberOfDeciBinaryNumbersSolution::minPartitions(string n) {

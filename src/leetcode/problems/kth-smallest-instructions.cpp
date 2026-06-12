@@ -67,7 +67,7 @@ KthSmallestInstructionsSolution::KthSmallestInstructionsSolution() {
   setMetaInfo({.id = 1643,
                .title = "Kth Smallest Instructions",
                .url = "https://leetcode.com/problems/kth-smallest-instructions/"});
-  registerStrategy("Combinatorics Greedy", solution1);
+  registerStrategy({.name = "Combinatorics Greedy"}, solution1);
 }
 
 string KthSmallestInstructionsSolution::kthSmallestPath(vector<int>& destination, int k) {

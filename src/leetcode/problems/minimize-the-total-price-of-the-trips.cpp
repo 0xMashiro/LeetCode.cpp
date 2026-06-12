@@ -99,7 +99,7 @@ MinimizeTheTotalPriceOfTheTripsSolution::MinimizeTheTotalPriceOfTheTripsSolution
   setMetaInfo({.id = 2646,
                .title = "Minimize the Total Price of the Trips",
                .url = "https://leetcode.com/problems/minimize-the-total-price-of-the-trips/"});
-  registerStrategy("Tree DP", solution1);
+  registerStrategy({.name = "Tree DP"}, solution1);
 }
 
 int MinimizeTheTotalPriceOfTheTripsSolution::minimumTotalPrice(int n, vector<vector<int>>& edges, vector<int>& price, vector<vector<int>>& trips) {

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""@expected 注释解析 + 缩写映射。"""
+"""结构化 strategy expected 解析 + 缩写映射。"""
 
 import unittest
 
@@ -9,31 +9,35 @@ from script.leetcode.submit.expected_verdicts import parse_expected_verdicts, re
 _SRC_TWO_STRATEGIES = """
 namespace x {
 void register_all(Solution& s) {
-    // @expected: TLE
-    s.registerStrategy("BruteForce", [&]{});
+    s.registerStrategy({.name = "BruteForce",
+                        .expected = "TLE"},
+                       [&]{});
 
-    s.registerStrategy("Optimal", [&]{});
+    s.registerStrategy({.name = "Optimal"}, [&]{});
 }
 }
 """
 
 _SRC_FULL_NAMES = """
-    // @expected: Wrong Answer
-    s.registerStrategy("Broken", [&]{});
-    // @expected: Accepted
-    s.registerStrategy("Correct", [&]{});
+    s.registerStrategy({.name = "Broken",
+                        .expected = "Wrong Answer"},
+                       [&]{});
+    s.registerStrategy({.name = "Correct",
+                        .expected = "Accepted"},
+                       [&]{});
 """
 
 _SRC_NO_ANNOTATIONS = """
-    s.registerStrategy("A", [&]{});
-    s.registerStrategy("B", [&]{});
+    s.registerStrategy({.name = "A"}, [&]{});
+    s.registerStrategy({.name = "B"}, [&]{});
 """
 
 _SRC_MIXED = """
-    s.registerStrategy("A", [&]{});
-    // @expected: TLE
-    s.registerStrategy("B", [&]{});
-    s.registerStrategy("C", [&]{});
+    s.registerStrategy({.name = "A"}, [&]{});
+    s.registerStrategy({.name = "B",
+                        .expected = "TLE"},
+                       [&]{});
+    s.registerStrategy({.name = "C"}, [&]{});
 """
 
 _SRC_METADATA = """
@@ -58,39 +62,20 @@ class TestParseExpectedVerdicts(unittest.TestCase):
         out = parse_expected_verdicts(_SRC_FULL_NAMES)
         self.assertEqual(out, {1: "Wrong Answer", 2: "Accepted"})
 
-    def test_no_annotations_returns_empty(self) -> None:
+    def test_no_expected_returns_empty(self) -> None:
         self.assertEqual(parse_expected_verdicts(_SRC_NO_ANNOTATIONS), {})
 
-    def test_partial_annotations_keep_indexes(self) -> None:
-        """只给 B 加了注释 → 只返回 B 的条目，A 和 C 走默认。"""
+    def test_partial_expected_keep_indexes(self) -> None:
+        """只给 B 加了 expected → 只返回 B 的条目，A 和 C 走默认。"""
         self.assertEqual(parse_expected_verdicts(_SRC_MIXED), {2: "Time Limit Exceeded"})
 
     def test_unknown_alias_is_ignored(self) -> None:
         src = """
-        // @expected: Banana
-        s.registerStrategy("X", [&]{});
+        s.registerStrategy({.name = "X",
+                            .expected = "Banana"},
+                           [&]{});
         """
         self.assertEqual(parse_expected_verdicts(src), {})
-
-    def test_trailing_comment_same_line(self) -> None:
-        """行尾注释也应该绑到同一条 registerStrategy。"""
-        src = """
-        s.registerStrategy("BruteForce", [&]{});  // @expected: TLE
-        s.registerStrategy("Optimal", [&]{});
-        """
-        self.assertEqual(parse_expected_verdicts(src), {1: "Time Limit Exceeded"})
-
-    def test_mixed_leading_and_trailing(self) -> None:
-        src = """
-        // @expected: TLE
-        s.registerStrategy("A", [&]{});
-        s.registerStrategy("B", [&]{});  // @expected: WA
-        s.registerStrategy("C", [&]{});
-        """
-        self.assertEqual(
-            parse_expected_verdicts(src),
-            {1: "Time Limit Exceeded", 2: "Wrong Answer"},
-        )
 
     def test_strategy_metadata_expected_field(self) -> None:
         self.assertEqual(
@@ -98,11 +83,11 @@ class TestParseExpectedVerdicts(unittest.TestCase):
             {1: "Time Limit Exceeded", 2: "Accepted"},
         )
 
-    def test_strategy_metadata_expected_takes_precedence_over_comment(self) -> None:
+    def test_strategy_metadata_expected_field_can_be_shorthand(self) -> None:
         src = """
         s.registerStrategy({.name = "A",
-                            .expected = "Accepted"},
-                           solution1);  // @expected: TLE
+                            .expected = "AC"},
+                           solution1);
         """
         self.assertEqual(parse_expected_verdicts(src), {1: "Accepted"})
 

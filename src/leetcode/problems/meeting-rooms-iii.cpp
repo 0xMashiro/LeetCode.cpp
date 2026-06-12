@@ -184,8 +184,8 @@ MeetingRoomsIiiSolution::MeetingRoomsIiiSolution() {
   setMetaInfo({.id = 2402,
                .title = "Meeting Rooms III",
                .url = "https://leetcode.com/problems/meeting-rooms-iii"});
-  registerStrategy("Two Heaps with Wait Queue", solution1);
-  registerStrategy("Priority Queue Simulation", solution2);
+  registerStrategy({.name = "Two Heaps with Wait Queue"}, solution1);
+  registerStrategy({.name = "Priority Queue Simulation"}, solution2);
 }
 
 int MeetingRoomsIiiSolution::mostBooked(int n, vector<vector<int>>& meetings) {

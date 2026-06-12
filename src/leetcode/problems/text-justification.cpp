@@ -59,7 +59,7 @@ TextJustificationSolution::TextJustificationSolution() {
   setMetaInfo({.id = 68,
                .title = "Text Justification",
                .url = "https://leetcode.com/problems/text-justification/"});
-  registerStrategy("Greedy", solution1);
+  registerStrategy({.name = "Greedy"}, solution1);
 }
 
 vector<string> TextJustificationSolution::fullJustify(vector<string>& words, int maxWidth) {

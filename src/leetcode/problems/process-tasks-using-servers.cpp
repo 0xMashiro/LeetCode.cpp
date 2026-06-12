@@ -71,7 +71,7 @@ ProcessTasksUsingServersSolution::ProcessTasksUsingServersSolution() {
   setMetaInfo({.id = 1882,
                .title = "Process Tasks Using Servers",
                .url = "https://leetcode.com/problems/process-tasks-using-servers/"});
-  registerStrategy("Two Priority Queues", solution1);
+  registerStrategy({.name = "Two Priority Queues"}, solution1);
 }
 
 vector<int> ProcessTasksUsingServersSolution::assignTasks(vector<int>& servers, vector<int>& tasks) {

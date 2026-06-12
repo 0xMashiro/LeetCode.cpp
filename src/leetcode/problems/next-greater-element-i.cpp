@@ -65,8 +65,8 @@ NextGreaterElementISolution::NextGreaterElementISolution() {
   setMetaInfo({.id = 496,
                .title = "Next Greater Element I",
                .url = "https://leetcode.com/problems/next-greater-element-i/"});
-  registerStrategy("Brute Force", solution1);
-  registerStrategy("Monotonic Stack", solution2);
+  registerStrategy({.name = "Brute Force"}, solution1);
+  registerStrategy({.name = "Monotonic Stack"}, solution2);
 }
 
 vector<int> NextGreaterElementISolution::nextGreaterElement(vector<int>& nums1, vector<int>& nums2) {

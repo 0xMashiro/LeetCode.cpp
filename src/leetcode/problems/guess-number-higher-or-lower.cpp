@@ -38,7 +38,7 @@ GuessNumberHigherOrLowerSolution::GuessNumberHigherOrLowerSolution() {
   setMetaInfo({.id = 374,
                .title = "Guess Number Higher or Lower",
                .url = "https://leetcode.com/problems/guess-number-higher-or-lower/"});
-  registerStrategy("Binary Search", solution1);
+  registerStrategy({.name = "Binary Search"}, solution1);
 }
 
 int GuessNumberHigherOrLowerSolution::guessNumber(int n) {

@@ -63,8 +63,8 @@ KeysAndRoomsSolution::KeysAndRoomsSolution() {
   setMetaInfo({.id = 841,
                .title = "Keys and Rooms",
                .url = "https://leetcode.com/problems/keys-and-rooms/"});
-  registerStrategy("BFS", solutionBFS);
-  registerStrategy("DFS", solutionDFS);
+  registerStrategy({.name = "BFS"}, solutionBFS);
+  registerStrategy({.name = "DFS"}, solutionDFS);
 }
 
 bool KeysAndRoomsSolution::canVisitAllRooms(vector<vector<int>>& rooms) {

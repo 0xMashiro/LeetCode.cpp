@@ -37,7 +37,7 @@ RedistributeCharactersToMakeAllStringsEqualSolution::RedistributeCharactersToMak
   setMetaInfo({.id = 1897,
                .title = "Redistribute Characters to Make All Strings Equal",
                .url = "https://leetcode.com/problems/redistribute-characters-to-make-all-strings-equal/"});
-  registerStrategy("Counting", solution1);
+  registerStrategy({.name = "Counting"}, solution1);
 }
 
 bool RedistributeCharactersToMakeAllStringsEqualSolution::makeEqual(vector<string>& words) {

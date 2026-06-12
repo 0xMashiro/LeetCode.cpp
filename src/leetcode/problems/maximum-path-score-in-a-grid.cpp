@@ -68,7 +68,7 @@ MaximumPathScoreInAGridSolution::MaximumPathScoreInAGridSolution() {
     .title = "Maximum Path Score in a Grid",
     .url = "https://leetcode.com/problems/maximum-path-score-in-a-grid/"
   });
-  registerStrategy("DP", solution);
+  registerStrategy({.name = "DP"}, solution);
 }
 
 int MaximumPathScoreInAGridSolution::maxPathScore(vector<vector<int>>& grid, int k) {

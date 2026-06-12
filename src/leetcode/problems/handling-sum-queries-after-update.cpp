@@ -99,7 +99,7 @@ HandlingSumQueriesAfterUpdateSolution::HandlingSumQueriesAfterUpdateSolution() {
   setMetaInfo({.id = 2569,
                .title = "Handling Sum Queries After Update",
                .url = "https://leetcode.com/problems/handling-sum-queries-after-update/"});
-  registerStrategy("Segment Tree With Lazy Propagation", solution1);
+  registerStrategy({.name = "Segment Tree With Lazy Propagation"}, solution1);
 }
 
 vector<long long> HandlingSumQueriesAfterUpdateSolution::handleQuery(

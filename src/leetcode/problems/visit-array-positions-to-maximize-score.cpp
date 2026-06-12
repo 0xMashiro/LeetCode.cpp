@@ -33,7 +33,7 @@ VisitArrayPositionsToMaximizeScoreSolution::VisitArrayPositionsToMaximizeScoreSo
     .title = "Visit Array Positions to Maximize Score",
     .url = "https://leetcode.com/problems/visit-array-positions-to-maximize-score/"
   });
-  registerStrategy("Dynamic Programming", solution1);
+  registerStrategy({.name = "Dynamic Programming"}, solution1);
 }
 
 long long VisitArrayPositionsToMaximizeScoreSolution::maxScore(vector<int>& nums, int x) {

@@ -31,7 +31,7 @@ AbsoluteDifferenceBetweenMaximumAndMinimumKElementsSolution::AbsoluteDifferenceB
   setMetaInfo({.id = 3774,
                .title = "Absolute Difference Between Maximum and Minimum K Elements",
                .url = "https://leetcode.com/problems/absolute-difference-between-maximum-and-minimum-k-elements/"});
-  registerStrategy("Sorting", solution1);
+  registerStrategy({.name = "Sorting"}, solution1);
 }
 
 int AbsoluteDifferenceBetweenMaximumAndMinimumKElementsSolution::absDifference(vector<int>& nums, int k) {

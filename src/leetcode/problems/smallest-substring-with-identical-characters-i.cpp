@@ -70,7 +70,7 @@ SmallestSubstringWithIdenticalCharactersISolution::SmallestSubstringWithIdentica
     .title = "Smallest Substring With Identical Characters I",
     .url = "https://leetcode.com/problems/smallest-substring-with-identical-characters-i/"
   });
-  registerStrategy("Binary Search + Greedy", solution1);
+  registerStrategy({.name = "Binary Search + Greedy"}, solution1);
 }
 
 int SmallestSubstringWithIdenticalCharactersISolution::minLength(string s, int numOps) {

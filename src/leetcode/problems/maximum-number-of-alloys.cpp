@@ -59,7 +59,7 @@ MaximumNumberOfAlloysSolution::MaximumNumberOfAlloysSolution() {
   setMetaInfo({.id = 2861,
                .title = "Maximum Number of Alloys",
                .url = "https://leetcode.com/problems/maximum-number-of-alloys/"});
-  registerStrategy("Binary Search", solution1);
+  registerStrategy({.name = "Binary Search"}, solution1);
 }
 
 int MaximumNumberOfAlloysSolution::maxNumberOfAlloys(int n, int k, int budget, 

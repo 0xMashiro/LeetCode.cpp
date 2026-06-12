@@ -80,8 +80,8 @@ FindKthBitInNthBinaryStringSolution::FindKthBitInNthBinaryStringSolution() {
     .title = "Find Kth Bit in Nth Binary String",
     .url = "https://leetcode.com/problems/find-kth-bit-in-nth-binary-string/"
   });
-  registerStrategy("Recursive", solution1);
-  registerStrategy("Iterative", solution2);
+  registerStrategy({.name = "Recursive"}, solution1);
+  registerStrategy({.name = "Iterative"}, solution2);
 }
 
 char FindKthBitInNthBinaryStringSolution::findKthBit(int n, int k) {

@@ -47,23 +47,23 @@ TEST(SolutionBaseTest, StoresStructuredStrategyMetadataInRegistrationOrder) {
   EXPECT_EQ("Accepted", metadata[1].expected);
 }
 
-TEST(SolutionBaseTest, LegacyRegistrationGetsAcceptedMetadata) {
+TEST(SolutionBaseTest, MinimalRegistrationGetsAcceptedMetadata) {
   SolutionBase<Func> solution;
   solution.setMetaInfo({.id = 0, .title = "Framework Test", .url = ""});
 
-  solution.registerStrategy("Legacy", plus_one);
+  solution.registerStrategy({.name = "Minimal"}, plus_one);
 
   const auto metadata = solution.getStrategyMetadata();
   ASSERT_EQ(1, metadata.size());
-  EXPECT_EQ("Legacy", metadata[0].name);
+  EXPECT_EQ("Minimal", metadata[0].name);
   EXPECT_EQ("Accepted", metadata[0].expected);
 }
 
 TEST(SolutionBaseTest, DefaultStrategyUsesLastRegisteredStrategy) {
   SolutionBase<Func> solution;
   solution.setMetaInfo({.id = 0, .title = "Framework Test", .url = ""});
-  solution.registerStrategy("First", plus_one);
-  solution.registerStrategy("Last", times_two);
+  solution.registerStrategy({.name = "First"}, plus_one);
+  solution.registerStrategy({.name = "Last"}, times_two);
 
   solution.setDefaultStrategy();
 

@@ -25,7 +25,7 @@ MinimumNumberOfChairsInAWaitingRoomSolution::MinimumNumberOfChairsInAWaitingRoom
   setMetaInfo({.id = 3168,
                .title = "Minimum Number of Chairs in a Waiting Room",
                .url = "https://leetcode.com/problems/minimum-number-of-chairs-in-a-waiting-room/"});
-  registerStrategy("Greedy Counting", solution1);
+  registerStrategy({.name = "Greedy Counting"}, solution1);
 }
 
 int MinimumNumberOfChairsInAWaitingRoomSolution::minimumChairs(string s) {

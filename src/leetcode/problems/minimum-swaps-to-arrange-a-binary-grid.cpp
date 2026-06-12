@@ -55,7 +55,7 @@ MinimumSwapsToArrangeABinaryGridSolution::MinimumSwapsToArrangeABinaryGridSoluti
   setMetaInfo({.id = 1536,
                .title = "Minimum Swaps to Arrange a Binary Grid",
                .url = "https://leetcode.com/problems/minimum-swaps-to-arrange-a-binary-grid/"});
-  registerStrategy("Greedy", solution1);
+  registerStrategy({.name = "Greedy"}, solution1);
 }
 
 int MinimumSwapsToArrangeABinaryGridSolution::minSwaps(vector<vector<int>> &grid) {

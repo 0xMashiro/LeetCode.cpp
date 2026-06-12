@@ -19,7 +19,7 @@ MinimumTimeVisitingAllPointsSolution::MinimumTimeVisitingAllPointsSolution() {
   setMetaInfo({.id = 1266,
                .title = "Minimum Time Visiting All Points",
                .url = "https://leetcode.com/problems/minimum-time-visiting-all-points/"});
-  registerStrategy("Chebyshev Distance Sum", solution1);
+  registerStrategy({.name = "Chebyshev Distance Sum"}, solution1);
 }
 
 int MinimumTimeVisitingAllPointsSolution::minTimeToVisitAllPoints(vector<vector<int>>& points) {

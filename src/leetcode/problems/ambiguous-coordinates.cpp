@@ -69,7 +69,7 @@ AmbiguousCoordinatesSolution::AmbiguousCoordinatesSolution() {
   setMetaInfo({.id = 816,
                .title = "Ambiguous Coordinates",
                .url = "https://leetcode.com/problems/ambiguous-coordinates/"});
-  registerStrategy("Enumerate", solution1);
+  registerStrategy({.name = "Enumerate"}, solution1);
 }
 
 vector<string> AmbiguousCoordinatesSolution::ambiguousCoordinates(string s) {

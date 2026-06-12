@@ -58,7 +58,7 @@ PathsInMatrixWhoseSumIsDivisibleByKSolution::PathsInMatrixWhoseSumIsDivisibleByK
   setMetaInfo({.id = 2435,
                .title = "Paths in Matrix Whose Sum Is Divisible by K",
                .url = "https://leetcode.com/problems/paths-in-matrix-whose-sum-is-divisible-by-k/"});
-  registerStrategy("DP with Rolling Array", solution1);
+  registerStrategy({.name = "DP with Rolling Array"}, solution1);
 }
 
 int PathsInMatrixWhoseSumIsDivisibleByKSolution::numberOfPaths(vector<vector<int>>& grid, int k) {

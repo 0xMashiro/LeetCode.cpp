@@ -93,7 +93,7 @@ KthSmallestProductOfTwoSortedArraysSolution::
                .url =
                    "https://leetcode.com/problems/kth-smallest-product-of-two-"
                    "sorted-arrays/"});
-  registerStrategy("Binary Search + Counting", solution1);
+  registerStrategy({.name = "Binary Search + Counting"}, solution1);
 }
 
 long long KthSmallestProductOfTwoSortedArraysSolution::kthSmallestProduct(

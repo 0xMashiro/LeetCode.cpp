@@ -43,8 +43,8 @@ MaximizeSumOfAtMostKDistinctElementsSolution::MaximizeSumOfAtMostKDistinctElemen
   setMetaInfo({.id = 3684,
                .title = "Maximize Sum of At Most K Distinct Elements",
                .url = "https://leetcode.com/problems/maximize-sum-of-at-most-k-distinct-elements/"});
-  registerStrategy("Greedy with Set", solution1);
-  registerStrategy("Greedy with UnorderedSet", solution2);
+  registerStrategy({.name = "Greedy with Set"}, solution1);
+  registerStrategy({.name = "Greedy with UnorderedSet"}, solution2);
 }
 
 vector<int> MaximizeSumOfAtMostKDistinctElementsSolution::maxKDistinct(vector<int>& nums, int k) {

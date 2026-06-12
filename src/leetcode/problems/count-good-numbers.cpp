@@ -63,7 +63,7 @@ CountGoodNumbersSolution::CountGoodNumbersSolution() {
     .title = "Count Good Numbers",
     .url = "https://leetcode.com/problems/count-good-numbers/"
   });
-  registerStrategy("Fast Power", solution);
+  registerStrategy({.name = "Fast Power"}, solution);
 }
 
 int CountGoodNumbersSolution::countGoodNumbers(long long n) {

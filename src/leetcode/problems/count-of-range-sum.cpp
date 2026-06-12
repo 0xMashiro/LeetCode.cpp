@@ -86,7 +86,7 @@ CountOfRangeSumSolution::CountOfRangeSumSolution() {
   setMetaInfo({.id = 327,
                .title = "Count of Range Sum",
                .url = "https://leetcode.com/problems/count-of-range-sum/"});
-  registerStrategy("Merge Sort", solution1);
+  registerStrategy({.name = "Merge Sort"}, solution1);
 }
 
 int CountOfRangeSumSolution::countRangeSum(vector<int>& nums, int lower, int upper) {

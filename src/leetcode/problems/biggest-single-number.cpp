@@ -62,8 +62,8 @@ BiggestSingleNumberSolution::BiggestSingleNumberSolution() {
   setMetaInfo({.id = 619,
                .title = "Biggest Single Number",
                .url = "https://leetcode.com/problems/biggest-single-number/"});
-  registerStrategy("Hash Map", solution1);
-  registerStrategy("Sorting", solution2);
+  registerStrategy({.name = "Hash Map"}, solution1);
+  registerStrategy({.name = "Sorting"}, solution2);
 }
 
 std::optional<int> BiggestSingleNumberSolution::biggestSingleNumber(const vector<int>& nums) {

@@ -86,8 +86,8 @@ MaxDotProductOfTwoSubsequencesSolution::MaxDotProductOfTwoSubsequencesSolution()
   setMetaInfo({.id = 1458,
                .title = "Max Dot Product of Two Subsequences",
                .url = "https://leetcode.com/problems/max-dot-product-of-two-subsequences/"});
-  registerStrategy("Standard DP (O(n*m) space)", solution1);
-  registerStrategy("Optimized DP (O(min(n,m)) space)", solution2);
+  registerStrategy({.name = "Standard DP (O(n*m) space)"}, solution1);
+  registerStrategy({.name = "Optimized DP (O(min(n,m)) space)"}, solution2);
 }
 
 int MaxDotProductOfTwoSubsequencesSolution::maxDotProduct(vector<int>& nums1, vector<int>& nums2) {

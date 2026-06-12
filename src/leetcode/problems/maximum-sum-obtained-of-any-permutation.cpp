@@ -44,7 +44,7 @@ MaximumSumObtainedOfAnyPermutationSolution::MaximumSumObtainedOfAnyPermutationSo
   setMetaInfo({.id = 1589,
                .title = "Maximum Sum Obtained of Any Permutation",
                .url = "https://leetcode.com/problems/maximum-sum-obtained-of-any-permutation/"});
-  registerStrategy("Greedy + Difference Array", solution1);
+  registerStrategy({.name = "Greedy + Difference Array"}, solution1);
 }
 
 int MaximumSumObtainedOfAnyPermutationSolution::maxSumRangeQuery(vector<int>& nums, vector<vector<int>>& requests) {

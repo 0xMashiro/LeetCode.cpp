@@ -63,8 +63,8 @@ DiameterOfBinaryTreeSolution::DiameterOfBinaryTreeSolution() {
   setMetaInfo({.id = 543,
                .title = "Diameter of Binary Tree",
                .url = "https://leetcode.com/problems/diameter-of-binary-tree/"});
-  registerStrategy("DFS with Lambda", solution1);
-  registerStrategy("DFS with Helper Class", solution2);
+  registerStrategy({.name = "DFS with Lambda"}, solution1);
+  registerStrategy({.name = "DFS with Helper Class"}, solution2);
 }
 
 int DiameterOfBinaryTreeSolution::diameterOfBinaryTree(TreeNode* root) {

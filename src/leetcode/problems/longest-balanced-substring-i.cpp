@@ -99,7 +99,7 @@ LongestBalancedSubstringISolution::LongestBalancedSubstringISolution() {
   setMetaInfo({.id = 3713,
                .title = "Longest Balanced Substring I",
                .url = "https://leetcode.com/problems/longest-balanced-substring-i/"});
-  registerStrategy("Prefix Sum + Enumeration", solution1);
+  registerStrategy({.name = "Prefix Sum + Enumeration"}, solution1);
 }
 
 int LongestBalancedSubstringISolution::longestBalanced(string s) {

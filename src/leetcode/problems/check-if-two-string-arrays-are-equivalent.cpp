@@ -33,8 +33,8 @@ CheckIfTwoStringArraysAreEquivalentSolution::CheckIfTwoStringArraysAreEquivalent
   setMetaInfo({.id = 1662,
                .title = "Check If Two String Arrays are Equivalent",
                .url = "https://leetcode.com/problems/check-if-two-string-arrays-are-equivalent/"});
-  registerStrategy("Concatenate", solution1);
-  registerStrategy("StringStream", solution2);
+  registerStrategy({.name = "Concatenate"}, solution1);
+  registerStrategy({.name = "StringStream"}, solution2);
 }
 
 bool CheckIfTwoStringArraysAreEquivalentSolution::arrayStringsAreEqual(

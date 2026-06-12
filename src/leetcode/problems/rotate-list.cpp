@@ -79,8 +79,8 @@ RotateListSolution::RotateListSolution() {
   setMetaInfo({.id = 61,
                .title = "Rotate List",
                .url = "https://leetcode.com/problems/rotate-list/"});
-  registerStrategy("Close Loop", solution1);
-  registerStrategy("Two Pointers", solution2);
+  registerStrategy({.name = "Close Loop"}, solution1);
+  registerStrategy({.name = "Two Pointers"}, solution2);
 }
 
 ListNode* RotateListSolution::rotateRight(ListNode* head, int k) {

@@ -100,8 +100,8 @@ PrintBinaryTreeSolution::PrintBinaryTreeSolution() {
   setMetaInfo({.id = 655,
                .title = "Print Binary Tree",
                .url = "https://leetcode.com/problems/print-binary-tree/"});
-  registerStrategy("DFS Recursive", solution1);
-  registerStrategy("BFS Iterative", solution2);
+  registerStrategy({.name = "DFS Recursive"}, solution1);
+  registerStrategy({.name = "BFS Iterative"}, solution2);
 }
 
 vector<vector<string>> PrintBinaryTreeSolution::printTree(TreeNode* root) {

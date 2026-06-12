@@ -69,8 +69,7 @@ SmallestKLengthSubsequenceWithOccurrencesOfALetterSolution::SmallestKLengthSubse
     setMetaInfo({.id = 2030,
                  .title = "Smallest K-Length Subsequence With Occurrences of a Letter",
                  .url = "https://leetcode.com/problems/smallest-k-length-subsequence-with-occurrences-of-a-letter/"});
-    // @expected: AC
-    registerStrategy("Monotonic Stack (Greedy)", solution1);
+    registerStrategy({.name = "Monotonic Stack (Greedy)"}, solution1);
 }
 
 string SmallestKLengthSubsequenceWithOccurrencesOfALetterSolution::smallestSubsequence(string s, int k, char letter, int repetition) {

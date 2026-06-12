@@ -43,7 +43,7 @@ static {solution_return_type} solution1({solution_param}) {{
       .title = "{problem_title}",
       .url = "{leetcode_url_prefix}{problem_slug}"
   }});
-  registerStrategy("Brute Force", solution1);
+  registerStrategy({.name = "Brute Force"}, solution1);
 }}
 
 {solution_return_type} {solution_class_name}{solution_class_suffix}::{solution_func_name}({solution_param}) {{

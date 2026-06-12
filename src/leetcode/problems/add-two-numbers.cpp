@@ -63,8 +63,8 @@ AddTwoNumbersSolution::AddTwoNumbersSolution() {
   setMetaInfo({.id = 2,
                .title = "Add Two Numbers",
                .url = "https://leetcode.com/problems/add-two-numbers"});
-  registerStrategy("Iterative Addition", solution1);
-  registerStrategy("Recursive Addition", solution2);
+  registerStrategy({.name = "Iterative Addition"}, solution1);
+  registerStrategy({.name = "Recursive Addition"}, solution2);
 }
 
 ListNode* AddTwoNumbersSolution::addTwoNumbers(ListNode* l1, ListNode* l2) {

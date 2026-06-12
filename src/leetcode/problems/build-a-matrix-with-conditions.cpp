@@ -91,7 +91,7 @@ BuildAMatrixWithConditionsSolution::BuildAMatrixWithConditionsSolution() {
   setMetaInfo({.id = 2392,
                .title = "Build a Matrix With Conditions",
                .url = "https://leetcode.com/problems/build-a-matrix-with-conditions/"});
-  registerStrategy("Topological Sort", solution1);
+  registerStrategy({.name = "Topological Sort"}, solution1);
 }
 
 vector<vector<int>> BuildAMatrixWithConditionsSolution::buildMatrix(

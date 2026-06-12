@@ -76,8 +76,8 @@ CustomersWhoBoughtAllProductsSolution::CustomersWhoBoughtAllProductsSolution() {
   setMetaInfo({.id = 1045,
                .title = "Customers Who Bought All Products",
                .url = "https://leetcode.com/problems/customers-who-bought-all-products/"});
-  registerStrategy("Hash Set", solution1);
-  registerStrategy("Optimized Hash Set", solution2);
+  registerStrategy({.name = "Hash Set"}, solution1);
+  registerStrategy({.name = "Optimized Hash Set"}, solution2);
 }
 
 vector<int> CustomersWhoBoughtAllProductsSolution::customersWhoBoughtAllProducts(

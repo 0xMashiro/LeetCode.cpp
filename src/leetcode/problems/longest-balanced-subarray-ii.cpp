@@ -121,7 +121,7 @@ LongestBalancedSubarrayIiSolution::LongestBalancedSubarrayIiSolution() {
   setMetaInfo({.id = 3721,
                .title = "Longest Balanced Subarray II",
                .url = "https://leetcode.com/problems/longest-balanced-subarray-ii/"});
-  registerStrategy("Segment Tree", solution1);
+  registerStrategy({.name = "Segment Tree"}, solution1);
 }
 
 int LongestBalancedSubarrayIiSolution::longestBalanced(vector<int>& nums) {

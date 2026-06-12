@@ -96,7 +96,7 @@ FindBeautifulIndicesInTheGivenArrayISolution::FindBeautifulIndicesInTheGivenArra
     .title = "Find Beautiful Indices in the Given Array I",
     .url = "https://leetcode.com/problems/find-beautiful-indices-in-the-given-array-i/"
   });
-  registerStrategy("KMP + Two Pointers", solution);
+  registerStrategy({.name = "KMP + Two Pointers"}, solution);
 }
 
 vector<int> FindBeautifulIndicesInTheGivenArrayISolution::beautifulIndices(string s, string a, string b, int k) {

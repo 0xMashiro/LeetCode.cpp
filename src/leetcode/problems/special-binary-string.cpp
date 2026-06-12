@@ -55,7 +55,7 @@ SpecialBinaryStringSolution::SpecialBinaryStringSolution() {
   setMetaInfo({.id = 761,
                .title = "Special Binary String",
                .url = "https://leetcode.com/problems/special-binary-string/"});
-  registerStrategy("Recursive", solution1);
+  registerStrategy({.name = "Recursive"}, solution1);
 }
 
 string SpecialBinaryStringSolution::makeLargestSpecial(string s) {

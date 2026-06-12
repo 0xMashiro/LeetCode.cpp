@@ -36,7 +36,7 @@ RankTransformOfAnArraySolution::RankTransformOfAnArraySolution() {
   setMetaInfo({.id = 1331,
                .title = "Rank Transform of an Array",
                .url = "https://leetcode.com/problems/rank-transform-of-an-array/"});
-  registerStrategy("Sorting + HashMap", solution1);
+  registerStrategy({.name = "Sorting + HashMap"}, solution1);
 }
 
 vector<int> RankTransformOfAnArraySolution::arrayRankTransform(vector<int>& arr) {

@@ -40,7 +40,7 @@ MinimumLengthOfStringAfterOperationsSolution::MinimumLengthOfStringAfterOperatio
     .title = "Minimum Length of String After Operations",
     .url = "https://leetcode.com/problems/minimum-length-of-string-after-operations/"
   });
-  registerStrategy("Counting", solution1);
+  registerStrategy({.name = "Counting"}, solution1);
 }
 
 int MinimumLengthOfStringAfterOperationsSolution::minimumLength(string s) {

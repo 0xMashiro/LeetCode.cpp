@@ -58,7 +58,7 @@ LastRemainingIntegerAfterAlternatingDeletionOperationsSolution::LastRemainingInt
     .title = "Last Remaining Integer After Alternating Deletion Operations",
     .url = "https://leetcode.com/problems/last-remaining-integer-after-alternating-deletion-operations/"
   });
-  registerStrategy("Mathematical Simulation", solution1);
+  registerStrategy({.name = "Mathematical Simulation"}, solution1);
 }
 
 long long LastRemainingIntegerAfterAlternatingDeletionOperationsSolution::lastInteger(long long n) {

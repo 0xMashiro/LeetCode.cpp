@@ -39,9 +39,9 @@ HammingDistanceSolution::HammingDistanceSolution() {
   setMetaInfo({.id = 461,
                .title = "Hamming Distance",
                .url = "https://leetcode.com/problems/hamming-distance/"});
-  registerStrategy("Brian Kernighan", solution1);
-  registerStrategy("Builtin Popcount", solution2);
-  registerStrategy("Bit by Bit", solution3);
+  registerStrategy({.name = "Brian Kernighan"}, solution1);
+  registerStrategy({.name = "Builtin Popcount"}, solution2);
+  registerStrategy({.name = "Bit by Bit"}, solution3);
 }
 
 int HammingDistanceSolution::hammingDistance(int x, int y) {

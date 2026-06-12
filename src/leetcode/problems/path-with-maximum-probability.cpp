@@ -62,7 +62,7 @@ PathWithMaximumProbabilitySolution::PathWithMaximumProbabilitySolution() {
     .title = "Path with Maximum Probability",
     .url = "https://leetcode.com/problems/path-with-maximum-probability/"
   });
-  registerStrategy("Dijkstra (Max Heap)", solution1);
+  registerStrategy({.name = "Dijkstra (Max Heap)"}, solution1);
 }
 
 double PathWithMaximumProbabilitySolution::maxProbability(

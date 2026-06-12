@@ -122,7 +122,7 @@ TheScoreOfStudentsSolvingMathExpressionSolution::TheScoreOfStudentsSolvingMathEx
   setMetaInfo({.id = 2019,
                .title = "The Score of Students Solving Math Expression",
                .url = "https://leetcode.com/problems/the-score-of-students-solving-math-expression/"});
-  registerStrategy("Interval DP", solution1);
+  registerStrategy({.name = "Interval DP"}, solution1);
 }
 
 int TheScoreOfStudentsSolvingMathExpressionSolution::scoreOfStudents(

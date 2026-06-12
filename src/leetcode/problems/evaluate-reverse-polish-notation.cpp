@@ -40,7 +40,7 @@ EvaluateReversePolishNotationSolution::EvaluateReversePolishNotationSolution() {
   setMetaInfo({.id = 150,
                .title = "Evaluate Reverse Polish Notation",
                .url = "https://leetcode.com/problems/evaluate-reverse-polish-notation/"});
-  registerStrategy("Stack", solution1);
+  registerStrategy({.name = "Stack"}, solution1);
 }
 
 int EvaluateReversePolishNotationSolution::evalRPN(vector<string>& tokens) {

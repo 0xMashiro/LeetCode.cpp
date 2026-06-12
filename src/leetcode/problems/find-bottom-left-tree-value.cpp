@@ -54,8 +54,8 @@ FindBottomLeftTreeValueSolution::FindBottomLeftTreeValueSolution() {
   setMetaInfo({.id = 513,
                .title = "Find Bottom Left Tree Value",
                .url = "https://leetcode.com/problems/find-bottom-left-tree-value/"});
-  registerStrategy("BFS", solution1);
-  registerStrategy("DFS", solution2);
+  registerStrategy({.name = "BFS"}, solution1);
+  registerStrategy({.name = "DFS"}, solution2);
 }
 
 int FindBottomLeftTreeValueSolution::findBottomLeftValue(TreeNode* root) {

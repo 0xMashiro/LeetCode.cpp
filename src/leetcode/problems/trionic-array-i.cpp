@@ -47,7 +47,7 @@ TrionicArrayISolution::TrionicArrayISolution() {
   setMetaInfo({.id = 3637,
                .title = "Trionic Array I",
                .url = "https://leetcode.com/problems/trionic-array-i/"});
-  registerStrategy("Single Pass", solution1);
+  registerStrategy({.name = "Single Pass"}, solution1);
 }
 
 bool TrionicArrayISolution::isTrionic(vector<int>& nums) {

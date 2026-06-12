@@ -25,7 +25,7 @@ ValidBoomerangSolution::ValidBoomerangSolution() {
   setMetaInfo({.id = 1037,
                .title = "Valid Boomerang",
                .url = "https://leetcode.com/problems/valid-boomerang/"});
-  registerStrategy("Cross Product", solution1);
+  registerStrategy({.name = "Cross Product"}, solution1);
 }
 
 bool ValidBoomerangSolution::isBoomerang(vector<vector<int>>& points) {

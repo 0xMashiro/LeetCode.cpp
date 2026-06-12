@@ -59,7 +59,7 @@ MaximumSumCircularSubarraySolution::MaximumSumCircularSubarraySolution() {
     .title = "Maximum Sum Circular Subarray",
     .url = "https://leetcode.com/problems/maximum-sum-circular-subarray/"
   });
-  registerStrategy("Kadane Algorithm", kadaneSolution);
+  registerStrategy({.name = "Kadane Algorithm"}, kadaneSolution);
 }
 
 int MaximumSumCircularSubarraySolution::maxSubarraySumCircular(vector<int>& nums) {

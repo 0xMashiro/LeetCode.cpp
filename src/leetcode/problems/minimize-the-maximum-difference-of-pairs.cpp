@@ -54,7 +54,7 @@ MinimizeTheMaximumDifferenceOfPairsSolution::MinimizeTheMaximumDifferenceOfPairs
   setMetaInfo({.id = 2616,
                .title = "Minimize the Maximum Difference of Pairs",
                .url = "https://leetcode.com/problems/minimize-the-maximum-difference-of-pairs/"});
-  registerStrategy("Binary Search + Greedy", solution1);
+  registerStrategy({.name = "Binary Search + Greedy"}, solution1);
 }
 
 int MinimizeTheMaximumDifferenceOfPairsSolution::minimizeMax(vector<int>& nums, int p) {

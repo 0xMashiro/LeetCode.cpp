@@ -36,8 +36,8 @@ RepeatedSubstringPatternSolution::RepeatedSubstringPatternSolution() {
   setMetaInfo({.id = 459,
                .title = "Repeated Substring Pattern",
                .url = "https://leetcode.com/problems/repeated-substring-pattern/"});
-  registerStrategy("Mathematical Trick", solution1);
-  registerStrategy("Brute Force", solution2);
+  registerStrategy({.name = "Mathematical Trick"}, solution1);
+  registerStrategy({.name = "Brute Force"}, solution2);
 }
 
 bool RepeatedSubstringPatternSolution::repeatedSubstringPattern(string s) {

@@ -97,7 +97,7 @@ CyclicallyRotatingAGridSolution::CyclicallyRotatingAGridSolution() {
   setMetaInfo({.id = 1914,
                .title = "Cyclically Rotating a Grid",
                .url = "https://leetcode.com/problems/cyclically-rotating-a-grid/"});
-  registerStrategy("Layer by Layer", solution);
+  registerStrategy({.name = "Layer by Layer"}, solution);
 }
 
 vector<vector<int>> CyclicallyRotatingAGridSolution::rotateGrid(vector<vector<int>>& grid, int k) {

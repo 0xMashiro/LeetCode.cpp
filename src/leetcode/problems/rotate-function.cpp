@@ -88,8 +88,8 @@ RotateFunctionSolution::RotateFunctionSolution() {
   setMetaInfo({.id = 396,
                .title = "Rotate Function",
                .url = "https://leetcode.com/problems/rotate-function/"});
-  registerStrategy("Iterative Formula", solution1);
-  registerStrategy("Optimized Iterative", solution2);
+  registerStrategy({.name = "Iterative Formula"}, solution1);
+  registerStrategy({.name = "Optimized Iterative"}, solution2);
 }
 
 int RotateFunctionSolution::maxRotateFunction(vector<int>& nums) {

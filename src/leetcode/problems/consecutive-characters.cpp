@@ -31,7 +31,7 @@ ConsecutiveCharactersSolution::ConsecutiveCharactersSolution() {
   setMetaInfo({.id = 1446,
                .title = "Consecutive Characters",
                .url = "https://leetcode.com/problems/consecutive-characters/"});
-  registerStrategy("One Pass", solution1);
+  registerStrategy({.name = "One Pass"}, solution1);
 }
 
 int ConsecutiveCharactersSolution::maxPower(std::string s) {

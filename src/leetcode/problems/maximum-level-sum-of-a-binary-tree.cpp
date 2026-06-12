@@ -60,8 +60,8 @@ MaximumLevelSumOfABinaryTreeSolution::MaximumLevelSumOfABinaryTreeSolution() {
     setMetaInfo({.id = 1161,
                  .title = "Maximum Level Sum of a Binary Tree",
                  .url = "https://leetcode.com/problems/maximum-level-sum-of-a-binary-tree"});
-    registerStrategy("BFS", solution1);
-    registerStrategy("DFS", solution2);
+    registerStrategy({.name = "BFS"}, solution1);
+    registerStrategy({.name = "DFS"}, solution2);
 }
 
 int MaximumLevelSumOfABinaryTreeSolution::maxLevelSum(TreeNode* root) {

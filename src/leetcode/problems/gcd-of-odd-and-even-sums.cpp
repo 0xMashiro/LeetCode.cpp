@@ -28,8 +28,8 @@ GcdOfOddAndEvenSumsSolution::GcdOfOddAndEvenSumsSolution() {
   setMetaInfo({.id = 3658,
                .title = "GCD of Odd and Even Sums",
                .url = "https://leetcode.com/problems/gcd-of-odd-and-even-sums/"});
-  registerStrategy("Math Formula", solution1);
-  registerStrategy("Direct Calculation", solution2);
+  registerStrategy({.name = "Math Formula"}, solution1);
+  registerStrategy({.name = "Direct Calculation"}, solution2);
 }
 
 int GcdOfOddAndEvenSumsSolution::gcdOfOddEvenSums(int n) {

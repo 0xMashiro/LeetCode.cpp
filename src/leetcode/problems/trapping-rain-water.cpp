@@ -92,8 +92,8 @@ TrappingRainWaterSolution::TrappingRainWaterSolution() {
   setMetaInfo({.id = 42,
                .title = "Trapping Rain Water",
                .url = "https://leetcode.com/problems/trapping-rain-water/"});
-  registerStrategy("Two Pointers", solution1);
-  registerStrategy("Dynamic Programming", solution2);
+  registerStrategy({.name = "Two Pointers"}, solution1);
+  registerStrategy({.name = "Dynamic Programming"}, solution2);
 }
 
 int TrappingRainWaterSolution::trap(vector<int>& height) {

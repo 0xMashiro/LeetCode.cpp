@@ -18,7 +18,7 @@ FurthestPointFromOriginSolution::FurthestPointFromOriginSolution() {
   setMetaInfo({.id = 2833,
                .title = "Furthest Point From Origin",
                .url = "https://leetcode.com/problems/furthest-point-from-origin"});
-  registerStrategy("Count Absolute Diff", solution1);
+  registerStrategy({.name = "Count Absolute Diff"}, solution1);
 }
 
 int FurthestPointFromOriginSolution::furthestDistanceFromOrigin(string& moves) {

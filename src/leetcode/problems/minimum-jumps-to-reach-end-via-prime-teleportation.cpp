@@ -106,7 +106,7 @@ MinimumJumpsToReachEndViaPrimeTeleportationSolution::
                .title = "Minimum Jumps to Reach End via Prime Teleportation",
                .url = "https://leetcode.com/problems/minimum-jumps-to-reach-end-via-prime-teleportation/"});
   // 本题结构唯一合理解为 BFS + 质数分类剪枝，无明显多解
-  registerStrategy("BFS + Prime Factorization", solution1);
+  registerStrategy({.name = "BFS + Prime Factorization"}, solution1);
 }
 
 int MinimumJumpsToReachEndViaPrimeTeleportationSolution::minJumps(

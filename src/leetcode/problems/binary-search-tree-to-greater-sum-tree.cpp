@@ -73,8 +73,8 @@ BinarySearchTreeToGreaterSumTreeSolution::BinarySearchTreeToGreaterSumTreeSoluti
     .title = "Binary Search Tree to Greater Sum Tree",
     .url = "https://leetcode.com/problems/binary-search-tree-to-greater-sum-tree/"
   });
-  registerStrategy("Recursive Reverse Inorder", solution1);
-  registerStrategy("Iterative Reverse Inorder", solution2);
+  registerStrategy({.name = "Recursive Reverse Inorder"}, solution1);
+  registerStrategy({.name = "Iterative Reverse Inorder"}, solution2);
 }
 
 TreeNode* BinarySearchTreeToGreaterSumTreeSolution::bstToGst(TreeNode* root) {

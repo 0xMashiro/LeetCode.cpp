@@ -55,7 +55,7 @@ MatrixBlockSumSolution::MatrixBlockSumSolution() {
   setMetaInfo({.id = 1314,
                .title = "Matrix Block Sum",
                .url = "https://leetcode.com/problems/matrix-block-sum/"});
-  registerStrategy("2D Prefix Sum", solution1);
+  registerStrategy({.name = "2D Prefix Sum"}, solution1);
 }
 
 vector<vector<int>> MatrixBlockSumSolution::matrixBlockSum(

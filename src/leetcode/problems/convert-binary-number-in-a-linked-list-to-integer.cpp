@@ -36,8 +36,8 @@ ConvertBinaryNumberInALinkedListToIntegerSolution::ConvertBinaryNumberInALinkedL
     .title = "Convert Binary Number in a Linked List to Integer",
     .url = "https://leetcode.com/problems/convert-binary-number-in-a-linked-list-to-integer/"
   });
-  registerStrategy("Bit Shift", solution1);
-  registerStrategy("Arithmetic", solution2);
+  registerStrategy({.name = "Bit Shift"}, solution1);
+  registerStrategy({.name = "Arithmetic"}, solution2);
 }
 
 int ConvertBinaryNumberInALinkedListToIntegerSolution::getDecimalValue(ListNode* head) {

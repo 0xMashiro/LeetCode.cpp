@@ -56,7 +56,7 @@ SpiralMatrixIvSolution::SpiralMatrixIvSolution() {
   setMetaInfo({.id = 2326,
                .title = "Spiral Matrix IV",
                .url = "https://leetcode.com/problems/spiral-matrix-iv/"});
-  registerStrategy("Spiral Fill", solution1);
+  registerStrategy({.name = "Spiral Fill"}, solution1);
 }
 
 vector<vector<int>> SpiralMatrixIvSolution::spiralMatrix(int m, int n, ListNode* head) {

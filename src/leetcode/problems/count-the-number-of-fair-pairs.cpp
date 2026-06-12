@@ -66,8 +66,8 @@ CountTheNumberOfFairPairsSolution::CountTheNumberOfFairPairsSolution() {
   setMetaInfo({.id = 2563,
                .title = "Count the Number of Fair Pairs",
                .url = "https://leetcode.com/problems/count-the-number-of-fair-pairs/"});
-  registerStrategy("Sorting + Binary Search", solution1);
-  registerStrategy("Sorting + Two Pointer", solution2);
+  registerStrategy({.name = "Sorting + Binary Search"}, solution1);
+  registerStrategy({.name = "Sorting + Two Pointer"}, solution2);
 }
 
 long long CountTheNumberOfFairPairsSolution::countFairPairs(vector<int>& nums, int lower, int upper) {

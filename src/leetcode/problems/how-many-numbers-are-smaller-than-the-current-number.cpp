@@ -74,9 +74,9 @@ HowManyNumbersAreSmallerThanTheCurrentNumberSolution::HowManyNumbersAreSmallerTh
   setMetaInfo({.id = 1365,
                .title = "How Many Numbers Are Smaller Than the Current Number",
                .url = "https://leetcode.com/problems/how-many-numbers-are-smaller-than-the-current-number/"});
-  registerStrategy("Brute Force", solution1);
-  registerStrategy("Sorting + Hash Map", solution2);
-  registerStrategy("Counting Sort", solution3);
+  registerStrategy({.name = "Brute Force"}, solution1);
+  registerStrategy({.name = "Sorting + Hash Map"}, solution2);
+  registerStrategy({.name = "Counting Sort"}, solution3);
 }
 
 vector<int> HowManyNumbersAreSmallerThanTheCurrentNumberSolution::smallerNumbersThanCurrent(vector<int>& nums) {

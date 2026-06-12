@@ -60,7 +60,7 @@ SumOfDistancesSolution::SumOfDistancesSolution() {
   setMetaInfo({.id = 2615,
                .title = "Sum of Distances",
                .url = "https://leetcode.com/problems/sum-of-distances/"});
-  registerStrategy("Hash Table + Prefix Sum", solution);
+  registerStrategy({.name = "Hash Table + Prefix Sum"}, solution);
 }
 
 vector<long long> SumOfDistancesSolution::distance(vector<int>& nums) {

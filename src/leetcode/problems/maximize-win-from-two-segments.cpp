@@ -43,7 +43,7 @@ MaximizeWinFromTwoSegmentsSolution::MaximizeWinFromTwoSegmentsSolution() {
   setMetaInfo({.id = 2555,
                .title = "Maximize Win From Two Segments",
                .url = "https://leetcode.com/problems/maximize-win-from-two-segments/"});
-  registerStrategy("Sliding Window + DP", solution1);
+  registerStrategy({.name = "Sliding Window + DP"}, solution1);
 }
 
 int MaximizeWinFromTwoSegmentsSolution::maximizeWin(vector<int>& prizePositions, int k) {

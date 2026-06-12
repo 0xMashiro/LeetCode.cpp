@@ -93,8 +93,8 @@ GridGameSolution::GridGameSolution() {
     .title = "Grid Game",
     .url = "https://leetcode.com/problems/grid-game/"
   });
-  registerStrategy("Prefix Sum Optimized", solution1);
-  registerStrategy("Prefix Suffix Array", solution2);
+  registerStrategy({.name = "Prefix Sum Optimized"}, solution1);
+  registerStrategy({.name = "Prefix Suffix Array"}, solution2);
 }
 
 long long GridGameSolution::gridGame(vector<vector<int>>& grid) {

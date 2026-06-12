@@ -47,8 +47,8 @@ NeitherMinimumNorMaximumSolution::NeitherMinimumNorMaximumSolution() {
     .title = "Neither Minimum nor Maximum",
     .url = "https://leetcode.com/problems/neither-minimum-nor-maximum/"
   });
-  registerStrategy("Find Min/Max then Search", solution1);
-  registerStrategy("First Three Elements", solution2);
+  registerStrategy({.name = "Find Min/Max then Search"}, solution1);
+  registerStrategy({.name = "First Three Elements"}, solution2);
 }
 
 int NeitherMinimumNorMaximumSolution::findNonMinOrMax(vector<int>& nums) {

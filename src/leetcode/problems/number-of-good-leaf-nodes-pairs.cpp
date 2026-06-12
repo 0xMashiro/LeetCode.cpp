@@ -68,7 +68,7 @@ NumberOfGoodLeafNodesPairsSolution::NumberOfGoodLeafNodesPairsSolution() {
   setMetaInfo({.id = 1530,
                .title = "Number of Good Leaf Nodes Pairs",
                .url = "https://leetcode.com/problems/number-of-good-leaf-nodes-pairs/"});
-  registerStrategy("Post-order DFS", solution1);
+  registerStrategy({.name = "Post-order DFS"}, solution1);
 }
 
 int NumberOfGoodLeafNodesPairsSolution::countPairs(TreeNode* root, int distance) {

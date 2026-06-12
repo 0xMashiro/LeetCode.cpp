@@ -60,8 +60,8 @@ SortThePeopleSolution::SortThePeopleSolution() {
     .title = "Sort the People",
     .url = "https://leetcode.com/problems/sort-the-people/"
   });
-  registerStrategy("Index Sort", solution1);
-  registerStrategy("Pair Sort", solution2);
+  registerStrategy({.name = "Index Sort"}, solution1);
+  registerStrategy({.name = "Pair Sort"}, solution2);
 }
 
 vector<string> SortThePeopleSolution::sortPeople(vector<string>& names, vector<int>& heights) {

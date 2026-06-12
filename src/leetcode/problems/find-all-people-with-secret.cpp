@@ -256,9 +256,9 @@ FindAllPeopleWithSecretSolution::FindAllPeopleWithSecretSolution() {
       {.id = 2092,
        .title = "Find All People With Secret",
        .url = "https://leetcode.com/problems/find-all-people-with-secret/"});
-  registerStrategy("Time Grouping + BFS", solution1);
-  registerStrategy("Time Grouping + Union Find", solution2);
-  registerStrategy("Optimized BFS", solution3);
+  registerStrategy({.name = "Time Grouping + BFS"}, solution1);
+  registerStrategy({.name = "Time Grouping + Union Find"}, solution2);
+  registerStrategy({.name = "Optimized BFS"}, solution3);
 }
 
 vector<int> FindAllPeopleWithSecretSolution::findAllPeople(

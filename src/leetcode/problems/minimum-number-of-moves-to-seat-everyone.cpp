@@ -37,7 +37,7 @@ MinimumNumberOfMovesToSeatEveryoneSolution::MinimumNumberOfMovesToSeatEveryoneSo
   setMetaInfo({.id = 2037,
                .title = "Minimum Number of Moves to Seat Everyone",
                .url = "https://leetcode.com/problems/minimum-number-of-moves-to-seat-everyone/"});
-  registerStrategy("Greedy Sorting", solution1);
+  registerStrategy({.name = "Greedy Sorting"}, solution1);
 }
 
 int MinimumNumberOfMovesToSeatEveryoneSolution::minMovesToSeat(vector<int>& seats, vector<int>& students) {

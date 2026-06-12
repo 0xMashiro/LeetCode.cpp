@@ -79,8 +79,8 @@ IncreasingOrderSearchTreeSolution::IncreasingOrderSearchTreeSolution() {
   setMetaInfo({.id = 897,
                .title = "Increasing Order Search Tree",
                .url = "https://leetcode.com/problems/increasing-order-search-tree/"});
-  registerStrategy("Inorder + Reconstruct", solution1);
-  registerStrategy("Inorder + Relink", solution2);
+  registerStrategy({.name = "Inorder + Reconstruct"}, solution1);
+  registerStrategy({.name = "Inorder + Relink"}, solution2);
 }
 
 TreeNode* IncreasingOrderSearchTreeSolution::increasingBST(TreeNode* root) {

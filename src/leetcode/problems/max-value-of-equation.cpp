@@ -61,7 +61,7 @@ MaxValueOfEquationSolution::MaxValueOfEquationSolution() {
   setMetaInfo({.id = 1499,
                .title = "Max Value of Equation",
                .url = "https://leetcode.com/problems/max-value-of-equation/"});
-  registerStrategy("Monotonic Deque", solution1);
+  registerStrategy({.name = "Monotonic Deque"}, solution1);
 }
 
 int MaxValueOfEquationSolution::findMaxValueOfEquation(vector<vector<int>>& points, int k) {

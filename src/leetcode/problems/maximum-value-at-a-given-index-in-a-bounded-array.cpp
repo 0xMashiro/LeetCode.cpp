@@ -56,7 +56,7 @@ MaximumValueAtAGivenIndexInABoundedArraySolution::MaximumValueAtAGivenIndexInABo
   setMetaInfo({.id = 1802,
                .title = "Maximum Value at a Given Index in a Bounded Array",
                .url = "https://leetcode.com/problems/maximum-value-at-a-given-index-in-a-bounded-array/"});
-  registerStrategy("Binary Search", solution1);
+  registerStrategy({.name = "Binary Search"}, solution1);
 }
 
 int MaximumValueAtAGivenIndexInABoundedArraySolution::maxValue(int n, int index, int maxSum) {

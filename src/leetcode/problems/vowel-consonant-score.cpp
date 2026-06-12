@@ -50,8 +50,8 @@ VowelConsonantScoreSolution::VowelConsonantScoreSolution() {
   setMetaInfo({.id = 3813,
                .title = "Vowel-Consonant Score",
                .url = "https://leetcode.com/problems/vowel-consonant-score/"});
-  registerStrategy("Direct Count", solution1);
-  registerStrategy("Hash Set", solution2);
+  registerStrategy({.name = "Direct Count"}, solution1);
+  registerStrategy({.name = "Hash Set"}, solution2);
 }
 
 int VowelConsonantScoreSolution::vowelConsonantScore(std::string s) {

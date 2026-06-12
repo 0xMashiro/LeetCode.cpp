@@ -48,8 +48,8 @@ SmallestStringWithAGivenNumericValueSolution::SmallestStringWithAGivenNumericVal
   setMetaInfo({.id = 1663,
                .title = "Smallest String With A Given Numeric Value",
                .url = "https://leetcode.com/problems/smallest-string-with-a-given-numeric-value/"});
-  registerStrategy("Greedy Forward", solution1);
-  registerStrategy("Greedy Reverse", solution2);
+  registerStrategy({.name = "Greedy Forward"}, solution1);
+  registerStrategy({.name = "Greedy Reverse"}, solution2);
 }
 
 string SmallestStringWithAGivenNumericValueSolution::getSmallestString(int n, int k) {

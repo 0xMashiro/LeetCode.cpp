@@ -53,7 +53,7 @@ MinimumNumberOfFrogsCroakingSolution::MinimumNumberOfFrogsCroakingSolution() {
   setMetaInfo({.id = 1419,
                .title = "Minimum Number of Frogs Croaking",
                .url = "https://leetcode.com/problems/minimum-number-of-frogs-croaking/"});
-  registerStrategy("Simulation", solution);
+  registerStrategy({.name = "Simulation"}, solution);
 }
 
 int MinimumNumberOfFrogsCroakingSolution::minNumberOfFrogs(string croakOfFrogs) {

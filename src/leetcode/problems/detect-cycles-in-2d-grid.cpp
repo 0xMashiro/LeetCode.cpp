@@ -64,7 +64,7 @@ DetectCyclesIn2dGridSolution::DetectCyclesIn2dGridSolution() {
   setMetaInfo({.id = 1559,
                .title = "Detect Cycles in 2D Grid",
                .url = "https://leetcode.com/problems/detect-cycles-in-2d-grid/"});
-  registerStrategy("DFS", solution1);
+  registerStrategy({.name = "DFS"}, solution1);
 }
 
 bool DetectCyclesIn2dGridSolution::containsCycle(vector<vector<char>>& grid) {

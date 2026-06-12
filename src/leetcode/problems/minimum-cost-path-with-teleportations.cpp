@@ -100,7 +100,7 @@ MinimumCostPathWithTeleportationsSolution::MinimumCostPathWithTeleportationsSolu
   setMetaInfo({.id = 3651,
                .title = "Minimum Cost Path with Teleportations",
                .url = "https://leetcode.com/problems/minimum-cost-path-with-teleportations/"});
-  registerStrategy("DP with Value Compression", solution1);
+  registerStrategy({.name = "DP with Value Compression"}, solution1);
 }
 
 int MinimumCostPathWithTeleportationsSolution::minCost(vector<vector<int>>& grid, int k) {

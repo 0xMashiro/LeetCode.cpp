@@ -81,7 +81,7 @@ MarkElementsOnArrayByPerformingQueriesSolution::MarkElementsOnArrayByPerformingQ
     .title = "Mark Elements on Array by Performing Queries",
     .url = "https://leetcode.com/problems/mark-elements-on-array-by-performing-queries/"
   });
-  registerStrategy("Priority Queue", solution1);
+  registerStrategy({.name = "Priority Queue"}, solution1);
 }
 
 vector<long long> MarkElementsOnArrayByPerformingQueriesSolution::unmarkedSumArray(

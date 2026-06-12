@@ -51,7 +51,7 @@ RotatingTheBoxSolution::RotatingTheBoxSolution() {
                .title = "Rotating the Box",
                .url = "https://leetcode.com/problems/rotating-the-box/"});
   // 本题核心解法唯一（行内重力 + 旋转），无需多策略
-  registerStrategy("Two Pointer Gravity + Rotation", solution1);
+  registerStrategy({.name = "Two Pointer Gravity + Rotation"}, solution1);
 }
 
 vector<vector<char>> RotatingTheBoxSolution::rotateTheBox(

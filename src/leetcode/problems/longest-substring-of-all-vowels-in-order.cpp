@@ -55,7 +55,7 @@ LongestSubstringOfAllVowelsInOrderSolution::LongestSubstringOfAllVowelsInOrderSo
   setMetaInfo({.id = 1839,
                .title = "Longest Substring Of All Vowels in Order",
                .url = "https://leetcode.com/problems/longest-substring-of-all-vowels-in-order/"});
-  registerStrategy("Sliding Window", solution);
+  registerStrategy({.name = "Sliding Window"}, solution);
 }
 
 int LongestSubstringOfAllVowelsInOrderSolution::longestBeautifulSubstring(string word) {

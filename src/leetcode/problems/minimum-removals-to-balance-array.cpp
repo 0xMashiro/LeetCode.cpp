@@ -57,8 +57,8 @@ MinimumRemovalsToBalanceArraySolution::MinimumRemovalsToBalanceArraySolution() {
     .title = "Minimum Removals to Balance Array",
     .url = "https://leetcode.com/problems/minimum-removals-to-balance-array/"
   });
-  registerStrategy("Two Pointer", solution1);
-  registerStrategy("Two Pointer Optimized", solution2);
+  registerStrategy({.name = "Two Pointer"}, solution1);
+  registerStrategy({.name = "Two Pointer Optimized"}, solution2);
 }
 
 int MinimumRemovalsToBalanceArraySolution::minRemoval(vector<int>& nums, int k) {

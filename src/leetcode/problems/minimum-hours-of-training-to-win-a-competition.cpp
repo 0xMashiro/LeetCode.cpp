@@ -43,7 +43,7 @@ MinimumHoursOfTrainingToWinACompetitionSolution::MinimumHoursOfTrainingToWinACom
   setMetaInfo({.id = 2383,
                .title = "Minimum Hours of Training to Win a Competition",
                .url = "https://leetcode.com/problems/minimum-hours-of-training-to-win-a-competition/"});
-  registerStrategy("Greedy", solution);
+  registerStrategy({.name = "Greedy"}, solution);
 }
 
 int MinimumHoursOfTrainingToWinACompetitionSolution::minNumberOfHours(

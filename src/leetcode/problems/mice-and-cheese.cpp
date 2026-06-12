@@ -71,8 +71,8 @@ MiceAndCheeseSolution::MiceAndCheeseSolution() {
   setMetaInfo({.id = 2611,
                .title = "Mice and Cheese",
                .url = "https://leetcode.com/problems/mice-and-cheese/"});
-  registerStrategy("Greedy with Sort", solution1);
-  registerStrategy("Greedy with nth_element", solution2);
+  registerStrategy({.name = "Greedy with Sort"}, solution1);
+  registerStrategy({.name = "Greedy with nth_element"}, solution2);
 }
 
 int MiceAndCheeseSolution::miceAndCheese(vector<int>& reward1, 

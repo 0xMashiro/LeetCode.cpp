@@ -69,7 +69,7 @@ CamelcaseMatchingSolution::CamelcaseMatchingSolution() {
     .title = "Camelcase Matching",
     .url = "https://leetcode.com/problems/camelcase-matching/"
   });
-  registerStrategy("Two Pointers", solution1);
+  registerStrategy({.name = "Two Pointers"}, solution1);
 }
 
 vector<bool> CamelcaseMatchingSolution::camelMatch(vector<string>& queries, string pattern) {

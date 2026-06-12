@@ -79,7 +79,7 @@ SmallestStringWithSwapsSolution::SmallestStringWithSwapsSolution() {
     .title = "Smallest String With Swaps",
     .url = "https://leetcode.com/problems/smallest-string-with-swaps/"
   });
-  registerStrategy("Union Find", solution);
+  registerStrategy({.name = "Union Find"}, solution);
 }
 
 std::string SmallestStringWithSwapsSolution::smallestStringWithSwaps(

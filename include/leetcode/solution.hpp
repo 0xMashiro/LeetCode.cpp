@@ -47,10 +47,6 @@ class SolutionBase {
 
   const MetaInfo& getMetaInfo() const { return info; }
 
-  void registerStrategy(const std::string& name, Func func) {
-    registerStrategy(StrategyMetadata{.name = name}, std::move(func));
-  }
-
   void registerStrategy(const StrategyMetadata& metadata, Func func) {
     if (metadata.name.empty()) {
       throw std::invalid_argument("Strategy name cannot be empty");

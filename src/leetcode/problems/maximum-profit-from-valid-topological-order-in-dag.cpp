@@ -45,7 +45,7 @@ MaximumProfitFromValidTopologicalOrderInDagSolution::MaximumProfitFromValidTopol
       .url = "https://leetcode.com/problems/maximum-profit-from-valid-topological-order-in-dag"
   });
   // 仅有一个合理解：Bitmask DP。贪心（min-heap）在一般DAG上不最优，故不注册。
-  registerStrategy("Bitmask DP", solution1);
+  registerStrategy({.name = "Bitmask DP"}, solution1);
 }
 
 int MaximumProfitFromValidTopologicalOrderInDagSolution::maxProfit(int n, vector<vector<int>>& edges, vector<int>& score) {

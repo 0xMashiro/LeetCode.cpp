@@ -66,7 +66,7 @@ CountMentionsPerUserSolution::CountMentionsPerUserSolution() {
   setMetaInfo({.id = 3433,
                .title = "Count Mentions Per User",
                .url = "https://leetcode.com/problems/count-mentions-per-user/"});
-  registerStrategy("Sort and Simulate", solution1);
+  registerStrategy({.name = "Sort and Simulate"}, solution1);
 }
 
 vector<int> CountMentionsPerUserSolution::countMentions(int numberOfUsers, vector<vector<string>>& events) {

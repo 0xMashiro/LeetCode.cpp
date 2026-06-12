@@ -73,7 +73,7 @@ NearestExitFromEntranceInMazeSolution::NearestExitFromEntranceInMazeSolution() {
   setMetaInfo({.id = 1926,
                .title = "Nearest Exit from Entrance in Maze",
                .url = "https://leetcode.com/problems/nearest-exit-from-entrance-in-maze/"});
-  registerStrategy("BFS", solution1);
+  registerStrategy({.name = "BFS"}, solution1);
 }
 
 int NearestExitFromEntranceInMazeSolution::nearestExit(vector<vector<char>>& maze, vector<int>& entrance) {

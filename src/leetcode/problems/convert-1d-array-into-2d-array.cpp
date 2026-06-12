@@ -23,7 +23,7 @@ Convert1dArrayInto2dArraySolution::Convert1dArrayInto2dArraySolution() {
   setMetaInfo({.id = 2022,
                .title = "Convert 1D Array Into 2D Array",
                .url = "https://leetcode.com/problems/convert-1d-array-into-2d-array/"});
-  registerStrategy("Direct Conversion", solution1);
+  registerStrategy({.name = "Direct Conversion"}, solution1);
 }
 
 vector<vector<int>> Convert1dArrayInto2dArraySolution::construct2DArray(vector<int>& original, int m, int n) {

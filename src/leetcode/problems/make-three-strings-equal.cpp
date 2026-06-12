@@ -34,7 +34,7 @@ MakeThreeStringsEqualSolution::MakeThreeStringsEqualSolution() {
   setMetaInfo({.id = 2937,
                .title = "Make Three Strings Equal",
                .url = "https://leetcode.com/problems/make-three-strings-equal/"});
-  registerStrategy("Longest Common Prefix", solution1);
+  registerStrategy({.name = "Longest Common Prefix"}, solution1);
 }
 
 int MakeThreeStringsEqualSolution::findMinimumOperations(string s1, string s2, string s3) {

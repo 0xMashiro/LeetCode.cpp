@@ -49,7 +49,7 @@ QueensThatCanAttackTheKingSolution::QueensThatCanAttackTheKingSolution() {
     .title = "Queens That Can Attack the King",
     .url = "https://leetcode.com/problems/queens-that-can-attack-the-king/"
   });
-  registerStrategy("8-Direction Search", solution1);
+  registerStrategy({.name = "8-Direction Search"}, solution1);
 }
 
 vector<vector<int>> QueensThatCanAttackTheKingSolution::queensAttacktheKing(

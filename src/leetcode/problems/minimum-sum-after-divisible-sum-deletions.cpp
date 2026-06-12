@@ -50,7 +50,7 @@ MinimumSumAfterDivisibleSumDeletionsSolution::MinimumSumAfterDivisibleSumDeletio
   setMetaInfo({.id = 3654,
                .title = "Minimum Sum After Divisible Sum Deletions",
                .url = "https://leetcode.com/problems/minimum-sum-after-divisible-sum-deletions/"});
-  registerStrategy("DP + Prefix Sum", solution);
+  registerStrategy({.name = "DP + Prefix Sum"}, solution);
 }
 
 long long MinimumSumAfterDivisibleSumDeletionsSolution::minArraySum(vector<int>& nums, int k) {

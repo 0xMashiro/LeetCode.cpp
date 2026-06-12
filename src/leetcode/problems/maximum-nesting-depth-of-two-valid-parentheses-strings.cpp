@@ -53,8 +53,8 @@ MaximumNestingDepthOfTwoValidParenthesesStringsSolution::MaximumNestingDepthOfTw
     .title = "Maximum Nesting Depth of Two Valid Parentheses Strings",
     .url = "https://leetcode.com/problems/maximum-nesting-depth-of-two-valid-parentheses-strings/"
   });
-  registerStrategy("Odd-Even Depth Split", solution1);
-  registerStrategy("Depth Modulo Split", solution2);
+  registerStrategy({.name = "Odd-Even Depth Split"}, solution1);
+  registerStrategy({.name = "Depth Modulo Split"}, solution2);
 }
 
 vector<int> MaximumNestingDepthOfTwoValidParenthesesStringsSolution::maxDepthAfterSplit(string seq) {

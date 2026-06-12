@@ -56,7 +56,7 @@ AdjacentIncreasingSubarraysDetectionIiSolution::AdjacentIncreasingSubarraysDetec
   setMetaInfo({.id = 3350,
                .title = "Adjacent Increasing Subarrays Detection II",
                .url = "https://leetcode.com/problems/adjacent-increasing-subarrays-detection-ii/"});
-  registerStrategy("Binary Search + DP", solution);
+  registerStrategy({.name = "Binary Search + DP"}, solution);
 }
 
 int AdjacentIncreasingSubarraysDetectionIiSolution::maxIncreasingSubarrays(vector<int>& nums) {

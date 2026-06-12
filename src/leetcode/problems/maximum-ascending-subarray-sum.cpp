@@ -28,7 +28,7 @@ MaximumAscendingSubarraySumSolution::MaximumAscendingSubarraySumSolution() {
   setMetaInfo({.id = 1800,
                .title = "Maximum Ascending Subarray Sum",
                .url = "https://leetcode.com/problems/maximum-ascending-subarray-sum/"});
-  registerStrategy("Linear Scan", solution1);
+  registerStrategy({.name = "Linear Scan"}, solution1);
 }
 
 int MaximumAscendingSubarraySumSolution::maxAscendingSum(vector<int>& nums) {

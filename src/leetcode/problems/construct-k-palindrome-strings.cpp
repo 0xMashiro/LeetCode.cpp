@@ -60,8 +60,8 @@ ConstructKPalindromeStringsSolution::ConstructKPalindromeStringsSolution() {
     .title = "Construct K Palindrome Strings",
     .url = "https://leetcode.com/problems/construct-k-palindrome-strings/"
   });
-  registerStrategy("Counting", solution1);
-  registerStrategy("Bit Manipulation", solution2);
+  registerStrategy({.name = "Counting"}, solution1);
+  registerStrategy({.name = "Bit Manipulation"}, solution2);
 }
 
 bool ConstructKPalindromeStringsSolution::canConstruct(string s, int k) {

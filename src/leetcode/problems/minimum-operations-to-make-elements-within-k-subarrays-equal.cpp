@@ -143,7 +143,7 @@ MinimumOperationsToMakeElementsWithinKSubarraysEqualSolution::MinimumOperationsT
   setMetaInfo({.id = 3505,
                .title = "Minimum Operations to Make Elements Within K Subarrays Equal",
                .url = "https://leetcode.com/problems/minimum-operations-to-make-elements-within-k-subarrays-equal/"});
-  registerStrategy("Sliding Window + DP", solve);
+  registerStrategy({.name = "Sliding Window + DP"}, solve);
 }
 
 long long MinimumOperationsToMakeElementsWithinKSubarraysEqualSolution::minOperations(vector<int>& nums, int x, int k) {

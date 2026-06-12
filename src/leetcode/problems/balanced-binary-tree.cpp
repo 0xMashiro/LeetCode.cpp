@@ -44,7 +44,7 @@ BalancedBinaryTreeSolution::BalancedBinaryTreeSolution() {
   setMetaInfo({.id = 110,
                .title = "Balanced Binary Tree",
                .url = "https://leetcode.com/problems/balanced-binary-tree/"});
-  registerStrategy("Bottom-up Recursion", solution1);
+  registerStrategy({.name = "Bottom-up Recursion"}, solution1);
 }
 
 bool BalancedBinaryTreeSolution::isBalanced(TreeNode* root) {

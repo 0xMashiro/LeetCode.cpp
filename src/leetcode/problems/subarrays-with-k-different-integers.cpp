@@ -50,7 +50,7 @@ SubarraysWithKDifferentIntegersSolution::SubarraysWithKDifferentIntegersSolution
     .title = "Subarrays with K Different Integers",
     .url = "https://leetcode.com/problems/subarrays-with-k-different-integers/"
   });
-  registerStrategy("Sliding Window", subarraysWithKDistinctImpl);
+  registerStrategy({.name = "Sliding Window"}, subarraysWithKDistinctImpl);
 }
 
 int SubarraysWithKDifferentIntegersSolution::subarraysWithKDistinct(

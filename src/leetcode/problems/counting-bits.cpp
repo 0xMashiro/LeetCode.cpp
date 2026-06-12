@@ -42,9 +42,9 @@ CountingBitsSolution::CountingBitsSolution() {
   setMetaInfo({.id = 338,
                .title = "Counting Bits",
                .url = "https://leetcode.com/problems/counting-bits/"});
-  registerStrategy("DP with i>>1", solution1);
-  registerStrategy("DP with i&(i-1)", solution2);
-  registerStrategy("Builtin popcount", solution3);
+  registerStrategy({.name = "DP with i>>1"}, solution1);
+  registerStrategy({.name = "DP with i&(i-1)"}, solution2);
+  registerStrategy({.name = "Builtin popcount"}, solution3);
 }
 
 vector<int> CountingBitsSolution::countBits(int n) {

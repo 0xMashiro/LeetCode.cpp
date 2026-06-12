@@ -29,7 +29,7 @@ CountGoodTripletsSolution::CountGoodTripletsSolution() {
   setMetaInfo({.id = 1534,
                .title = "Count Good Triplets",
                .url = "https://leetcode.com/problems/count-good-triplets/"});
-  registerStrategy("Brute Force", solution1);
+  registerStrategy({.name = "Brute Force"}, solution1);
 }
 
 int CountGoodTripletsSolution::countGoodTriplets(vector<int>& arr, int a, int b, int c) {

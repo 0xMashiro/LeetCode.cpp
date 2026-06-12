@@ -196,8 +196,8 @@ AnalyzeOrganizationHierarchySolution::AnalyzeOrganizationHierarchySolution() {
     .title = "Analyze Organization Hierarchy",
     .url = "https://leetcode.com/problems/analyze-organization-hierarchy/"
   });
-  registerStrategy("DFS Recursive", solution1);
-  registerStrategy("BFS + Topological", solution2);
+  registerStrategy({.name = "DFS Recursive"}, solution1);
+  registerStrategy({.name = "BFS + Topological"}, solution2);
 }
 
 vector<ResultRow> AnalyzeOrganizationHierarchySolution::analyzeOrganizationHierarchy(vector<Employee>& employees) {

@@ -19,7 +19,7 @@ BuildArrayFromPermutationSolution::BuildArrayFromPermutationSolution() {
   setMetaInfo({.id = 1920,
                .title = "Build Array from Permutation",
                .url = "https://leetcode.com/problems/build-array-from-permutation/"});
-  registerStrategy("Direct Traversal", solution1);
+  registerStrategy({.name = "Direct Traversal"}, solution1);
 }
 
 vector<int> BuildArrayFromPermutationSolution::buildArray(vector<int>& nums) {

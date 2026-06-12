@@ -81,8 +81,8 @@ CheckIfAStringContainsAllBinaryCodesOfSizeKSolution::CheckIfAStringContainsAllBi
   setMetaInfo({.id = 1461,
                .title = "Check If a String Contains All Binary Codes of Size K",
                .url = "https://leetcode.com/problems/check-if-a-string-contains-all-binary-codes-of-size-k/"});
-  registerStrategy("Sliding Window + HashSet", solution1);
-  registerStrategy("Sliding Window + Vector", solution2);
+  registerStrategy({.name = "Sliding Window + HashSet"}, solution1);
+  registerStrategy({.name = "Sliding Window + Vector"}, solution2);
 }
 
 bool CheckIfAStringContainsAllBinaryCodesOfSizeKSolution::hasAllCodes(string s, int k) {

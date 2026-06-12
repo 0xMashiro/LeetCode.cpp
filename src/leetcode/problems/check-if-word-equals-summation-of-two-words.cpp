@@ -33,7 +33,7 @@ CheckIfWordEqualsSummationOfTwoWordsSolution::CheckIfWordEqualsSummationOfTwoWor
     .title = "Check if Word Equals Summation of Two Words",
     .url = "https://leetcode.com/problems/check-if-word-equals-summation-of-two-words/"
   });
-  registerStrategy("Convert to Numbers", solution1);
+  registerStrategy({.name = "Convert to Numbers"}, solution1);
 }
 
 bool CheckIfWordEqualsSummationOfTwoWordsSolution::isSumEqual(string firstWord, string secondWord, string targetWord) {

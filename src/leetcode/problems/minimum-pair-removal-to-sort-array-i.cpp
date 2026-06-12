@@ -45,7 +45,7 @@ MinimumPairRemovalToSortArrayISolution::MinimumPairRemovalToSortArrayISolution()
   setMetaInfo({.id = 3507,
                .title = "Minimum Pair Removal to Sort Array I",
                .url = "https://leetcode.com/problems/minimum-pair-removal-to-sort-array-i/"});
-  registerStrategy("Simulation", solution1);
+  registerStrategy({.name = "Simulation"}, solution1);
 }
 
 int MinimumPairRemovalToSortArrayISolution::minimumPairRemoval(vector<int>& nums) {

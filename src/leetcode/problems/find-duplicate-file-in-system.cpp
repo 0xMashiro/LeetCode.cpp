@@ -46,7 +46,7 @@ FindDuplicateFileInSystemSolution::FindDuplicateFileInSystemSolution() {
   setMetaInfo({.id = 609,
                .title = "Find Duplicate File in System",
                .url = "https://leetcode.com/problems/find-duplicate-file-in-system/"});
-  registerStrategy("Hash Map", solution1);
+  registerStrategy({.name = "Hash Map"}, solution1);
 }
 
 vector<vector<string>> FindDuplicateFileInSystemSolution::findDuplicate(vector<string>& paths) {

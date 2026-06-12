@@ -93,8 +93,8 @@ LetterCombinationsOfAPhoneNumberSolution::LetterCombinationsOfAPhoneNumberSoluti
   setMetaInfo({.id = 17,
                .title = "Letter Combinations of a Phone Number",
                .url = "https://leetcode.com/problems/letter-combinations-of-a-phone-number/"});
-  registerStrategy("Backtracking", solution1);
-  registerStrategy("Iterative", solution2);
+  registerStrategy({.name = "Backtracking"}, solution1);
+  registerStrategy({.name = "Iterative"}, solution2);
 }
 
 vector<string> LetterCombinationsOfAPhoneNumberSolution::letterCombinations(string digits) {

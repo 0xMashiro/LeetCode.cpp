@@ -32,7 +32,7 @@ DiStringMatchSolution::DiStringMatchSolution() {
   setMetaInfo({.id = 942,
                .title = "DI String Match",
                .url = "https://leetcode.com/problems/di-string-match/"});
-  registerStrategy("Two Pointer Greedy", solution);
+  registerStrategy({.name = "Two Pointer Greedy"}, solution);
 }
 
 vector<int> DiStringMatchSolution::diStringMatch(string s) {

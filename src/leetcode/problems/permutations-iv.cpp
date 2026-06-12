@@ -124,7 +124,7 @@ PermutationsIvSolution::PermutationsIvSolution() {
   setMetaInfo({.id = 3470,
                .title = "Permutations IV",
                .url = "https://leetcode.com/problems/permutations-iv/"});
-  registerStrategy("Cantor Expansion", solution);
+  registerStrategy({.name = "Cantor Expansion"}, solution);
 }
 
 vector<int> PermutationsIvSolution::permute(int n, long long k) {

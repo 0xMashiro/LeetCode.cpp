@@ -36,8 +36,8 @@ CountingWordsWithAGivenPrefixSolution::CountingWordsWithAGivenPrefixSolution() {
   setMetaInfo({.id = 2185,
                .title = "Counting Words With a Given Prefix",
                .url = "https://leetcode.com/problems/counting-words-with-a-given-prefix/"});
-  registerStrategy("Compare Method", solution1);
-  registerStrategy("Substring Method", solution2);
+  registerStrategy({.name = "Compare Method"}, solution1);
+  registerStrategy({.name = "Substring Method"}, solution2);
 }
 
 int CountingWordsWithAGivenPrefixSolution::prefixCount(vector<string>& words, string pref) {

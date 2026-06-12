@@ -82,7 +82,7 @@ MinimumMovesToSpreadStonesOverGridSolution::MinimumMovesToSpreadStonesOverGridSo
     .title = "Minimum Moves to Spread Stones Over Grid",
     .url = "https://leetcode.com/problems/minimum-moves-to-spread-stones-over-grid/"
   });
-  registerStrategy("Backtracking", solution1);
+  registerStrategy({.name = "Backtracking"}, solution1);
 }
 
 int MinimumMovesToSpreadStonesOverGridSolution::minimumMoves(vector<vector<int>>& grid) {

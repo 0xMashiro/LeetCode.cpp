@@ -91,8 +91,8 @@ FindAllGroupsOfFarmlandSolution::FindAllGroupsOfFarmlandSolution() {
   setMetaInfo({.id = 1992,
                .title = "Find All Groups of Farmland",
                .url = "https://leetcode.com/problems/find-all-groups-of-farmland/"});
-  registerStrategy("Optimized", solution2);
-  registerStrategy("With Top-Left Check", solution1);
+  registerStrategy({.name = "Optimized"}, solution2);
+  registerStrategy({.name = "With Top-Left Check"}, solution1);
 }
 
 vector<vector<int>> FindAllGroupsOfFarmlandSolution::findFarmland(vector<vector<int>>& land) {

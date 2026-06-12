@@ -61,7 +61,7 @@ JumpGameIxSolution::JumpGameIxSolution() {
                .title = "Jump Game IX",
                .url = "https://leetcode.com/problems/jump-game-ix"});
   // 本题结构唯一合理解为 O(n) 扫描连通分量，无明显多解
-  registerStrategy("Connected Components", solution1);
+  registerStrategy({.name = "Connected Components"}, solution1);
 }
 
 vector<int> JumpGameIxSolution::maxValue(vector<int>& nums) {

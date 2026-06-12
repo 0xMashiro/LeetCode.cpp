@@ -71,7 +71,7 @@ BraceExpansionIiSolution::BraceExpansionIiSolution() {
     .title = "Brace Expansion II",
     .url = "https://leetcode.com/problems/brace-expansion-ii/"
   });
-  registerStrategy("Recursive Descent Parser", [this](string expression) {
+  registerStrategy({.name = "Recursive Descent Parser"}, [this](string expression) {
     return this->braceExpansionII(expression);
   });
 }

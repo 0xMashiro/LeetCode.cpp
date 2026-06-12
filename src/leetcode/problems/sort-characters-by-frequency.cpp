@@ -67,8 +67,8 @@ SortCharactersByFrequencySolution::SortCharactersByFrequencySolution() {
   setMetaInfo({.id = 451,
                .title = "Sort Characters By Frequency",
                .url = "https://leetcode.com/problems/sort-characters-by-frequency/"});
-  registerStrategy("Hash + Sort", solution1);
-  registerStrategy("Bucket Sort", solution2);
+  registerStrategy({.name = "Hash + Sort"}, solution1);
+  registerStrategy({.name = "Bucket Sort"}, solution2);
 }
 
 string SortCharactersByFrequencySolution::frequencySort(string s) {

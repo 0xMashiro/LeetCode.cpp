@@ -25,7 +25,7 @@ FindAllLonelyNumbersInTheArraySolution::FindAllLonelyNumbersInTheArraySolution()
   setMetaInfo({.id = 2150,
                .title = "Find All Lonely Numbers in the Array",
                .url = "https://leetcode.com/problems/find-all-lonely-numbers-in-the-array/"});
-  registerStrategy("Hash Map Count", solution1);
+  registerStrategy({.name = "Hash Map Count"}, solution1);
 }
 
 vector<int> FindAllLonelyNumbersInTheArraySolution::findLonely(vector<int>& nums) {

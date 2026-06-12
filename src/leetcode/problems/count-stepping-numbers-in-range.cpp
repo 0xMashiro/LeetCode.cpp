@@ -84,7 +84,7 @@ CountSteppingNumbersInRangeSolution::CountSteppingNumbersInRangeSolution() {
   setMetaInfo({.id = 2801,
                .title = "Count Stepping Numbers in Range",
                .url = "https://leetcode.com/problems/count-stepping-numbers-in-range/"});
-  registerStrategy("Digit DP", solve);
+  registerStrategy({.name = "Digit DP"}, solve);
 }
 
 int CountSteppingNumbersInRangeSolution::countSteppingNumbers(string low, string high) {

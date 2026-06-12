@@ -42,7 +42,7 @@ StringCompressionSolution::StringCompressionSolution() {
   setMetaInfo({.id = 443,
                .title = "String Compression",
                .url = "https://leetcode.com/problems/string-compression/"});
-  registerStrategy("Two Pointers", solution1);
+  registerStrategy({.name = "Two Pointers"}, solution1);
 }
 
 int StringCompressionSolution::compress(vector<char>& chars) {

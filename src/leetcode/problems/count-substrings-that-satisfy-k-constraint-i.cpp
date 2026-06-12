@@ -32,7 +32,7 @@ CountSubstringsThatSatisfyKConstraintISolution::CountSubstringsThatSatisfyKConst
   setMetaInfo({.id = 3258,
                .title = "Count Substrings That Satisfy K-Constraint I",
                .url = "https://leetcode.com/problems/count-substrings-that-satisfy-k-constraint-i/"});
-  registerStrategy("Enumerate", solution1);
+  registerStrategy({.name = "Enumerate"}, solution1);
 }
 
 int CountSubstringsThatSatisfyKConstraintISolution::countKConstraintSubstrings(string s, int k) {

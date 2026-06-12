@@ -48,7 +48,7 @@ MaxAreaOfIslandSolution::MaxAreaOfIslandSolution() {
     .title = "Max Area of Island",
     .url = "https://leetcode.com/problems/max-area-of-island/"
   });
-  registerStrategy("DFS", solution1);
+  registerStrategy({.name = "DFS"}, solution1);
 }
 
 int MaxAreaOfIslandSolution::maxAreaOfIsland(vector<vector<int>>& grid) {

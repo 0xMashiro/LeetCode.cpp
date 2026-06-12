@@ -39,7 +39,7 @@ CountArtifactsThatCanBeExtractedSolution::CountArtifactsThatCanBeExtractedSoluti
   setMetaInfo({.id = 2201,
                .title = "Count Artifacts That Can Be Extracted",
                .url = "https://leetcode.com/problems/count-artifacts-that-can-be-extracted/"});
-  registerStrategy("Hash Set", solution1);
+  registerStrategy({.name = "Hash Set"}, solution1);
 }
 
 int CountArtifactsThatCanBeExtractedSolution::digArtifacts(int n, vector<vector<int>>& artifacts, vector<vector<int>>& dig) {

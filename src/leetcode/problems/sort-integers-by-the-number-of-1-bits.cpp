@@ -33,7 +33,7 @@ SortIntegersByTheNumberOf1BitsSolution::SortIntegersByTheNumberOf1BitsSolution()
   setMetaInfo({.id = 1356,
                .title = "Sort Integers by The Number of 1 Bits",
                .url = "https://leetcode.com/problems/sort-integers-by-the-number-of-1-bits/"});
-  registerStrategy("Custom Comparator", solution1);
+  registerStrategy({.name = "Custom Comparator"}, solution1);
 }
 
 vector<int> SortIntegersByTheNumberOf1BitsSolution::sortByBits(vector<int>& arr) {

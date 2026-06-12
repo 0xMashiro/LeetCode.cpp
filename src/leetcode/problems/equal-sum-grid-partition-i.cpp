@@ -53,7 +53,7 @@ EqualSumGridPartitionISolution::EqualSumGridPartitionISolution() {
   setMetaInfo({.id = 3546,
                .title = "Equal Sum Grid Partition I",
                .url = "https://leetcode.com/problems/equal-sum-grid-partition-i/"});
-  registerStrategy("Prefix Sum", solution1);
+  registerStrategy({.name = "Prefix Sum"}, solution1);
 }
 
 bool EqualSumGridPartitionISolution::canPartitionGrid(

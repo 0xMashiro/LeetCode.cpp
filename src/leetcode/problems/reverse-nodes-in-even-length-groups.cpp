@@ -77,7 +77,7 @@ ReverseNodesInEvenLengthGroupsSolution::ReverseNodesInEvenLengthGroupsSolution()
   setMetaInfo({.id = 2074,
                .title = "Reverse Nodes in Even Length Groups",
                .url = "https://leetcode.com/problems/reverse-nodes-in-even-length-groups/"});
-  registerStrategy("Group Reverse", solution1);
+  registerStrategy({.name = "Group Reverse"}, solution1);
 }
 
 ListNode* ReverseNodesInEvenLengthGroupsSolution::reverseEvenLengthGroups(ListNode* head) {

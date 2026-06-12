@@ -34,7 +34,7 @@ MinimumRoundsToCompleteAllTasksSolution::MinimumRoundsToCompleteAllTasksSolution
   setMetaInfo({.id = 2244,
                .title = "Minimum Rounds to Complete All Tasks",
                .url = "https://leetcode.com/problems/minimum-rounds-to-complete-all-tasks/"});
-  registerStrategy("Hash Table + Greedy", solution1);
+  registerStrategy({.name = "Hash Table + Greedy"}, solution1);
 }
 
 int MinimumRoundsToCompleteAllTasksSolution::minimumRounds(vector<int>& tasks) {

@@ -64,9 +64,9 @@ ConcatenationOfConsecutiveBinaryNumbersSolution::ConcatenationOfConsecutiveBinar
   setMetaInfo({.id = 1680,
                .title = "Concatenation of Consecutive Binary Numbers",
                .url = "https://leetcode.com/problems/concatenation-of-consecutive-binary-numbers/"});
-  registerStrategy("Iterative", solution1);
-  registerStrategy("Builtin Clz", solution2);
-  registerStrategy("Power of Two Check", solution3);
+  registerStrategy({.name = "Iterative"}, solution1);
+  registerStrategy({.name = "Builtin Clz"}, solution2);
+  registerStrategy({.name = "Power of Two Check"}, solution3);
 }
 
 int ConcatenationOfConsecutiveBinaryNumbersSolution::concatenatedBinary(int n) {

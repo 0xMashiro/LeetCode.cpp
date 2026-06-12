@@ -67,7 +67,7 @@ MinimumOperationsToFormSubsequenceWithTargetSumSolution::MinimumOperationsToForm
   setMetaInfo({.id = 2835, 
                .title = "Minimum Operations to Form Subsequence With Target Sum", 
                .url = "https://leetcode.com/problems/minimum-operations-to-form-subsequence-with-target-sum/"});
-  registerStrategy("Greedy Bit Manipulation", solution);
+  registerStrategy({.name = "Greedy Bit Manipulation"}, solution);
 }
 
 int MinimumOperationsToFormSubsequenceWithTargetSumSolution::minOperations(vector<int>& nums, int target) {

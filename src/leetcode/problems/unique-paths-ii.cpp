@@ -75,8 +75,8 @@ UniquePathsIiSolution::UniquePathsIiSolution() {
   setMetaInfo({.id = 63,
                .title = "Unique Paths II",
                .url = "https://leetcode.com/problems/unique-paths-ii/"});
-  registerStrategy("DP In-Place", solution1);
-  registerStrategy("DP Rolling Array", solution2);
+  registerStrategy({.name = "DP In-Place"}, solution1);
+  registerStrategy({.name = "DP Rolling Array"}, solution2);
 }
 
 int UniquePathsIiSolution::uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid) {

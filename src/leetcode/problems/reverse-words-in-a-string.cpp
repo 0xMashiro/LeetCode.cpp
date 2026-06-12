@@ -93,8 +93,8 @@ ReverseWordsInAStringSolution::ReverseWordsInAStringSolution() {
   setMetaInfo({.id = 151,
                .title = "Reverse Words in a String",
                .url = "https://leetcode.com/problems/reverse-words-in-a-string/"});
-  registerStrategy("Split and Reverse", solution1);
-  registerStrategy("In-place Reverse", solution2);
+  registerStrategy({.name = "Split and Reverse"}, solution1);
+  registerStrategy({.name = "In-place Reverse"}, solution2);
 }
 
 string ReverseWordsInAStringSolution::reverseWords(string s) {

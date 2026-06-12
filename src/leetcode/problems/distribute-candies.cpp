@@ -15,7 +15,7 @@ DistributeCandiesSolution::DistributeCandiesSolution() {
   setMetaInfo({.id = 575,
                .title = "Distribute Candies",
                .url = "https://leetcode.com/problems/distribute-candies/"});
-  registerStrategy("Hash Set", solution1);
+  registerStrategy({.name = "Hash Set"}, solution1);
 }
 
 int DistributeCandiesSolution::distributeCandies(vector<int>& candyType) {

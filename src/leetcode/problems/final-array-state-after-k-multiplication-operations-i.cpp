@@ -26,7 +26,7 @@ FinalArrayStateAfterKMultiplicationOperationsISolution::FinalArrayStateAfterKMul
   setMetaInfo({.id = 3264,
                .title = "Final Array State After K Multiplication Operations I",
                .url = "https://leetcode.com/problems/final-array-state-after-k-multiplication-operations-i/"});
-  registerStrategy("Brute Force", solution1);
+  registerStrategy({.name = "Brute Force"}, solution1);
 }
 
 vector<int> FinalArrayStateAfterKMultiplicationOperationsISolution::getFinalState(vector<int>& nums, int k, int multiplier) {

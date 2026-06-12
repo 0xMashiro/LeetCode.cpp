@@ -26,7 +26,7 @@ MinimumNumberOfOperationsToMakeElementsInArrayDistinctSolution::MinimumNumberOfO
       .title = "Minimum Number of Operations to Make Elements in Array Distinct",
       .url = "https://leetcode.com/problems/minimum-number-of-operations-to-make-elements-in-array-distinct"
   });
-  registerStrategy("Brute Force", solution1);
+  registerStrategy({.name = "Brute Force"}, solution1);
 }
 
 int MinimumNumberOfOperationsToMakeElementsInArrayDistinctSolution::minimumOperations(vector<int>& nums) {

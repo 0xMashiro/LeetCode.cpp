@@ -81,9 +81,9 @@ ConstructTheMinimumBitwiseArrayIiSolution::ConstructTheMinimumBitwiseArrayIiSolu
   setMetaInfo({.id = 3315,
                .title = "Construct the Minimum Bitwise Array II",
                .url = "https://leetcode.com/problems/construct-the-minimum-bitwise-array-ii/"});
-  registerStrategy("Count Suffix Ones", solution1);
-  registerStrategy("Bit Mask", solution2);
-  registerStrategy("Alternative", solution3);
+  registerStrategy({.name = "Count Suffix Ones"}, solution1);
+  registerStrategy({.name = "Bit Mask"}, solution2);
+  registerStrategy({.name = "Alternative"}, solution3);
 }
 
 vector<int> ConstructTheMinimumBitwiseArrayIiSolution::minBitwiseArray(vector<int>& nums) {

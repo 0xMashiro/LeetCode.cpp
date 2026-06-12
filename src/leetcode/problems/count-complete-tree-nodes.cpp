@@ -44,7 +44,7 @@ CountCompleteTreeNodesSolution::CountCompleteTreeNodesSolution() {
   setMetaInfo({.id = 222,
                .title = "Count Complete Tree Nodes",
                .url = "https://leetcode.com/problems/count-complete-tree-nodes/"});
-  registerStrategy("Divide and Conquer", solution1);
+  registerStrategy({.name = "Divide and Conquer"}, solution1);
 }
 
 int CountCompleteTreeNodesSolution::countNodes(TreeNode* root) {

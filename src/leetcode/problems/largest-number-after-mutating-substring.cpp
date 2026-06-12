@@ -38,7 +38,7 @@ LargestNumberAfterMutatingSubstringSolution::LargestNumberAfterMutatingSubstring
     .title = "Largest Number After Mutating Substring",
     .url = "https://leetcode.com/problems/largest-number-after-mutating-substring/"
   });
-  registerStrategy("Greedy", solution);
+  registerStrategy({.name = "Greedy"}, solution);
 }
 
 std::string LargestNumberAfterMutatingSubstringSolution::maximumNumber(std::string num, std::vector<int>& change) {

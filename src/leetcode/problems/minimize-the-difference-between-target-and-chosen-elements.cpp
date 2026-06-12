@@ -78,8 +78,8 @@ MinimizeTheDifferenceBetweenTargetAndChosenElementsSolution::MinimizeTheDifferen
   setMetaInfo({.id = 1981,
                .title = "Minimize the Difference Between Target and Chosen Elements",
                .url = "https://leetcode.com/problems/minimize-the-difference-between-target-and-chosen-elements/"});
-  registerStrategy("Bitset DP", solution1);
-  registerStrategy("Optimized Bitset DP", solution2);
+  registerStrategy({.name = "Bitset DP"}, solution1);
+  registerStrategy({.name = "Optimized Bitset DP"}, solution2);
 }
 
 int MinimizeTheDifferenceBetweenTargetAndChosenElementsSolution::minimizeTheDifference(vector<vector<int>>& mat, int target) {

@@ -59,9 +59,9 @@ MaximizeHappinessOfSelectedChildrenSolution::MaximizeHappinessOfSelectedChildren
   setMetaInfo({.id = 3075,
                .title = "Maximize Happiness of Selected Children",
                .url = "https://leetcode.com/problems/maximize-happiness-of-selected-children/"});
-  registerStrategy("Sort Descending", solution1);
-  registerStrategy("Max Heap", solution2);
-  registerStrategy("Sort Ascending", solution3);
+  registerStrategy({.name = "Sort Descending"}, solution1);
+  registerStrategy({.name = "Max Heap"}, solution2);
+  registerStrategy({.name = "Sort Ascending"}, solution3);
 }
 
 long long MaximizeHappinessOfSelectedChildrenSolution::maximumHappinessSum(vector<int>& happiness, int k) {

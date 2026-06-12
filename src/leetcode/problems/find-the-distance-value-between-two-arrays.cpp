@@ -50,8 +50,8 @@ FindTheDistanceValueBetweenTwoArraysSolution::FindTheDistanceValueBetweenTwoArra
   setMetaInfo({.id = 1385,
                .title = "Find the Distance Value Between Two Arrays",
                .url = "https://leetcode.com/problems/find-the-distance-value-between-two-arrays/"});
-  registerStrategy("Brute Force", solution1);
-  registerStrategy("Binary Search", solution2);
+  registerStrategy({.name = "Brute Force"}, solution1);
+  registerStrategy({.name = "Binary Search"}, solution2);
 }
 
 int FindTheDistanceValueBetweenTwoArraysSolution::findTheDistanceValue(vector<int>& arr1, vector<int>& arr2, int d) {

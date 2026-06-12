@@ -35,7 +35,7 @@ FindTheLargestAreaOfSquareInsideTwoRectanglesSolution::FindTheLargestAreaOfSquar
   setMetaInfo({.id = 3047,
                .title = "Find the Largest Area of Square Inside Two Rectangles",
                .url = "https://leetcode.com/problems/find-the-largest-area-of-square-inside-two-rectangles/"});
-  registerStrategy("Pairwise Enumeration", solution1);
+  registerStrategy({.name = "Pairwise Enumeration"}, solution1);
 }
 
 long long FindTheLargestAreaOfSquareInsideTwoRectanglesSolution::largestSquareArea(vector<vector<int>>& bottomLeft, vector<vector<int>>& topRight) {

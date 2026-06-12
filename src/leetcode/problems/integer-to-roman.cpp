@@ -35,7 +35,7 @@ IntegerToRomanSolution::IntegerToRomanSolution() {
   setMetaInfo({.id = 12,
                .title = "Integer to Roman",
                .url = "https://leetcode.com/problems/integer-to-roman/"});
-  registerStrategy("Greedy", solution1);
+  registerStrategy({.name = "Greedy"}, solution1);
 }
 
 string IntegerToRomanSolution::intToRoman(int num) {

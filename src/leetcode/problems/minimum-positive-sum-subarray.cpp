@@ -61,8 +61,8 @@ MinimumPositiveSumSubarraySolution::MinimumPositiveSumSubarraySolution() {
   setMetaInfo({.id = 3364,
                .title = "Minimum Positive Sum Subarray",
                .url = "https://leetcode.com/problems/minimum-positive-sum-subarray/"});
-  registerStrategy("Brute Force", solution1);
-  registerStrategy("Prefix Sum Optimized", solution2);
+  registerStrategy({.name = "Brute Force"}, solution1);
+  registerStrategy({.name = "Prefix Sum Optimized"}, solution2);
 }
 
 int MinimumPositiveSumSubarraySolution::minimumSumSubarray(vector<int>& nums, int l, int r) {

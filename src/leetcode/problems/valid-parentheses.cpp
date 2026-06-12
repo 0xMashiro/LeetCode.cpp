@@ -59,8 +59,8 @@ ValidParenthesesSolution::ValidParenthesesSolution() {
   setMetaInfo({.id = 20,
                .title = "Valid Parentheses",
                .url = "https://leetcode.com/problems/valid-parentheses/"});
-  registerStrategy("Stack", solution1);
-  registerStrategy("Stack with HashMap", solution2);
+  registerStrategy({.name = "Stack"}, solution1);
+  registerStrategy({.name = "Stack with HashMap"}, solution2);
 }
 
 bool ValidParenthesesSolution::isValid(std::string s) {

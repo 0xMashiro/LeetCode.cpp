@@ -60,7 +60,7 @@ ParsingABooleanExpressionSolution::ParsingABooleanExpressionSolution() {
   setMetaInfo({.id = 1106,
                .title = "Parsing A Boolean Expression",
                .url = "https://leetcode.com/problems/parsing-a-boolean-expression/"});
-  registerStrategy("Recursive Parser", solution);
+  registerStrategy({.name = "Recursive Parser"}, solution);
 }
 
 bool ParsingABooleanExpressionSolution::parseBoolExpr(string expression) {

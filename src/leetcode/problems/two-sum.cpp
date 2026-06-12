@@ -78,10 +78,10 @@ TwoSumSolution::TwoSumSolution() {
   setMetaInfo({.id = 1,
                .title = "Two Sum",
                .url = "https://leetcode.com/problems/two-sum"});
-  registerStrategy("Brute Force", solution1);
-  registerStrategy("Sorting + Two Pointer", solution2);
-  registerStrategy("Hash Table Two-Pass", solution3);
-  registerStrategy("Hash Table One-Pass", solution4);
+  registerStrategy({.name = "Brute Force"}, solution1);
+  registerStrategy({.name = "Sorting + Two Pointer"}, solution2);
+  registerStrategy({.name = "Hash Table Two-Pass"}, solution3);
+  registerStrategy({.name = "Hash Table One-Pass"}, solution4);
 }
 
 vector<int> TwoSumSolution::twoSum(vector<int>& nums, int target) {

@@ -39,8 +39,8 @@ MaximumProductOfTwoDigitsSolution::MaximumProductOfTwoDigitsSolution() {
   setMetaInfo({.id = 3536,
                .title = "Maximum Product of Two Digits",
                .url = "https://leetcode.com/problems/maximum-product-of-two-digits/"});
-  registerStrategy("Sorting", solution1);
-  registerStrategy("One Pass", solution2);
+  registerStrategy({.name = "Sorting"}, solution1);
+  registerStrategy({.name = "One Pass"}, solution2);
 }
 
 int MaximumProductOfTwoDigitsSolution::maxProduct(int n) {

@@ -32,7 +32,7 @@ FindMaximumNumberOfStringPairsSolution::FindMaximumNumberOfStringPairsSolution()
   setMetaInfo({.id = 2744,
                .title = "Find Maximum Number of String Pairs",
                .url = "https://leetcode.com/problems/find-maximum-number-of-string-pairs/"});
-  registerStrategy("Hash Set", solution1);
+  registerStrategy({.name = "Hash Set"}, solution1);
 }
 
 int FindMaximumNumberOfStringPairsSolution::maximumNumberOfStringPairs(vector<string>& words) {

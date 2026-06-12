@@ -133,7 +133,7 @@ MinimumPairRemovalToSortArrayIiSolution::MinimumPairRemovalToSortArrayIiSolution
   setMetaInfo({.id = 3510,
                .title = "Minimum Pair Removal to Sort Array II",
                .url = "https://leetcode.com/problems/minimum-pair-removal-to-sort-array-ii/"});
-  registerStrategy("Greedy with Priority Queue", solution1);
+  registerStrategy({.name = "Greedy with Priority Queue"}, solution1);
 }
 
 int MinimumPairRemovalToSortArrayIiSolution::minimumPairRemoval(vector<int>& nums) {

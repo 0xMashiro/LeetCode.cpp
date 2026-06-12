@@ -29,7 +29,7 @@ LinkedListInBinaryTreeSolution::LinkedListInBinaryTreeSolution() {
   setMetaInfo({.id = 1367,
                .title = "Linked List in Binary Tree",
                .url = "https://leetcode.com/problems/linked-list-in-binary-tree/"});
-  registerStrategy("DFS + Pattern Matching", solution1);
+  registerStrategy({.name = "DFS + Pattern Matching"}, solution1);
 }
 
 bool LinkedListInBinaryTreeSolution::isSubPath(ListNode* head, TreeNode* root) {

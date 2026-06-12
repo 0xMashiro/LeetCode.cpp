@@ -3,15 +3,14 @@
 """读 source 文件里的 strategy verdict 元信息，按 registerStrategy 顺序
 映射到 (1-indexed strategy 序号 → LeetCode 全称状态)。
 
-优先读取结构化 `.expected = "..."`；旧 `// @expected: <verdict>` 注释仍可被解析。
-没写的解默认 `Accepted`。缩写 TLE/WA/RE/MLE/CE/AC 自动展开成 LeetCode
-判题返回的完整字符串，这样多解验证时 actual.status == expected 直接字符串比对。
+读取结构化 `.expected = "..."`。没写的解默认 `Accepted`。
+缩写 TLE/WA/RE/MLE/CE/AC 自动展开成 LeetCode 判题返回的完整字符串，
+这样多解验证时 actual.status == expected 直接字符串比对。
 """
 
 import re
 from typing import Dict
 
-_EXPECT_RE = re.compile(r"//\s*@expected\s*:\s*([A-Za-z][A-Za-z ]*)")
 _METADATA_EXPECT_RE = re.compile(r"\.expected\s*=\s*\"([A-Za-z][A-Za-z ]*)\"")
 _REGISTER_RE = re.compile(r"\bregisterStrategy\s*\(")
 
@@ -39,9 +38,7 @@ _ALIAS = {
 def parse_expected_verdicts(source: str) -> Dict[int, str]:
     """返回 {1-indexed solution num: expected LeetCode status}；未标注的项缺席。
 
-    每个 `registerStrategy` 分别找它的结构化字段或注释，两种注释位置都接受：
-      1) 注释与 register 在**同一行**（trailing）—— `regStrat(...);  // @expected: TLE`
-      2) 注释在 register 上一行**顶层独立成行**（leading）
+    每个 `registerStrategy` 分别找它的结构化 `.expected` 字段。
     """
     lines = source.splitlines()
     register_line_indices = [
@@ -60,24 +57,6 @@ def parse_expected_verdicts(source: str) -> Dict[int, str]:
                 result[seq] = canonical
                 continue
 
-        current_line = lines[line_idx]
-        # 1) trailing: 同一行有 @expected
-        trailing = _EXPECT_RE.search(current_line)
-        if trailing:
-            canonical = _ALIAS.get(trailing.group(1).strip())
-            if canonical:
-                result[seq] = canonical
-                continue
-        # 2) leading: 上一行（跳过空行）是独立的 @expected 注释
-        j = line_idx - 1
-        while j >= 0 and not lines[j].strip():
-            j -= 1
-        if j >= 0:
-            leading = _EXPECT_RE.search(lines[j])
-            if leading and lines[j].strip().startswith("//"):
-                canonical = _ALIAS.get(leading.group(1).strip())
-                if canonical:
-                    result[seq] = canonical
     return result
 
 

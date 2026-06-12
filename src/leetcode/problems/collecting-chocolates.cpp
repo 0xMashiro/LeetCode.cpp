@@ -43,7 +43,7 @@ CollectingChocolatesSolution::CollectingChocolatesSolution() {
   setMetaInfo({.id = 2735,
                .title = "Collecting Chocolates",
                .url = "https://leetcode.com/problems/collecting-chocolates/"});
-  registerStrategy("Precompute Min Cost", solution1);
+  registerStrategy({.name = "Precompute Min Cost"}, solution1);
 }
 
 long long CollectingChocolatesSolution::minCost(vector<int>& nums, int x) {

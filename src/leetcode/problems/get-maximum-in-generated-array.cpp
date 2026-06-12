@@ -34,7 +34,7 @@ GetMaximumInGeneratedArraySolution::GetMaximumInGeneratedArraySolution() {
   setMetaInfo({.id = 1646,
                .title = "Get Maximum in Generated Array",
                .url = "https://leetcode.com/problems/get-maximum-in-generated-array/"});
-  registerStrategy("Simulation", solution1);
+  registerStrategy({.name = "Simulation"}, solution1);
 }
 
 int GetMaximumInGeneratedArraySolution::getMaximumGenerated(int n) {

@@ -26,7 +26,7 @@ NumberOfRectanglesThatCanFormTheLargestSquareSolution::NumberOfRectanglesThatCan
   setMetaInfo({.id = 1725,
                .title = "Number Of Rectangles That Can Form The Largest Square",
                .url = "https://leetcode.com/problems/number-of-rectangles-that-can-form-the-largest-square/"});
-  registerStrategy("One Pass", solution1);
+  registerStrategy({.name = "One Pass"}, solution1);
 }
 
 int NumberOfRectanglesThatCanFormTheLargestSquareSolution::countGoodRectangles(vector<vector<int>>& rectangles) {

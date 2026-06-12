@@ -48,7 +48,7 @@ MaximumSubarraySumWithLengthDivisibleByKSolution::MaximumSubarraySumWithLengthDi
   setMetaInfo({.id = 3381,
                .title = "Maximum Subarray Sum With Length Divisible by K",
                .url = "https://leetcode.com/problems/maximum-subarray-sum-with-length-divisible-by-k/"});
-  registerStrategy("Prefix Sum + Group Min", solution1);
+  registerStrategy({.name = "Prefix Sum + Group Min"}, solution1);
 }
 
 long long MaximumSubarraySumWithLengthDivisibleByKSolution::maxSubarraySum(vector<int>& nums, int k) {

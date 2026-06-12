@@ -21,7 +21,7 @@ BestTimeToBuyAndSellStockIiSolution::BestTimeToBuyAndSellStockIiSolution() {
     .title = "Best Time to Buy and Sell Stock II",
     .url = "https://leetcode.com/problems/best-time-to-buy-and-sell-stock-ii/"
   });
-  registerStrategy("Greedy", solution1);
+  registerStrategy({.name = "Greedy"}, solution1);
 }
 
 int BestTimeToBuyAndSellStockIiSolution::maxProfit(vector<int>& prices) {

@@ -28,7 +28,7 @@ FirstBadVersionSolution::FirstBadVersionSolution() {
   setMetaInfo({.id = 278,
                .title = "First Bad Version",
                .url = "https://leetcode.com/problems/first-bad-version/"});
-  registerStrategy("Binary Search", solution1);
+  registerStrategy({.name = "Binary Search"}, solution1);
 }
 
 int FirstBadVersionSolution::firstBadVersion(int n) {

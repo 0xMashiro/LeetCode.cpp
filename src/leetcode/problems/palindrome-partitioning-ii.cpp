@@ -93,8 +93,8 @@ PalindromePartitioningIiSolution::PalindromePartitioningIiSolution() {
   setMetaInfo({.id = 132,
                .title = "Palindrome Partitioning II",
                .url = "https://leetcode.com/problems/palindrome-partitioning-ii/"});
-  registerStrategy("DP with Preprocessing", solution1);
-  registerStrategy("Center Expansion Optimized", solution2);
+  registerStrategy({.name = "DP with Preprocessing"}, solution1);
+  registerStrategy({.name = "Center Expansion Optimized"}, solution2);
 }
 
 int PalindromePartitioningIiSolution::minCut(string s) {

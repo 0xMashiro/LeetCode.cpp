@@ -195,7 +195,7 @@ MinimumCostToChangeTheFinalValueOfExpressionSolution::MinimumCostToChangeTheFina
   setMetaInfo({.id = 1896,
                .title = "Minimum Cost to Change the Final Value of Expression",
                .url = "https://leetcode.com/problems/minimum-cost-to-change-the-final-value-of-expression/"});
-  registerStrategy("Stack DP", solution1);
+  registerStrategy({.name = "Stack DP"}, solution1);
 }
 
 int MinimumCostToChangeTheFinalValueOfExpressionSolution::minOperationsToFlip(string expression) {

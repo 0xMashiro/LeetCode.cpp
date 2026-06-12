@@ -33,7 +33,7 @@ FindTheDifferenceOfTwoArraysSolution::FindTheDifferenceOfTwoArraysSolution() {
   setMetaInfo({.id = 2215,
                .title = "Find the Difference of Two Arrays",
                .url = "https://leetcode.com/problems/find-the-difference-of-two-arrays/"});
-  registerStrategy("Hash Set", solution1);
+  registerStrategy({.name = "Hash Set"}, solution1);
 }
 
 vector<vector<int>> FindTheDifferenceOfTwoArraysSolution::findDifference(
