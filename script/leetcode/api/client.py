@@ -6,14 +6,14 @@ LeetCode GraphQL API 客户端
 
 import json
 import time
-import urllib.request
 import urllib.error
-from typing import Dict, Any, Optional, List, Set
+import urllib.request
+from typing import Any, Dict, List, Optional, Set
 
+from script.leetcode.api.cache import CacheManager
 from script.leetcode.config import APIConfig, CacheConfig
 from script.leetcode.exceptions import APIError, NetworkError, ProblemNotFoundError
 from script.leetcode.models import ProblemData
-from script.leetcode.api.cache import CacheManager
 
 
 class GraphQLClient:

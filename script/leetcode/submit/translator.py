@@ -15,7 +15,6 @@ from script.leetcode.models import ProblemData
 from script.leetcode.submit import cache
 from script.leetcode.utils import ColorCode, color_text, log_with_time
 
-
 _SYSTEM = "你是 C++ 代码转换专家，擅长将项目代码转换为 LeetCode 格式。只输出代码，不要有其他说明。"
 
 

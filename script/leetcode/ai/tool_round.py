@@ -15,7 +15,6 @@ from script.leetcode.ai.messages import ToolCall
 from script.leetcode.config import AIConfig
 from script.leetcode.utils import ColorCode, color_text, log_with_time
 
-
 COMPILE_TOOLS = {"compile_project", "compile_and_test"}
 RUNTIME_FAILURE_TOOLS = {"compile_project", "compile_and_test", "execute_test_suite"}
 FILE_MUTATION_TOOLS = {"create_or_update_file", "append_test_case"}

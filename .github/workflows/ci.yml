@@ -12,6 +12,7 @@ on:
       - 'CMakeLists.txt'
       - 'requirements.txt'
       - 'justfile'
+      - 'pyproject.toml'
   pull_request:
     branches: [main, master, develop]
     paths:
@@ -23,6 +24,7 @@ on:
       - 'CMakeLists.txt'
       - 'requirements.txt'
       - 'justfile'
+      - 'pyproject.toml'
 
 # Cancel redundant workflows
 concurrency:
@@ -41,15 +43,25 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+          cache: 'pip'
+          cache-dependency-path: requirements.txt
 
       - name: Install Python dependencies
         run: |
           python3 -m pip install --upgrade pip
           python3 -m pip install -r requirements.txt
 
+      - name: Check Python syntax
+        run: |
+          python3 -m compileall -q script tests
+
+      - name: Lint Python
+        run: |
+          python3 -m ruff check script tests
+
       - name: Run Python unit tests
         run: |
-          python3 -m unittest discover -s tests -p "test_*.py" -v
+          python3 -m pytest tests script/ci/check_leetcode_cookie.py -q
 
   detect-changes:
     name: Detect Changes

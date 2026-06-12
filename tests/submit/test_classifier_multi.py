@@ -99,8 +99,8 @@ class TestSubmitAllAndClassify(unittest.TestCase):
 class TestVerifyAllStrategiesFlagResolution(unittest.TestCase):
     def _instantiate(self, env: dict, **kwargs) -> AISolver:
         with patch.dict(os.environ, env, clear=True):
-            with patch.object(AISolver, "_load_env", lambda self: None):
-                with patch.object(AISolver, "_require_api_key", lambda self: "dummy"):
+            with patch("script.leetcode.ai.solver.settings.load_project_env", lambda: None):
+                with patch("script.leetcode.ai.solver.settings.require_api_key", lambda provider: "dummy"):
                     with patch("script.leetcode.ai.solver.AIApiClient"):
                         with patch("script.leetcode.ai.solver.ProblemRepository"):
                             return AISolver(**kwargs)

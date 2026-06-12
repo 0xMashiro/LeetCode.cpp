@@ -10,7 +10,6 @@
 import re
 from typing import Dict
 
-
 _EXPECT_RE = re.compile(r"//\s*@expected\s*:\s*([A-Za-z][A-Za-z ]*)")
 _REGISTER_RE = re.compile(r"\bregisterStrategy\s*\(")
 

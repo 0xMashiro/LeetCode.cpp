@@ -14,7 +14,6 @@ from typing import Any, Dict, List, Optional
 from script.leetcode.ai.tools._utils import class_name_from_slug
 from script.leetcode.config import ProjectPaths
 
-
 _REQUIRED_CATEGORIES = ("header", "source", "test")
 
 

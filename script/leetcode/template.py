@@ -8,13 +8,13 @@
 """
 
 from script.leetcode.services.template_renderer import (
-    INCLUDE_TEMPLATE,
-    SOURCE_TEMPLATE,
-    TEST_TEMPLATE,
     DESIGN_INCLUDE_TEMPLATE,
     DESIGN_SOURCE_TEMPLATE,
     DESIGN_TEST_TEMPLATE,
+    INCLUDE_TEMPLATE,
     SOLVED_PROBLEM_DOC_HEADER,
+    SOURCE_TEMPLATE,
+    TEST_TEMPLATE,
 )
 
 __all__ = [

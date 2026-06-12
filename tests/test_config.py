@@ -5,7 +5,7 @@ import os
 import unittest
 from unittest.mock import patch
 
-from script.leetcode.config import AIConfig, AIProvider
+from script.leetcode.config import AIProvider
 
 
 class TestAIProviderFromEnv(unittest.TestCase):

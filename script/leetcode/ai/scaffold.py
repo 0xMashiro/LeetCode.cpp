@@ -19,7 +19,6 @@ from script.leetcode.services import (
 )
 from script.leetcode.utils import ColorCode, log_with_time
 
-
 SCAFFOLD_MARKER = "/* Code here */"
 OFFICIAL_EXAMPLE_TODO_MARKER = "// TODO: 用上面 Input 构造 C++ 变量"
 

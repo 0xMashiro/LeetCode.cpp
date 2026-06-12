@@ -8,7 +8,6 @@ from typing import Any, Dict
 from script.leetcode.ai.tools._utils import read_file
 from script.leetcode.config import ProjectPaths
 
-
 _SUPPORTED = ("tree", "linked-list", "queue", "stack")
 
 

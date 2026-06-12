@@ -27,6 +27,7 @@ default:
     @echo "  just test <ID>      - 运行指定题目测试（需先全量构建）"
     @echo "  just test-filter <FILTER> - 运行过滤后的测试"
     @echo "  just py-test        - 运行 Python 单元测试（tests/）"
+    @echo "  just py-lint        - 运行 Python lint 检查"
     @echo ""
     @echo "题目管理："
     @echo "  just add <ID> [--force]  - 添加题目（--force 强制覆盖）"
@@ -171,7 +172,10 @@ test-filter FILTER:
     ./build/bin/problem_set_tests --gtest_filter={{FILTER}}
 
 py-test:
-    {{python_venv}} -m unittest discover -s tests -p "test_*.py" -v
+    {{python_venv}} -m pytest tests script/ci/check_leetcode_cookie.py -q
+
+py-lint:
+    {{python_venv}} -m ruff check script tests
 
 # 代码格式化
 format:

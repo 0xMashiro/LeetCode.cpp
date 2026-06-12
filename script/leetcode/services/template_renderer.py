@@ -4,7 +4,7 @@
 模板渲染器
 """
 
-from typing import Dict, Any
+from typing import Any
 
 # 普通题目模板
 INCLUDE_TEMPLATE = """#include "leetcode/core.h"

@@ -7,23 +7,15 @@ cookie + csrf_token，调用方已做过 None 判断。
 """
 
 import json
-import re
 import time
 import urllib.error
 import urllib.request
 from datetime import datetime
-from typing import Dict, Optional
+from typing import Dict, Optional, Tuple
 
+from script.leetcode.cookie import USER_AGENT as _USER_AGENT
 from script.leetcode.submit.result import SubmissionResult
 from script.leetcode.utils import ColorCode, color_text, log_with_time
-
-
-_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
-
-
-def extract_csrf_token(cookie: str) -> Optional[str]:
-    match = re.search(r"csrftoken=([^;]+)", cookie)
-    return match.group(1) if match else None
 
 
 def validate_cookie(cookie: str, csrf_token: Optional[str]) -> bool:
@@ -93,11 +85,14 @@ class LeetCodeHttpClient:
         submit_url = f"https://leetcode.com/problems/{slug}/submit/"
         payload = {"lang": "cpp", "question_id": question_id, "typed_code": code}
         headers = {
+            "Accept": "application/json, text/javascript, */*; q=0.01",
             "Content-Type": "application/json",
             "Cookie": self._cookie,
+            "Origin": "https://leetcode.com",
             "X-CSRFToken": self._csrf,
             "Referer": f"https://leetcode.com/problems/{slug}/",
             "User-Agent": _USER_AGENT,
+            "X-Requested-With": "XMLHttpRequest",
         }
         try:
             req = urllib.request.Request(
@@ -111,13 +106,30 @@ class LeetCodeHttpClient:
                 submission_id = data.get("submission_id")
                 if not submission_id:
                     return SubmissionResult(
-                        status="Error", status_code=-1, error_message=f"提交失败: {data}",
+                        status="Error",
+                        status_code=-1,
+                        error_message=f"提交失败: {data}",
+                        error_type="submit_response_missing_id",
                     )
                 log_with_time(f"✅ 提交成功，ID: {submission_id}")
                 log_with_time("⏳ 等待判题结果...")
                 return self._poll_verdict(submission_id)
+        except urllib.error.HTTPError as e:
+            error_type, message = _format_http_error(e)
+            return SubmissionResult(
+                status="Error", status_code=e.code, error_message=message, error_type=error_type
+            )
+        except urllib.error.URLError as e:
+            return SubmissionResult(
+                status="Error",
+                status_code=-1,
+                error_message=f"网络错误: {e.reason}",
+                error_type="network_error",
+            )
         except Exception as e:
-            return SubmissionResult(status="Error", status_code=-1, error_message=str(e))
+            return SubmissionResult(
+                status="Error", status_code=-1, error_message=str(e), error_type="unexpected_error"
+            )
 
     def _poll_verdict(self, submission_id: str, max_wait: int = 60) -> SubmissionResult:
         check_url = f"https://leetcode.com/submissions/detail/{submission_id}/check/"
@@ -140,9 +152,24 @@ class LeetCodeHttpClient:
                     ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                     print(f"\r[{ts}] ⏳ 判题中{'.' * dots}{' ' * (3 - dots)}", end="", flush=True)
                     time.sleep(1)
+            except urllib.error.HTTPError as e:
+                if e.code in (401, 403, 429, 499):
+                    error_type, message = _format_http_error(e)
+                    return SubmissionResult(
+                        status="Error",
+                        status_code=e.code,
+                        error_message=message,
+                        error_type=error_type,
+                    )
+                time.sleep(1)
             except Exception:
                 time.sleep(1)
-        return SubmissionResult(status="Timeout", status_code=-1, error_message="等待结果超时")
+        return SubmissionResult(
+            status="Timeout",
+            status_code=-1,
+            error_message="等待结果超时",
+            error_type="poll_timeout",
+        )
 
 
 def _parse_verdict(raw: Dict) -> SubmissionResult:
@@ -167,6 +194,17 @@ def _parse_verdict(raw: Dict) -> SubmissionResult:
     )
 
 
+def _format_http_error(error: urllib.error.HTTPError) -> Tuple[str, str]:
+    body = "<none>"
+    try:
+        raw = error.read()
+        if raw:
+            body = raw.decode("utf-8", errors="replace")[:1000]
+    except Exception:
+        pass
+    return f"http_{error.code}", f"HTTP {error.code}: {body}"
+
+
 def print_verdict(result: SubmissionResult) -> bool:
     """把 SubmissionResult 按 LeetCode 状态类型打印给人看；返回是否 Accepted。"""
     print()
@@ -177,11 +215,11 @@ def print_verdict(result: SubmissionResult) -> bool:
         return True
     if result.status == "Wrong Answer" and result.failed_test_case:
         log_with_time("❌ Wrong Answer", ColorCode.RED)
-        log_with_time(f"\n输入:")
+        log_with_time("\n输入:")
         log_with_time(result.failed_test_case.get("input", "N/A"))
-        log_with_time(f"\n输出:")
+        log_with_time("\n输出:")
         log_with_time(result.failed_test_case.get("actual", "N/A"))
-        log_with_time(f"\n期望:")
+        log_with_time("\n期望:")
         log_with_time(result.failed_test_case.get("expected", "N/A"))
         return False
     if result.status == "Time Limit Exceeded":

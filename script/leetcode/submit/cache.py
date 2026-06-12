@@ -14,7 +14,6 @@ from typing import Callable, Optional
 
 from script.leetcode.utils import ColorCode, log_with_time
 
-
 _CACHE_DIR = Path(".leetcode-cache/submit")
 
 _BLOCK_COMMENT = re.compile(r"/\*.*?\*/", re.DOTALL)

@@ -3,9 +3,10 @@
 验证 GitHub Actions workflow 语法
 """
 
-import yaml
 import sys
 from pathlib import Path
+
+import yaml
 
 
 def validate_workflow(file_path: str):
@@ -44,7 +45,7 @@ def validate_workflow(file_path: str):
                     if 'run' not in step and 'uses' not in step:
                         print(f"    ⚠ Step {i+1} has no 'run' or 'uses'")
         
-        print(f"✓ Workflow looks valid")
+        print("✓ Workflow looks valid")
         return True
         
     except yaml.YAMLError as e:

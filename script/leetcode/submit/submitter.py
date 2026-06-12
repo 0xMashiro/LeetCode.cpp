@@ -18,12 +18,12 @@ from openai import OpenAI
 
 from script.leetcode.api.repository import ProblemRepository
 from script.leetcode.config import AIProvider
+from script.leetcode.cookie import prepare_cookie
 from script.leetcode.models import ProblemData
 from script.leetcode.submit import cache, expected_verdicts, http_api, translator
 from script.leetcode.submit.http_api import LeetCodeHttpClient
 from script.leetcode.submit.result import SubmissionResult
 from script.leetcode.utils import ColorCode, color_text, log_with_time
-
 
 _CACHE_DIR = Path(".leetcode-cache/submit")
 
@@ -32,8 +32,10 @@ class LeetCodeSubmitter:
     def __init__(self):
         load_dotenv()
         self.repo = ProblemRepository()
-        self.cookie = os.getenv("LEETCODE_COOKIE")
-        self.csrf_token = http_api.extract_csrf_token(self.cookie) if self.cookie else None
+        raw_cookie = os.getenv("LEETCODE_COOKIE")
+        self.cookie, self.csrf_token = (
+            prepare_cookie(raw_cookie) if raw_cookie else (None, None)
+        )
         self._init_ai_client()
 
         if not self.cookie:

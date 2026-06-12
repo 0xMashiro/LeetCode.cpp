@@ -13,13 +13,26 @@ import urllib.request
 from pathlib import Path
 from typing import Optional, Tuple
 
-from dotenv import load_dotenv
+try:
+    from dotenv import load_dotenv
+except ModuleNotFoundError:
+    load_dotenv = None  # type: ignore[assignment]
+
+try:
+    from script.leetcode.cookie import prepare_cookie
+except ModuleNotFoundError:
+    # 兼容直接以脚本路径执行：python script/ci/check_leetcode_cookie.py
+    project_root = Path(__file__).resolve().parents[2]
+    sys.path.insert(0, str(project_root))
+    from script.leetcode.cookie import prepare_cookie
 
 
 GRAPHQL_URL = "https://leetcode.com/graphql"
 
 
 def load_project_env() -> None:
+    if load_dotenv is None:
+        return
     project_root = Path(__file__).resolve().parents[2]
     env_file = project_root / ".env"
     if env_file.exists():
@@ -28,19 +41,12 @@ def load_project_env() -> None:
         load_dotenv()
 
 
-def extract_csrf_token(cookie: str) -> Optional[str]:
-    for part in cookie.split(";"):
-        item = part.strip()
-        if item.startswith("csrftoken="):
-            return item.split("=", 1)[1]
-    return None
-
-
 def validate_cookie(cookie: str, timeout: int = 15) -> Tuple[bool, str, Optional[str]]:
     if not cookie:
         return False, "cookie_missing", None
 
-    csrf = extract_csrf_token(cookie) or ""
+    cookie, csrf = prepare_cookie(cookie)
+    csrf = csrf or ""
     payload = {
         "query": """
             query globalData {

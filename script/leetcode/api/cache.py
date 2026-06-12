@@ -7,11 +7,10 @@
 import json
 import time
 from pathlib import Path
-from typing import Any, Optional, TypeVar, Callable
+from typing import Any, Callable, Optional, TypeVar
 
 from script.leetcode.config import CacheConfig, ProjectPaths
 from script.leetcode.exceptions import CacheError
-
 
 T = TypeVar('T')
 

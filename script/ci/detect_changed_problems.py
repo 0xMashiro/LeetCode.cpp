@@ -12,9 +12,9 @@ Output:
     Semicolon-separated list of problem slugs, suitable for CMake
 """
 
+import re
 import subprocess
 import sys
-import re
 from pathlib import Path
 
 

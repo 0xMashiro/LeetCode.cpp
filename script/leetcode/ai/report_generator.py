@@ -17,7 +17,6 @@ from script.leetcode.ai.prompts import REPORT_GENERATION_PROMPT
 from script.leetcode.config import AIProvider
 from script.leetcode.utils import ColorCode, color_text
 
-
 SKIP_CONTENT = "## 状态\n\n✅ **题目已解决**，文件已存在，跳过自动解题。\n"
 FOOTER = "---\n\n*本报告由 AI 自动生成。*\n"
 BLOG_FALLBACK = "## 解题思路\n\n（详细的解题思路请参考源代码和测试用例中的注释）\n"

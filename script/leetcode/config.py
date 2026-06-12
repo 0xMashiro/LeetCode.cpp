@@ -4,9 +4,9 @@
 纯配置模块，不导入其他业务模块以避免循环导入
 """
 
+import os
 from dataclasses import dataclass
 from enum import Enum
-import os
 from typing import Any, ClassVar, Dict, FrozenSet
 
 

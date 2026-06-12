@@ -24,8 +24,8 @@ from script.leetcode.ai.solver import AISolver
 def _instantiate(env: dict, **kwargs) -> AISolver:
     """绕开 OpenAI / 仓库初始化，只验 flag 解析"""
     with patch.dict(os.environ, env, clear=True):
-        with patch.object(AISolver, "_load_env", lambda self: None):
-            with patch.object(AISolver, "_require_api_key", lambda self: "dummy"):
+        with patch("script.leetcode.ai.solver.settings.load_project_env", lambda: None):
+            with patch("script.leetcode.ai.solver.settings.require_api_key", lambda provider: "dummy"):
                 with patch("script.leetcode.ai.solver.AIApiClient"):
                     with patch("script.leetcode.ai.solver.ProblemRepository"):
                         return AISolver(**kwargs)

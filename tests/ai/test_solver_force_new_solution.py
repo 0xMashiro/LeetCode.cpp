@@ -45,8 +45,8 @@ class TestForceNewSolutionEnv(unittest.TestCase):
     def _instantiate(self, env: dict) -> AISolver:
         # 绕开 load_dotenv 和 API key 校验，只验 flag 解析逻辑
         with patch.dict(os.environ, env, clear=True):
-            with patch.object(AISolver, "_load_env", lambda self: None):
-                with patch.object(AISolver, "_require_api_key", lambda self: "dummy"):
+            with patch("script.leetcode.ai.solver.settings.load_project_env", lambda: None):
+                with patch("script.leetcode.ai.solver.settings.require_api_key", lambda provider: "dummy"):
                     with patch("script.leetcode.ai.solver.AIApiClient"):
                         with patch("script.leetcode.ai.solver.ProblemRepository"):
                             return AISolver()
@@ -74,8 +74,8 @@ class TestForceNewSolutionEnv(unittest.TestCase):
         """构造函数参数优先于环境变量，便于测试和 CLI 显式覆盖。"""
         with patch.dict(os.environ, {"AI_PROVIDER": "moonshot", "MOONSHOT_API_KEY": "x",
                                       "AI_SOLVER_FORCE_NEW_SOLUTION": "true"}, clear=True):
-            with patch.object(AISolver, "_load_env", lambda self: None):
-                with patch.object(AISolver, "_require_api_key", lambda self: "dummy"):
+            with patch("script.leetcode.ai.solver.settings.load_project_env", lambda: None):
+                with patch("script.leetcode.ai.solver.settings.require_api_key", lambda provider: "dummy"):
                     with patch("script.leetcode.ai.solver.AIApiClient"):
                         with patch("script.leetcode.ai.solver.ProblemRepository"):
                             solver = AISolver(force_new_solution=False)

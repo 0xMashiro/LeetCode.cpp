@@ -5,14 +5,14 @@
 """
 
 from pathlib import Path
-from typing import Optional, List, Tuple
+from typing import List, Optional, Tuple
 
-from script.leetcode.models import ProblemInfo, FunctionSignature, DesignClassDefinition
 from script.leetcode.config import FileTypeConfig
 from script.leetcode.exceptions import FileOperationError
-from script.leetcode.utils import color_text, ColorCode
+from script.leetcode.models import DesignClassDefinition, FunctionSignature, ProblemInfo
 from script.leetcode.services.design_class_extractor import DesignClassExtractor
 from script.leetcode.services.template_renderer import TemplateRenderer
+from script.leetcode.utils import ColorCode, color_text
 
 
 class FileGenerator:

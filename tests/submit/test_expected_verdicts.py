@@ -6,7 +6,6 @@ import unittest
 
 from script.leetcode.submit.expected_verdicts import parse_expected_verdicts, resolve_expected
 
-
 _SRC_TWO_STRATEGIES = """
 namespace x {
 void register_all(Solution& s) {

@@ -4,8 +4,8 @@
 import unittest
 
 from script.leetcode.exceptions import SignatureError
-from script.leetcode.services.signature_parser import SignatureParser
 from script.leetcode.services.design_class_extractor import DesignClassExtractor
+from script.leetcode.services.signature_parser import SignatureParser
 
 
 class TestSignatureParser(unittest.TestCase):

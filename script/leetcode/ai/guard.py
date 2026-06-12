@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """对话守卫：防止模型陷入无效循环。"""
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
 
 from script.leetcode.config import AIConfig

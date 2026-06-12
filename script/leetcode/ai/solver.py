@@ -2,31 +2,29 @@
 # -*- coding: utf-8 -*-
 """AI 解题器主类。"""
 
-import os
 import sys
 import time
 import traceback
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from dotenv import load_dotenv
-
+from script.leetcode.ai import settings
 from script.leetcode.ai.api_client import AIApiClient
 from script.leetcode.ai.guard import GuardState, should_abort
 from script.leetcode.ai.journal import SolveJournal
+from script.leetcode.ai.leetcode_gate import LeetCodeGate
 from script.leetcode.ai.messages import Message, ToolCall
+from script.leetcode.ai.problem_context import ProblemContext
 from script.leetcode.ai.prompts import SYSTEM_PROMPT
 from script.leetcode.ai.report_generator import ReportGenerator
 from script.leetcode.ai.scaffold import ScaffoldManager
 from script.leetcode.ai.tool_round import ToolRoundProcessor, should_short_circuit
 from script.leetcode.ai.tools import ToolDefinition, ToolExecutor
-from script.leetcode.submit import feedback as leetcode_feedback
-from script.leetcode.submit.classifier import SubmissionClassifier
 from script.leetcode.api import ProblemRepository
 from script.leetcode.config import AIConfig, AIProvider
 from script.leetcode.exceptions import ProblemNotFoundError, StreamResponseError
+from script.leetcode.submit.classifier import SubmissionClassifier
 from script.leetcode.utils import ColorCode, color_text, log_with_time
-
 
 SKIP_PR_MARKER_PATH = Path("SKIP_PR")
 
@@ -44,25 +42,25 @@ class AISolver:
         require_leetcode: Optional[bool] = None,
         verify_all_strategies: Optional[bool] = None,
     ):
-        self._load_env()
+        settings.load_project_env()
 
         self.provider = provider or AIProvider.from_env()
-        self.api_key = api_key or self._require_api_key()
+        self.api_key = api_key or settings.require_api_key(self.provider)
         self.base_url = base_url or self.provider.base_url
 
-        self.enable_report = self._resolve_bool_flag(
+        self.enable_report = settings.resolve_bool_flag(
             enable_report, "AI_SOLVER_GENERATE_REPORT", default=False
         )
         self.scaffold_mode = scaffold_mode
-        self.force_new_solution = self._resolve_bool_flag(
+        self.force_new_solution = settings.resolve_bool_flag(
             force_new_solution, "AI_SOLVER_FORCE_NEW_SOLUTION", default=False
         )
         # 默认 True：本地测试可能不全，LeetCode 判题才是可信信号
-        self.require_leetcode = self._resolve_bool_flag(
+        self.require_leetcode = settings.resolve_bool_flag(
             require_leetcode, "LEETCODE_SUBMIT_ENABLED", default=True
         )
         # 默认 False：多解验证把 LeetCode 提交次数 ×N，可能顶上限流。想验再开。
-        self.verify_all_strategies = self._resolve_bool_flag(
+        self.verify_all_strategies = settings.resolve_bool_flag(
             verify_all_strategies, "AI_SOLVER_VERIFY_ALL_STRATEGIES", default=False
         )
 
@@ -70,6 +68,7 @@ class AISolver:
         self.repository = repository or ProblemRepository()
         self.tool_executor = ToolExecutor(self.repository)
         self.submission_classifier = SubmissionClassifier()
+        self._leetcode_gate = LeetCodeGate(self.submission_classifier)
         self._report_generator = ReportGenerator(self._api_client.client, self.provider)
         self._journal = SolveJournal(self.provider)
         self._scaffold = ScaffoldManager(
@@ -91,42 +90,18 @@ class AISolver:
         self._leetcode_fix_count: int = 0
         self._guard = GuardState()
 
-    @staticmethod
-    def _resolve_bool_flag(
-        explicit: Optional[bool], env_var: str, *, default: bool
-    ) -> bool:
-        """三级兜底：显式参数 → env → default。env 为空字符串按未设置处理。"""
-        if explicit is not None:
-            return explicit
-        raw = os.getenv(env_var)
-        if raw is None or raw == "":
-            return default
-        return raw.lower() == "true"
-
     def _should_skip_as_already_solved(self, problem_id: int) -> bool:
         if self.force_new_solution:
             return False
         return self._scaffold.has_solution(problem_id)
 
-    def _load_env(self) -> None:
-        project_root = Path(__file__).parent.parent.parent.parent
-        env_path = project_root / ".env"
-        if env_path.exists():
-            load_dotenv(dotenv_path=env_path)
-        else:
-            load_dotenv()
-
-    def _require_api_key(self) -> str:
-        env_var = self.provider.api_key_env()
-        api_key = os.getenv(env_var) or os.getenv("AI_API_KEY")
-        if not api_key:
-            raise ValueError(
-                f"请设置 {env_var}：\n"
-                f"  1. 创建 .env 文件并添加 {env_var}=your_key\n"
-                f"  2. 或设置环境变量: export {env_var}=your_key\n"
-                f"  3. 或使用通用的 AI_API_KEY"
-            )
-        return api_key
+    def _set_problem_context(self, context: ProblemContext) -> None:
+        self.problem_id = context.problem_id
+        self.problem_title = context.title
+        self.problem_slug = context.slug
+        self.problem_difficulty = context.difficulty
+        self.problem_tags = context.tags
+        self.is_daily = context.is_daily
 
     @property
     def tools(self) -> List[Dict[str, Any]]:
@@ -196,19 +171,15 @@ class AISolver:
         question: Dict[str, Any],
         is_daily: bool = False,
     ) -> None:
-        self.problem_id = problem_id
-        self.problem_title = question['title']
-        self.problem_slug = question['titleSlug']
-        self.problem_difficulty = question.get('difficulty', 'Unknown')
-        self.problem_tags = [tag['name'] for tag in question.get('topicTags', [])]
-        self.is_daily = is_daily
+        context = ProblemContext.from_question(problem_id, question, is_daily=is_daily)
+        self._set_problem_context(context)
 
-        title_prefix = "📋 今日题目" if is_daily else "📋 题目"
-        log_with_time(f"{title_prefix}: [{problem_id}] {question['title']}", ColorCode.BLUE)
-        log_with_time(f"🔗 URL: https://leetcode.com/problems/{question['titleSlug']}/", ColorCode.BLUE)
+        log_with_time(f"{context.title_prefix}: [{problem_id}] {context.title}", ColorCode.BLUE)
+        log_with_time(f"🔗 URL: {context.url}", ColorCode.BLUE)
 
-        prefix = "每日一题" if is_daily else "题目"
-        self.reasoning_log.append(f"## 开始解决 {prefix} [{problem_id}] {question['title']}\n\n")
+        self.reasoning_log.append(
+            f"## 开始解决 {context.solve_prefix} [{problem_id}] {context.title}\n\n"
+        )
 
         if self._should_skip_as_already_solved(problem_id):
             self._report_already_solved(problem_id)
@@ -500,21 +471,11 @@ class AISolver:
         self,
     ) -> tuple[bool, Optional[bool], Optional[str], Optional[str]]:
         """返回 (should_continue, accepted, feedback, skip_reason)。"""
-        if self.verify_all_strategies:
-            outcome = self.submission_classifier.submit_all_and_classify(self.problem_id)
-        else:
-            outcome = self.submission_classifier.submit_and_classify(self.problem_id)
-        if outcome.should_continue:
-            return True, outcome.accepted, None, outcome.skip_reason
-        if outcome.error_message:
-            return False, outcome.accepted, outcome.error_message, outcome.skip_reason
-        if outcome.result is not None:
-            feedback = leetcode_feedback.build(
-                outcome.result,
-                self_authored_tests_locally_passed=self._has_self_authored_tests(),
-            )
-            return False, outcome.accepted, feedback, outcome.skip_reason
-        return False, outcome.accepted, "LeetCode 提交失败", outcome.skip_reason
+        return self._leetcode_gate.submit(
+            self.problem_id,
+            verify_all_strategies=self.verify_all_strategies,
+            self_authored_tests_locally_passed=self._has_self_authored_tests,
+        )
 
     def _has_self_authored_tests(self) -> bool:
         """test 文件里是否有 SelfAuthored 前缀的 TEST_P（走到这里本地已全绿）。"""

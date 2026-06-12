@@ -45,7 +45,8 @@ class SubmissionClassifier:
 
     @staticmethod
     def _default_submitter_factory() -> Any:
-        from script.leetcode.submit import LeetCodeSubmitter
+        from script.leetcode.submit.submitter import LeetCodeSubmitter
+
         return LeetCodeSubmitter()
 
     def submit_and_classify(self, problem_id: Optional[int]) -> SubmissionOutcome:
@@ -150,6 +151,9 @@ class SubmissionClassifier:
                 should_continue=False, accepted=False, result=result
             )
         infra_msg = result.error_message or result.status
+        error_type = getattr(result, "error_type", None)
+        if error_type:
+            infra_msg = f"{error_type}: {infra_msg}"
         log_with_time(
             f"⚠️ LeetCode 在线提交未通过(非代码问题, 未拿到判题信号): {infra_msg}",
             ColorCode.YELLOW,

@@ -7,9 +7,9 @@
 
 from typing import Any, Dict, List, Optional
 
-from script.leetcode.models import ProblemInfo, ProblemData
-from script.leetcode.exceptions import ProblemNotFoundError
 from script.leetcode.api.client import GraphQLClient
+from script.leetcode.exceptions import ProblemNotFoundError
+from script.leetcode.models import ProblemData, ProblemInfo
 
 
 class ProblemRepository:

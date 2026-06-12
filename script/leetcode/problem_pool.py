@@ -6,7 +6,7 @@
 import json
 import random
 from pathlib import Path
-from typing import List, Optional, Dict, Any, Set
+from typing import Any, Dict, List, Optional, Set
 
 from script.leetcode.api import ProblemRepository
 

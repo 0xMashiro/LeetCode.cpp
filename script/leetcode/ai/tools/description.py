@@ -18,7 +18,6 @@ import re
 from html.parser import HTMLParser
 from typing import Dict, List
 
-
 _HTML_ENTITIES = {
     "&nbsp;": " ",
     "&amp;": "&",

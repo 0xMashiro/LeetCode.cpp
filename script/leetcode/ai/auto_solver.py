@@ -12,15 +12,15 @@ AI 自动解题循环模式
 
 import argparse
 import os
+import re
 import subprocess
 import sys
 import time
-import re
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
-from script.leetcode.utils import color_text, ColorCode
+from script.leetcode.utils import ColorCode, color_text
 
 
 class AutoSolver:

@@ -11,7 +11,6 @@ from script.leetcode.api import ProblemRepository
 from script.leetcode.cli import add_cmd, doc_cmd, rm_cmd, test_cmd
 from script.leetcode.cli._printers import error
 
-
 __version__ = "2.0.0"
 
 

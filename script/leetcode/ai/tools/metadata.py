@@ -15,7 +15,6 @@ from script.leetcode.ai.tools.description import extract_examples, html_to_markd
 from script.leetcode.config import ExampleProblems, ProjectPaths
 from script.leetcode.services import SignatureParser
 
-
 _FRAMEWORK_PATHS = {
     "solution_base": "include/leetcode/solution.hpp",
     "tree_utils": "include/leetcode/utils/tree.h",

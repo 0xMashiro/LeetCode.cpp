@@ -27,7 +27,6 @@ import json
 import re
 from typing import Any, Dict, List, Optional
 
-
 _UTILITY_HINT = """项目已经提供的辅助函数(遇到对应类型优先用,不要自己手动建链表/树):
 
 - `leetcode::constructTree(vector<int>)`:把 LeetCode 层序 + -1 代表 null 的数组构造成 `TreeNode*`
